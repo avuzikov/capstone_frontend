@@ -11,13 +11,29 @@ Styles are named using kebab-case. e.g. ```img-small```. Styles are saved in ```
 
        adp-red 
 
+- ADP Light Red
+
+       adp-red-light
+
 - ADP Navy
 
         adp-navy
 
+- ADP Light Navy
+
+        adp-navy-light
+
+- ADP Dark Navy
+
+        adp-navy-dark
+
 - ADP White
 
         adp-white
+
+- ADP Gray
+
+        adp-gray
 
 ### Logo Styles
 
@@ -67,21 +83,25 @@ Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```
 
 ### Text Styles
 
-- Small Text (Standard Text)
+- Small Text (Small Text)
 
-        txt-small
+        text-small
+
+- Normal Text (Standard Text)
+
+        text-normal
 
 - Medium Text (Important Text)
 
-        txt-medium
+        text-medium
 
 - Large Text (Smaller Headings)
 
-        txt-large
+        text-large
 
 - Extra Large Text (Larger Headings)
 
-        txt-xl
+        text-xl
 
 ### Button Styles
 
@@ -99,19 +119,15 @@ Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```
 
 ### Input Styles
 
-- Text Input
+- Bordered Input
 
-        input-text
+        input-bordered
 
-- Search Input
+- Filled Input
 
-        input-search
+        input-filled
 
 ### Card Styles
-
-- Outlined Card
-
-        card-outlined
 
 - Filled Card
 

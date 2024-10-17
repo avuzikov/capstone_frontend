@@ -1,6 +1,11 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import url(https://db.onlinewebfonts.com/c/6a46a61a3e91ac646d1c900d7f369965?family=Taub+Sans+Regular);
+
+* {
+  font-family: 'Taub Sans Regular', sans-serif;
+}
 
 body {
   margin: 0;

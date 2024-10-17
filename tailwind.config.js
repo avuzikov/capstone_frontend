@@ -2,123 +2,106 @@ module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   theme: {
     extend: {
-      spacing: {
-        'small': '0.5rem',    
-        'medium': '1rem',     
-        'large': '2rem',      
-      },
       colors: {
         'adp-red': '#D0271D',
+        'adp-red-light': '#E44A42', 
         'adp-navy': '#121C4E',
+        'adp-navy-light': '#2A3A6E', 
+        'adp-navy-dark': '#0A1433', 
         'adp-white': '#FFFFFF',
-      }
-    }
+        'adp-gray': '#F5F5F5',
+      },
+      borderRadius: {
+        'md': '0.375rem',
+        'lg': '0.5rem',
+      },
+      padding: {
+        'small': '0.5rem',
+        'medium': '1rem',
+      },
+      fontFamily: {
+        'taub-sans-regular': ['"Taub Sans Regular"', 'sans-serif'],
+      },
+    },
   },
   plugins: [
     function({ addUtilities }) {
       const newUtilities = {
-
         // Image styles
         '.img-small': {
-          width: '50px',
-          height: 'auto',
+          '@apply w-12 h-auto': {},
         },
         '.img-medium': {
-          width: '100px',
-          height: 'auto',
+          '@apply w-24 h-auto': {},
         },
         '.img-large': {
-          width: '150px',
-          height: 'auto',
+          '@apply w-36 h-auto': {},
         },
 
         // Padding styles
         '.p-small': {
-          padding: 'var(--tw-space-small)', 
+          '@apply p-1': {},
         },
         '.p-medium': {
-          padding: 'var(--tw-space-medium)',
+          '@apply p-2': {},
         },
         '.p-large': {
-          padding: 'var(--tw-space-large)',
+          '@apply p-4': {},
         },
 
         // Margin styles
         '.m-small': {
-          margin: 'var(--tw-space-small)',
+          '@apply m-2': {},
         },
         '.m-medium': {
-          margin: 'var(--tw-space-medium)',
+          '@apply m-4': {},
         },
         '.m-large': {
-          margin: 'var(--tw-space-large)',
+          '@apply m-8': {},
         },
 
         // Text styles
-        '.txt-small': {
-          fontSize: '0.875rem',
+        '.text-small': {
+          '@apply text-sm': {},
         },
-        '.txt-medium': {
-          fontSize: '1rem',
-          fontWeight: '500',
+        '.text-normal': {
+          '@apply text-base': {},
         },
-        '.txt-large': {
-          fontSize: '1.25rem',
+        '.text-medium': {
+          '@apply text-lg': {},
         },
-        '.txt-xl': {
-          fontSize: '1.5rem',
+        '.text-large': {
+          '@apply text-xl': {},
+        },
+        '.text-xl': {
+          '@apply text-2xl': {},
         },
 
         // Button styles
         '.btn-primary': {
-          backgroundColor: '#D0271D',
-          color: '#FFFFFF',
-          padding: '0.5rem 1rem',
-          borderRadius: '0.375rem',
-          fontWeight: '600',
+          '@apply py-1.5 px-3 bg-adp-navy text-white text-small border border-adp-navy-light  rounded-md shadow-sm hover:bg-adp-navy-dark transition-colors': {},
         },
         '.btn-secondary': {
-          backgroundColor: '#121C4E',
-          color: '#FFFFFF',
-          padding: '0.5rem 1rem',
-          borderRadius: '0.375rem',
-          fontWeight: '600',
+          '@apply py-1.5 px-3 bg-adp-white text-adp-navy text-small border border-adp-navy-light  hover:text-adp-white  rounded-md shadow-sm hover:bg-adp-navy-light transition-colors': {},
         },
         '.btn-destructive': {
-          backgroundColor: '#F2635D',
-          color: '#FFFFFF',
-          padding: '0.5rem 1rem',
-          borderRadius: '0.375rem',
-          fontWeight: '600',
+          '@apply py-1.5 px-3 bg-adp-red text-adp-white text-small border border-adp-red-light rounded-md shadow-sm hover:bg-adp-red-light transition-colors': {},
         },
 
         // Input styles
-        '.input-text': {
-          border: '1px solid #121C4E',
-          padding: '0.5rem',
-          borderRadius: '0.375rem',
+        '.input-bordered': {
+          '@apply border border-gray-300 transition-colors hover:border-adp-navy p-2 shadow-sm text-normal rounded-md': {},
         },
-        '.input-search': {
-          border: '1px solid #D0271D',
-          padding: '0.5rem',
-          borderRadius: '0.375rem',
+        '.input-filled': {
+          '@apply border bg-adp-gray transition-colors hover:border-adp-navy  p-2 shadow-sm text-normal rounded-md': {},
         },
 
         // Card styles
-        '.card-outlined': {
-          border: '1px solid #D0271D',
-          padding: '1rem',
-          borderRadius: '0.5rem',
-        },
         '.card-filled': {
-          backgroundColor: '#F5F5F5',
-          padding: '1rem',
-          borderRadius: '0.5rem',
+          '@apply border transition-colors bg-adp-gray hover:border-adp-navy shadow-sm p-medium rounded-lg': {},
         },
         '.card-bordered': {
-          border: '2px solid #121C4E',
-          padding: '1rem',
-          borderRadius: '0.5rem',
+          '@apply border border shadow-sm transition-colors hover:border-adp-navy p-medium rounded-lg': {},
         },
       }
 
