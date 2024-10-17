@@ -117,6 +117,7 @@ frontend-service/
      - LoginForm
    - Functionality:
      - User authentication for all user types
+     - Available functionality depends on user type (Admin, Hiring Manager or Applicant)
 
 ### Protected Routes - Applicant
 
