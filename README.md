@@ -124,10 +124,8 @@ frontend-service/
 5. `/applications`
    - Components:
      - ApplicationList
-     - ApplicationStatusFilter
    - Functionality:
      - Display list of user's job applications with status
-     - Filter applications by status
 
 6. `/profile`
    - Components:
@@ -141,7 +139,7 @@ frontend-service/
 
 7. `/hiring-manager/dashboard`
    - Components:
-     - ManagerStats
+     - RelatedVacanciesStats
      - ActiveJobsList
    - Functionality:
      - Overview of active job postings and applications
@@ -161,8 +159,8 @@ frontend-service/
    - Functionality:
      - View and manage applicants for a specific job
      - Update applicant status
-     - Sort applicants by date or status
-     - View applicant statistics on hover (number of applications with each status)
+     - (Optional) Sort applicants by date or status
+     - (Optional) View applicant statistics on hover (number of applications with each status)
 
 ### Protected Routes - Admin
 
@@ -784,6 +782,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - What file size and format restrictions should be in place?
 
 2. CV Upload:
+   - Should there be a CV upload or it is too complicated for the backend side?
    - Should CV upload be part of the initial application process or a separate feature in the applicant's profile?
    - What file formats should be supported for CV uploads (e.g., PDF, DOCX)?
    - Are there any file size limitations?
