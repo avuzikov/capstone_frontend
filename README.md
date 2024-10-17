@@ -1,70 +1,192 @@
-# Getting Started with Create React App
+# Hiring Platform Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Overview
+This project is a full-stack hiring platform with a React + TypeScript frontend. The frontend will be containerized and run alongside other services using Docker Compose.
 
-## Available Scripts
+## Technology Stack
+- React with TypeScript
+- Tailwind CSS for styling
+- Context API for state management
+- react-router for routing
+- JWT for authentication
 
-In the project directory, you can run:
+## Project Structure
+```
+frontend-service/
+├── src/
+│   ├── components/
+│   ├── contexts/
+│   ├── pages/
+│   ├── services/
+│   ├── types/
+│   ├── utils/
+│   └── App.tsx
+├── public/
+├── Dockerfile
+└── package.json
+```
 
-### `npm start`
+## Routes
+- Unprotected: `/jobs`, `/register`, `/login`, `/job/:id`
+- Protected: `/applications`, `/admin/*`, `/hiring-manager/*`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
+1. Job Listing (`/jobs`)
+   - Header with login and register buttons
+   - List of available jobs
+   - Clicking a job opens its description page
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Job Description (`/job/:id`)
+   - Detailed job information
+   - Apply button (functionality based on user status)
 
-### `npm test`
+3. User Applications (`/applications`)
+   - List of user's job applications with status
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+4. Authentication
+   - Login and Registration forms
+   - Three user types: admin, hiring manager, applicant
 
-### `npm run build`
+5. Admin Dashboard (`/admin`)
+   - Create and manage hiring managers
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+6. Hiring Manager Dashboard (`/hiring-manager`)
+   - Create and manage job postings
+   - Update applicant statuses
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Team Responsibilities
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Alexander (Most Experienced):
+   - Project architecture and setup
+   - State management implementation (Context API)
+   - Authentication and authorization logic
 
-### `npm run eject`
+2. Matt:
+   - Routing setup and implementation
+   - Admin dashboard features
+   - Integration with backend API
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Sergio:
+   - Job listing page and job search functionality
+   - Job description page
+   - Apply button logic
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Piotr:
+   - User applications page
+   - Hiring manager dashboard features
+   - Form validations
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5. Abideet:
+   - Login and registration forms
+   - Header component with dynamic content
+   - Error handling and display
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+6. Lalitha:
+   - Tailwind CSS implementation and styling
+   - Responsive design
+   - Accessibility improvements
 
-## Learn More
+## Getting Started
+1. Clone the repository
+2. Navigate to the `frontend-service` directory
+3. Run `npm install` to install dependencies
+4. Use `npm start` to run the development server
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Docker
+The `Dockerfile` in the `frontend-service` directory will be used to containerize the frontend application. The `docker-compose.yml` file in the root of the project will orchestrate all services, including the frontend.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## JSON Data Structures
 
-### Code Splitting
+Here are the key JSON data structures that will be required from the backend:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. Job Listing:
+```json
+{
+  "jobs": [
+    {
+      "id": "string",
+      "title": "string",
+      "company": "string",
+      "location": "string",
+      "shortDescription": "string",
+      "postedDate": "string (ISO date)"
+    }
+  ]
+}
+```
 
-### Analyzing the Bundle Size
+2. Job Details:
+```json
+{
+  "id": "string",
+  "title": "string",
+  "company": "string",
+  "location": "string",
+  "fullDescription": "string",
+  "requirements": ["string"],
+  "benefits": ["string"],
+  "postedDate": "string (ISO date)",
+  "applicationDeadline": "string (ISO date)",
+  "hiringManagerId": "string"
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. User Application:
+```json
+{
+  "id": "string",
+  "jobId": "string",
+  "jobTitle": "string",
+  "company": "string",
+  "appliedDate": "string (ISO date)",
+  "status": "string (enum: applied, passedPreInterview, passed1stInterview, passed2ndInterview, offerMade, rejected)"
+}
+```
 
-### Making a Progressive Web App
+4. User Profile:
+```json
+{
+  "id": "string",
+  "username": "string",
+  "email": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "role": "string (enum: admin, hiringManager, applicant)"
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+5. Hiring Manager:
+```json
+{
+  "id": "string",
+  "username": "string",
+  "email": "string",
+  "firstName": "string",
+  "lastName": "string",
+  "department": "string"
+}
+```
 
-### Advanced Configuration
+6. Authentication Response:
+```json
+{
+  "token": "string (JWT token)",
+  "user": {
+    "id": "string",
+    "username": "string",
+    "role": "string (enum: admin, hiringManager, applicant)"
+  }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Next Steps
+1. Set up the project structure and install necessary dependencies
+2. Implement basic routing and create placeholder components for each page
+3. Set up the Context API for state management
+4. Implement authentication logic and protected routes
+5. Start building out individual features, beginning with the job listing and job description pages
+6. Integrate with the backend API as it becomes available
+7. Implement styling using Tailwind CSS
+8. Conduct thorough testing and bug fixing
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Remember to communicate regularly with your team members and the backend team to ensure smooth integration and consistent data structures.
