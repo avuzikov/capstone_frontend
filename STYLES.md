@@ -5,6 +5,20 @@ Custom Tailwind styles that can be applied to components in the style of ADP gui
 
 Styles are named using kebab-case. e.g. ```img-small```. Styles are saved in ```tailwind.config.js```, here individual styles that form the custom styles can be viewed. 
 
+### Colours
+
+- ADP Red
+
+       adp-red 
+
+- ADP Navy
+
+        adp-navy
+
+- ADP White
+
+        adp-white
+
 ### Logo Styles
 
 - Small Logo
