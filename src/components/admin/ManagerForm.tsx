@@ -12,7 +12,9 @@ const ManagerForm = () => {
     role: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -24,7 +26,10 @@ const ManagerForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+    <form onSubmit={handleSubmit} className="card-bordered m-medium">
+        <div className="p-large flex flex-col gap-4">
+      <h1 className="text-large border-b-2 p-small">Manager Form</h1>
+
       <Input
         title="Full Name"
         placeholder="Enter full name"
@@ -54,29 +59,21 @@ const ManagerForm = () => {
         onChange={handleChange}
       />
       <Input
-        title="Resume"
-        placeholder="Enter resume"
-        isTextArea={true}
-        value={formData.resume}
-        onChange={handleChange}
-      />
-      <Input
         title="Department"
         placeholder="Enter department"
         type="text"
         value={formData.department}
         onChange={handleChange}
       />
-      <Input
-        title="Role"
-        placeholder="Enter role"
-        type="text"
-        value={formData.role}
-        onChange={handleChange}
-      />
-      <button type="submit" className="btn-primary mt-4">
-        Submit
-      </button>
+      <div className="flex gap-3 justify-end">
+        <button className="btn-destructive mt-4">
+          Delete
+        </button>
+        <button type="submit" className="btn-primary mt-4">
+          Save
+        </button>
+      </div>
+      </div>
     </form>
   );
 };
