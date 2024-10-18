@@ -12,14 +12,14 @@ const Header = () => {
       </div>
 
       <ul className="flex gap-4">
-        <li className="cursor-pointer p-small">
+      <li className="cursor-pointer p-small">
           <Link
-            to="/home"
+            to="/jobs"
             className={`hover:underline p-small ${
-              location.pathname === "/home" ? "bg-adp-white text-adp-red rounded-md" : ""
+              location.pathname === "/jobs" ? "bg-adp-white text-adp-red rounded-md" : ""
             }`}
           >
-            Home
+            Jobs
           </Link>
         </li>
         <li className="cursor-pointer p-small">
@@ -40,16 +40,6 @@ const Header = () => {
             }`}
           >
             Applications
-          </Link>
-        </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/jobs"
-            className={`hover:underline p-small ${
-              location.pathname === "/jobs" ? "bg-adp-white text-adp-red rounded-md" : ""
-            }`}
-          >
-            Jobs
           </Link>
         </li>
         <li className="cursor-pointer p-small">
