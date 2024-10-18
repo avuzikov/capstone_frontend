@@ -6,15 +6,16 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import RegisterPage from "./pages/applicant/RegisterPage.tsx";
 
 function App() {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
-      <main className="flex-grow">      
+      <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<LoginPage/>}></Route>
+          <Route path="/" element={<p>Dummy Data</p>} />
+          <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/manager" element={<ManagerForm />} />
           <Route path="/admin/applicant" element={<ApplicantForm />} />
