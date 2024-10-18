@@ -1,8 +1,10 @@
 import React from "react";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
+import TestMockAPI from "./TestMockAPI.tsx";
 import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage.tsx";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
 
@@ -11,7 +13,11 @@ function App() {
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
       <main className="flex-grow">
+        {/* Content / Routes Go Here */}
+        <TestMockAPI />
+      
         <Routes>
+          <Route path="/login" element={<LoginPage/>}></Route>
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/manager" element={<ManagerForm />} />
           <Route path="/admin/applicant" element={<ApplicantForm />} />
