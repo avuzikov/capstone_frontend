@@ -1,23 +1,40 @@
-import React from "react"
+import React from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 
-const ManagerCard = (link) => {
-    return (
-        <Link to={link} className="w-full">
-        <div className="card-bordered cursor-pointer flex flex-col gap-2 h-48 text-center  justify-center items-center  ">
-            <h1>{'Tom'}</h1>
-            <p>Tom@example.com</p>
-            <p>0712345678</p>
-        </div>
-        </Link>
-    );
+interface ManagerCardProps {
+  link: string;
 }
 
+const ManagerCard = ({ link }: ManagerCardProps) => {
+  return (
+    <Link to={link} className="w-full">
+    <div className="card-bordered cursor-pointer flex items-center justify-between h-18  ">
+      <div className="flex flex-col">
+        <h1 className="text-medium">{"Tom"}</h1>
 
-ManagerCard.propTypes = {
-    link: PropTypes.string.isRequired,
+        <div className="flex gap-4 items-center text-small">
+          <p className="text-gray-500">Tom@example.com</p>
+          <div className="w-2 h-2 rounded-full bg-adp-navy"></div>
+          <p className="text-gray-500">07999205403</p>
+        </div>
+      </div>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={3}
+        className="size-4 stroke-adp-navy"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="m8.25 4.5 7.5 7.5-7.5 7.5"
+        />
+      </svg>
+    </div>
+  </Link>
+  );
 };
-
 
 export default ManagerCard;

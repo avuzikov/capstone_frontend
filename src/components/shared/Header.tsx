@@ -16,7 +16,7 @@ const Header = () => {
           <Link
             to="/jobs"
             className={`hover:underline p-small ${
-              location.pathname === "/jobs" ? "bg-adp-white text-adp-red rounded-md" : ""
+              location.pathname.includes("jobs") ? "bg-adp-white text-adp-red rounded-md" : ""
             }`}
           >
             Jobs
@@ -24,19 +24,9 @@ const Header = () => {
         </li>
         <li className="cursor-pointer p-small">
           <Link
-            to="/profile"
-            className={`hover:underline p-small ${
-              location.pathname === "/profile" ? "bg-adp-white text-adp-red rounded-md" : ""
-            }`}
-          >
-            Profile
-          </Link>
-        </li>
-        <li className="cursor-pointer p-small">
-          <Link
             to="/applications"
             className={`hover:underline p-small ${
-              location.pathname === "/applications" ? "bg-adp-white text-adp-red rounded-md" : ""
+                location.pathname.includes("applications") ? "bg-adp-white text-adp-red rounded-md" : ""
             }`}
           >
             Applications
@@ -44,9 +34,19 @@ const Header = () => {
         </li>
         <li className="cursor-pointer p-small">
           <Link
+            to="/profile"
+            className={`hover:underline p-small ${
+                location.pathname.includes("profile") ? "bg-adp-white text-adp-red rounded-md" : ""
+            }`}
+          >
+            Profile
+          </Link>
+        </li>
+        <li className="cursor-pointer p-small">
+          <Link
             to="/admin/dashboard"
             className={`hover:underline p-small ${
-              location.pathname === "/admin/dashboard" ? "bg-adp-white text-adp-red rounded-md" : ""
+                location.pathname.includes("admin") ? "bg-adp-white text-adp-red rounded-md" : ""
             }`}
           >
             Admin

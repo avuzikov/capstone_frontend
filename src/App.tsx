@@ -6,6 +6,9 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
+import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
+import ApplicantManagementPage from "./pages/admin/ApplicantManagementPage.tsx";
 
 function App() {
   return (
@@ -16,8 +19,26 @@ function App() {
           <Route path="/" element={<p>Dummy Data</p>} />
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/manager" element={<ManagerForm />} />
-          <Route path="/admin/applicant" element={<ApplicantForm />} />
+          <Route
+            path="/admin/newManager"
+            element={<ManagerForm isEditing={false} />}
+          />
+          <Route
+            path="/admin/newApplicant"
+            element={<ApplicantForm isEditing={false} />}
+          />
+          <Route
+            path="/admin/applicantManagement"
+            element={<ApplicantManagementPage />}
+          />
+          <Route
+            path="/admin/managerManagement"
+            element={<ManagerManagementPage />}
+          />
+          <Route
+            path="/admin/tableManagement"
+            element={<DataTableManagementPage />}
+          />
         </Routes>
       </main>
       <Footer />
