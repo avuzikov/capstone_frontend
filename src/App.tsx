@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import RegisterPage from "./pages/applicant/RegisterPage.tsx";
 
 function App() {
   return (
@@ -13,8 +14,9 @@ function App() {
       <Header />
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={<p>Dummy Data</p>} />
           <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/manager" element={<ManagerForm />} />
           <Route path="/admin/applicant" element={<ApplicantForm />} />
