@@ -31,35 +31,35 @@ const ApplicantForm = () => {
       <h1 className="text-large border-b-2 p-small">Applicant Form</h1>
 
       <Input
-        title="Full Name"
+        name="Full Name"
         placeholder="Enter full name"
         type="text"
         value={formData.fullName}
         onChange={handleChange}
       />
       <Input
-        title="Email"
+        name="Email"
         placeholder="Enter email"
         type="email"
         value={formData.email}
         onChange={handleChange}
       />
       <Input
-        title="Address"
+        name="Address"
         placeholder="Enter address"
         type="text"
         value={formData.address}
         onChange={handleChange}
       />
       <Input
-        title="Phone"
+        name="Phone"
         placeholder="Enter phone number"
         type="text"
         value={formData.phone}
         onChange={handleChange}
       />
         <Input
-            title="Resume"
+            name="Resume"
             placeholder="Enter resume"
             isTextArea={true}
             value={formData.resume}

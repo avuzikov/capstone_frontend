@@ -98,7 +98,7 @@ const RegisterForm = () => {
         <div className="flex gap-4 justify-items-stretch">
           <div className="flex-grow">
             <Input
-              title="First Name"
+              name="First Name"
               placeholder="First Name"
               value={data.firstName}
               onChange={(event) => handleChange("firstName", event)}
@@ -107,7 +107,7 @@ const RegisterForm = () => {
           </div>
           <div className="flex-grow">
             <Input
-              title="Last Name"
+              name="Last Name"
               placeholder="Last Name"
               value={data.lastName}
               onChange={(event) => handleChange("lastName", event)}
@@ -116,7 +116,7 @@ const RegisterForm = () => {
           </div>
         </div>
         <Input
-          title="Email"
+          name="Email"
           placeholder="example@example.com"
           type="email"
           value={data.email}
@@ -124,7 +124,7 @@ const RegisterForm = () => {
           error={errors.email}
         />
         <Input
-          title="Password"
+          name="Password"
           placeholder="Password"
           type="password"
           value={data.password}
@@ -132,7 +132,7 @@ const RegisterForm = () => {
           error={errors.password}
         />
         <Input
-          title="Confirm password"
+          name="Confirm password"
           placeholder="Confirm password"
           type="password"
           value={data.confirmPassword}
