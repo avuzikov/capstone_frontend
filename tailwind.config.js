@@ -103,6 +103,11 @@ module.exports = {
         '.card-bordered': {
           '@apply border border shadow-sm transition-colors hover:border-adp-navy p-medium rounded-lg': {},
         },
+
+        // Error Style
+        '.input-error': {
+          '@apply text-adp-red bg-red-200 p-medium shadow-sm rounded-lg': {},
+        }
       }
 
       addUtilities(newUtilities, ['responsive', 'hover'])
