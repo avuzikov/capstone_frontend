@@ -1,13 +1,14 @@
+import RegisterForm from "./components/applicant/RegisterForm.tsx";
+
 function App() {
   return (
     <div className="App">
-      Hello world!
+      <RegisterForm />
     </div>
   );
 }
 
 export default App;
-
 
 /*
  import React from 'react';
