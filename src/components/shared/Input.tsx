@@ -1,8 +1,24 @@
 import React from "react";
 
-// Shared Input component that has error state and label etc.
+interface InputProps {
+  title: string;
+  placeholder: string;
+  type?: string;
+  isTextArea?: boolean;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  error?: string;
+}
 
-const Input = ({ title, placeholder, type, isTextArea, error }) => {
+const Input: React.FC<InputProps> = ({
+  title,
+  placeholder,
+  type = "text",
+  isTextArea = false,
+  value,
+  onChange,
+  error,
+}) => {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={title} className="txt-small pl-2.5">
@@ -14,6 +30,8 @@ const Input = ({ title, placeholder, type, isTextArea, error }) => {
           id={title}
           placeholder={placeholder}
           className="input-bordered"
+          value={value}
+          onChange={onChange}
         />
       ) : (
         <input
@@ -21,6 +39,8 @@ const Input = ({ title, placeholder, type, isTextArea, error }) => {
           type={type}
           placeholder={placeholder}
           className="input-bordered"
+          value={value}
+          onChange={onChange}
         />
       )}
       {error && (
@@ -40,7 +60,7 @@ const Input = ({ title, placeholder, type, isTextArea, error }) => {
 
           <p className="txt-danger txt-small">{error}</p>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };
