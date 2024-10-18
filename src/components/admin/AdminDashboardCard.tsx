@@ -7,7 +7,6 @@ const AdminDashboardCard = ({ title, children, link }) => {
     <Link to={link} className="w-full">
       <div className="card-bordered cursor-pointer flex flex-col gap-2 h-48 text-center  justify-center items-center  ">
         {children}
-
         <h1>{title}</h1>
       </div>
     </Link>
