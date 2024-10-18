@@ -1,13 +1,17 @@
 import React from "react";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
       <main className="flex-grow">
-        {/* Content / Routes Go Here */}
+        <Routes>
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        </Routes>
       </main>
       <Footer />
     </div>
