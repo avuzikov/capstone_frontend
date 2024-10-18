@@ -84,6 +84,15 @@ frontend-service/
 └── README.md
 ```
 
+## Administrator Flow
+
+- One Default Adminstrator (Provided by Backend Team)
+- Administrator has access to CRUD Hiring Managers
+- Administrator has access to Read and Delete Applicants
+- Administrator has access to view data in database tables (CRUD if time available)
+- Administrator cannot delete a Manager - if manager is linked to jobs and jobs will not be re-assigned/
+- Administrator can delete a Manager - but must re-assign their jobs to another manager.
+
 ## Routes and Components
 
 ### Unprotected Routes (Applicant Section)
