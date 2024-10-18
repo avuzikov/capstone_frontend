@@ -127,6 +127,10 @@ Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```
 
         input-filled
 
+- Errored Input (For use with displaying errors underneath an input)
+
+        input-error
+
 ### Card Styles
 
 - Filled Card
