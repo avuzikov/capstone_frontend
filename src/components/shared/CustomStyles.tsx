@@ -1,7 +1,7 @@
 import React from 'react';
-import './index.css';
+import '../../index.css';
 
-const CustomStylesDemo = () => {
+const CustomStyles = () => {
   return (
     <div className="p-4 flex flex-col gap-6">
       <h1 className="txt-xl mb-large">Custom Styles Demo</h1>
@@ -67,4 +67,4 @@ const CustomStylesDemo = () => {
   );
 };
 
-export default CustomStylesDemo;
+export default CustomStyles;
