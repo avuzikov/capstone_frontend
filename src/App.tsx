@@ -1,12 +1,17 @@
 import React from "react";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
+import TestMockAPI from "./TestMockAPI.tsx";
 
 function App() {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
-      <main className="flex-grow">{/* Content / Routes Go Here */}</main>
+      <main className="flex-grow">
+        {/* Content / Routes Go Here */}
+        <h1>Mock API Test</h1>
+        <TestMockAPI />
+      </main>
       <Footer />
     </div>
   );
