@@ -6,7 +6,6 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
-import RegisterPage from "./pages/applicant/RegisterPage.tsx";
 
 function App() {
   return (

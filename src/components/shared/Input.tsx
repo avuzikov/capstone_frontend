@@ -1,7 +1,7 @@
 import React from "react";
 
 interface InputProps {
-  title: string;
+  name: string; 
   placeholder: string;
   type?: string;
   isTextArea?: boolean;
@@ -11,7 +11,7 @@ interface InputProps {
 }
 
 const Input: React.FC<InputProps> = ({
-  title,
+  name,
   placeholder,
   type = "text",
   isTextArea = false,
@@ -21,13 +21,13 @@ const Input: React.FC<InputProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={title} className="txt-small pl-2.5">
-        {title}
+      <label htmlFor={name} className="txt-small pl-2.5">
+        {name}
       </label>
       {isTextArea ? (
         <textarea
-          name={title}
-          id={title}
+          name={name} 
+          id={name}
           placeholder={placeholder}
           className="input-bordered"
           value={value}
@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
         />
       ) : (
         <input
-          name={title}
+          name={name} // Changed to 'name'
           type={type}
           placeholder={placeholder}
           className="input-bordered"

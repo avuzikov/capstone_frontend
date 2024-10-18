@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
         <h1 className="text-xl text-adp-navy text-center mb-large">Log In to the portal</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-medium">
           <Input
-            title="Email"
+            name="Email"
             placeholder="Introduce your email"
             type="email"
             error={loginError}
@@ -33,7 +33,7 @@ const LoginPage: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
-            title="Password"
+            name="Password"
             placeholder="Introduce your password"
             type="password"
             error={loginError}
