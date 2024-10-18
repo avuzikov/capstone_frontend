@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import Input from '../components/shared/Input.tsx'
+import { useAuth } from '../contexts/AuthContext.tsx';
 import { useNavigate } from 'react-router-dom';
+import ApiProvider from '../contexts/ApiProvider.tsx';
+
+
 
 const LoginPage: React.FC = () => {
 
@@ -8,15 +12,22 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = useState("")
     const [loginError, setLoginError] = useState("")
 
+    const { login, token, getCookie } = useAuth();
+
     const navigate = useNavigate()
 
+    React.useEffect(() => {
+      if (token) {
+        console.log("Token aviable:", token);  
+      }
+    }, [token]);
+
     const handleSubmit = (e: React.FormEvent) =>{
-        alert("Try to log")
-        console.log(email)
-        console.log(password)
-        navigate("/profile")
-        //TODO: Login logic
-    }
+      e.preventDefault()
+      login(email,password)
+      navigate("/profile")
+      //console.log("The token cookie es " + getCookie("authToken"))
+    };
 
     return (
     <div className="flex justify-center items-center h-screen bg-adp-gray">

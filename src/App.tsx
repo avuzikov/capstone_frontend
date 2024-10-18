@@ -6,22 +6,27 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import { AuthProvider } from '../src/contexts/AuthContext.tsx';
+import TestMockAPI from "./TestMockAPI.tsx";
 
 function App() {
   return (
-    <div className="flex flex-col justify-between min-h-screen">
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<p>Dummy Data</p>} />
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/manager" element={<ManagerForm />} />
-          <Route path="/admin/applicant" element={<ApplicantForm />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div className="flex flex-col justify-between min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          
+          <Routes>
+            <Route path="/" element={<TestMockAPI/>} />
+            <Route path="/login" element={<LoginPage />}></Route>
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/manager" element={<ManagerForm />} />
+            <Route path="/admin/applicant" element={<ApplicantForm />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }
 
