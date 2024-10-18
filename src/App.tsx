@@ -2,6 +2,8 @@ import React from "react";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
 import TestMockAPI from "./TestMockAPI.tsx";
+import { Route, Routes } from "react-router-dom";
+import LoginPage from "./pages/LoginPage.tsx";
 
 function App() {
   return (
@@ -9,6 +11,9 @@ function App() {
       <Header />
       <main className="flex-grow">
         {/* Content / Routes Go Here */}
+        <Routes>
+          <Route path="/login" element={<LoginPage/>}></Route>
+        </Routes>
         <h1>Mock API Test</h1>
         <TestMockAPI />
       </main>
