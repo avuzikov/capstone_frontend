@@ -1,7 +1,11 @@
 import React from "react";
 
 const ManagerList = () => {
-  return <></>;
+  return <>
+  
+  
+  
+  </>;
 };
 
 export default ManagerList;

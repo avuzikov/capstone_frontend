@@ -245,7 +245,8 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 })
   }),
 
-  http.get<{ page: string, items: string }>('/api/job/page=:page/items=:items', ({ params, request }) => {
+ 
+  http.get<{ page: string, items: string }>('/api/job', ({ params, request }) => {
     const user = authenticateUser(request)
     if (!user) {
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
@@ -259,7 +260,7 @@ export const handlers = [
   }),
 
   // Applications
-  http.post<never, ApplicationRequest>('/application', async ({ request }) => {
+  http.post<never, ApplicationRequest>('/api/application', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'applicant') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
@@ -276,7 +277,7 @@ export const handlers = [
     return HttpResponse.json(newApplication)
   }),
 
-  http.get<{ id: string }>('/application/:id', ({ params, request }) => {
+  http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
     const application = applications.find(a => a.id === parseInt(id))
@@ -289,7 +290,7 @@ export const handlers = [
     return HttpResponse.json(application)
   }),
 
-  http.put<{ id: string }, Partial<ApplicationRequest>>('/application/:id', async ({ params, request }) => {
+  http.put<{ id: string }, Partial<ApplicationRequest>>('/api/application/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
     const application = applications.find(a => a.id === parseInt(id))
@@ -302,7 +303,7 @@ export const handlers = [
     return HttpResponse.json(updatedApplication)
   }),
 
-  http.put<{ id: string }, ApplicationStatusUpdateRequest>('/application/manager/:id', async ({ params, request }) => {
+  http.put<{ id: string }, ApplicationStatusUpdateRequest>('/api/application/manager/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'hiring-manager') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
@@ -322,7 +323,7 @@ export const handlers = [
     return HttpResponse.json(updatedApplication)
   }),
 
-  http.delete<{ id: string }>('/application/:id', ({ params, request }) => {
+  http.delete<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
     const application = applications.find(a => a.id === parseInt(id))
