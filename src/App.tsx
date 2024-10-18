@@ -7,12 +7,14 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
 import RegisterPage from "./pages/applicant/RegisterPage.tsx";
+import TestUseFetch from "./TestUseFetch.tsx";
 
 function App() {
   return (
     <div className="flex flex-col justify-between min-h-screen">
       <Header />
       <main className="flex-grow">
+        <TestUseFetch />
         <Routes>
           <Route path="/" element={<p>Dummy Data</p>} />
           <Route path="/login" element={<LoginPage />}></Route>
