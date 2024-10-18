@@ -43,9 +43,21 @@ interface ApplicationStatusUpdateRequest {
 
 // Mock data
 let users: User[] = [
-  { id: 1, fullName: 'John Doe', email: 'john@example.com', role: 'applicant' },
-  { id: 2, fullName: 'Jane Smith', email: 'jane@example.com', role: 'hiring-manager' },
-  { id: 3, fullName: 'Admin User', email: 'admin@example.com', role: 'admin' },
+    { id: 1, fullName: 'John Doe', email: 'john@example.com', phone: '07543834092', address: '10 Whitehall, London', resume: 'I am motivated...', role: 'applicant' },
+    { id: 2, fullName: 'Katy James', email: 'katy@example.com', phone: '07953839589', address: '10 Downing Street, London', department: 'HR', role: 'hiring-manager' },
+    { id: 3, fullName: 'Admin User', email: 'admin@example.com', role: 'admin' },
+    { id: 4, fullName: 'Mike Johnson', email: 'mike@example.com', phone: '07483920384', address: '20 Baker Street, London', resume: 'Experienced in software development...', role: 'applicant' },
+    { id: 5, fullName: 'Alice Brown', email: 'alice@example.com', phone: '07849302834', address: '30 Oxford Street, London', department: 'Marketing', role: 'hiring-manager' },
+    { id: 6, fullName: 'Bob White', email: 'bob@example.com', phone: '07783920384', address: '40 Regent Street, London', resume: 'Skilled in project management...', role: 'applicant' },
+    { id: 7, fullName: 'Carol Green', email: 'carol@example.com', phone: '07683920384', address: '50 Piccadilly, London', department: 'Sales', role: 'hiring-manager' },
+    { id: 8, fullName: 'David Black', email: 'david@example.com', phone: '07583920384', address: '60 Bond Street, London', resume: 'Expert in data analysis...', role: 'applicant' },
+    { id: 9, fullName: 'Eve Blue', email: 'eve@example.com', phone: '07483920384', address: '70 Fleet Street, London', department: 'HR', role: 'hiring-manager' },
+    { id: 10, fullName: 'Frank Yellow', email: 'frank@example.com', phone: '07383920384', address: '80 Strand, London', resume: 'Proficient in graphic design...', role: 'applicant' },
+    { id: 11, fullName: 'Grace Purple', email: 'grace@example.com', phone: '07283920384', address: '90 Kingsway, London', department: 'Finance', role: 'hiring-manager' },
+    { id: 12, fullName: 'Hank Red', email: 'hank@example.com', phone: '07183920384', address: '100 High Holborn, London', resume: 'Experienced in customer service...', role: 'applicant' },
+    { id: 13, fullName: 'Ivy Orange', email: 'ivy@example.com', phone: '07083920384', address: '110 Chancery Lane, London', department: 'IT', role: 'hiring-manager' },
+    { id: 14, fullName: 'Jack Blue', email: 'jack@example.com', phone: '07983920384', address: '120 Bishopsgate, London', resume: 'Expert in network security...', role: 'applicant' },
+    { id: 15, fullName: 'Kathy Pink', email: 'kathy@example.com', phone: '07883920384', address: '130 Moorgate, London', department: 'Operations', role: 'hiring-manager' },
 ]
 
 let jobs: Job[] = [

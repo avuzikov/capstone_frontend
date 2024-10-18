@@ -6,17 +6,21 @@ const Header = () => {
 
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
-      <div className="flex items-center gap-3">
-        <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
-        <h1 className="text-large">Talent Site</h1>
-      </div>
+      <Link to={"/"}>
+        <div className="flex items-center gap-3">
+          <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
+          <h1 className="text-large">Talent Site</h1>
+        </div>
+      </Link>
 
       <ul className="flex gap-4">
-      <li className="cursor-pointer p-small">
+        <li className="cursor-pointer p-small">
           <Link
             to="/jobs"
-            className={`hover:underline p-small ${
-              location.pathname.includes("jobs") ? "bg-adp-white text-adp-red rounded-md" : ""
+            className={`hover:underline px-small py-small ${
+              location.pathname.includes("jobs")
+                ? "bg-adp-white text-adp-red rounded-md"
+                : ""
             }`}
           >
             Jobs
@@ -25,8 +29,10 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/applications"
-            className={`hover:underline p-small ${
-                location.pathname.includes("applications") ? "bg-adp-white text-adp-red rounded-md" : ""
+            className={`hover:underline px-small py-small ${
+              location.pathname.includes("applications")
+                ? "bg-adp-white text-adp-red rounded-md"
+                : ""
             }`}
           >
             Applications
@@ -35,8 +41,10 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/profile"
-            className={`hover:underline p-small ${
-                location.pathname.includes("profile") ? "bg-adp-white text-adp-red rounded-md" : ""
+            className={`hover:underline px-small py-small ${
+              location.pathname.includes("profile")
+                ? "bg-adp-white text-adp-red rounded-md"
+                : ""
             }`}
           >
             Profile
@@ -45,8 +53,10 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/admin/dashboard"
-            className={`hover:underline p-small ${
-                location.pathname.includes("admin") ? "bg-adp-white text-adp-red rounded-md" : ""
+            className={`hover:underline px-small py-small ${
+              location.pathname.includes("admin")
+                ? "bg-adp-white text-adp-red rounded-md"
+                : ""
             }`}
           >
             Admin
