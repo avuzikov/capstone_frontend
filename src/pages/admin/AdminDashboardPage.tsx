@@ -1,36 +1,22 @@
 import React from "react";
 import AdminDashboardCard from "../../components/admin/AdminDashboardCard.tsx";
-import { Link } from "react-router-dom";
 
 const AdminDashboardPage = () => {
   return (
     <>
-      <div className="flex flex-col gap-4 p-large">
+      <div className="flex flex-col gap-3 p-large">
         <div className="flex justify-between">
           <h1 className="text-large">Admin Dashboard</h1>
-
-          <div className="flex gap-2">
-            <Link to="/admin/newApplicant">
-              <button className="btn-primary">New Applicant</button>
-            </Link>
-
-            <Link to="/admin/newManager">
-              <button className="btn-primary">New Manager</button>
-            </Link>
-          </div>
         </div>
 
         <div className="flex gap-4">
-          <AdminDashboardCard
-            title="Applicant Management"
-            link="/admin/applicantManagement"
-          >
+          <AdminDashboardCard title="Applicants" link="/admin/applicants">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
-              className="size-16 stroke-adp-navy"
+              className="size-12 stroke-adp-navy"
             >
               <path
                 strokeLinecap="round"
@@ -40,17 +26,14 @@ const AdminDashboardPage = () => {
             </svg>
           </AdminDashboardCard>
 
-          <AdminDashboardCard
-            title="Manager Management"
-            link="/admin/managerManagement"
-          >
+          <AdminDashboardCard title="Managers" link="/admin/managers">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke=""
-              className="size-16 stroke-adp-navy"
+              className="size-12 stroke-adp-navy"
             >
               <path
                 strokeLinecap="round"
@@ -60,17 +43,14 @@ const AdminDashboardPage = () => {
             </svg>
           </AdminDashboardCard>
 
-          <AdminDashboardCard
-            title="Table Management"
-            link="/admin/tableManagement"
-          >
+          <AdminDashboardCard title="Tables" link="/admin/tables">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke=""
-              className="size-16 stroke-adp-navy"
+              className="size-12 stroke-adp-navy"
             >
               <path
                 strokeLinecap="round"

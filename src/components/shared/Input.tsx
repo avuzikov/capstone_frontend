@@ -1,12 +1,14 @@
 import React from "react";
 
 interface InputProps {
-  name: string; 
+  name: string;
   placeholder: string;
   type?: string;
   isTextArea?: boolean;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   error?: string;
 }
 
@@ -22,11 +24,11 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={name} className="txt-small pl-2.5">
-        {name}
+        {name.charAt(0).toUpperCase() + name.slice(1)}
       </label>
       {isTextArea ? (
         <textarea
-          name={name} 
+          name={name}
           id={name}
           placeholder={placeholder}
           className="input-bordered"

@@ -1,141 +1,194 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
+import { User } from "../../mocks/types";
 
 interface ApplicantFormProps {
   isEditing: boolean;
 }
 
 const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
-  const [formData, setFormData] = useState({
-    Name: "",
-    Email: "",
-    Address: "",
-    Phone: "",
-    Resume: "",
+  const { id } = useParams<{ id: string }>();
+  const [formData, setFormData] = useState<User>({
+    id: 0,
+    fullName: "",
+    email: "",
+    address: "",
+    phone: "",
+    resume: "",
+    role: "applicant",
   });
   const [formErrors, setFormErrors] = useState({
-    Name: "",
-    Email: "",
-    Address: "",
-    Phone: "",
-    Resume: "",
+    fullName: "",
+    email: "",
+    address: "",
+    phone: "",
+    resume: "",
   });
+
+  useEffect(() => {
+    const fetchApplicant = async () => {
+      try {
+        const loginResponse = await fetch("/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: 'admin@example.com',
+            password: "password",
+          }),
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error("Failed to login");
+        }
+
+        const token = loginResponse.headers.get("Authorization");
+        console.log(token);
+
+        if (!token) {
+          throw new Error("No token received");
+        }
+
+        const response = await fetch(`/users/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const data: User = await response.json();
+        setFormData(data);
+      } catch (error) {
+        console.error("Failed to fetch applicant data:", error);
+      }
+    };
+
+    if (id) {
+      fetchApplicant();
+    }
+  }, [id]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
-    setFormErrors({
-      ...formErrors,
-      [name]: "",
-    });
+    }));
+  };
+
+  const validateForm = () => {
+    const errors = {
+      fullName: "",
+      email: "",
+      address: "",
+      phone: "",
+      resume: "",
+    };
+
+    if (!formData.fullName) {
+      errors.fullName = "Full name is required";
+    }
+    if (!formData.email) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Email address is invalid";
+    }
+    if (!formData.address) {
+      errors.address = "Address is required";
+    }
+    if (!formData.phone) {
+      errors.phone = "Phone number is required";
+    }
+    if (!formData.resume) {
+      errors.resume = "Resume is required";
+    }
+
+    setFormErrors(errors);
+
+    return !Object.values(errors).some((error) => error);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const errors = validateForm();
-    if (Object.values(errors).some((error) => error !== "")) {
-      setFormErrors(errors);
-      return;
+    if (validateForm()) {
     }
-    // TODO: Submit form logic
-    console.log(formData);
-  };
-
-  const validateForm = () => {
-    const errors: {
-      Name: string;
-      Email: string;
-      Address: string;
-      Phone: string;
-      Resume: string;
-    } = {
-      Name: "",
-      Email: "",
-      Address: "",
-      Phone: "",
-      Resume: "",
-    };
-    if (!formData.Name) errors.Name = "Name is required";
-    if (!formData.Email) errors.Email = "Email is required";
-    if (!formData.Address) errors.Address = "Address is required";
-    if (!formData.Phone) errors.Phone = "Phone is required";
-    if (!formData.Resume) errors.Resume = "Resume is required";
-    return errors;
   };
 
   return (
-
     <div className="m-medium">
+      <BackButton />
+      <div className="flex justify-center items-center">
+        <form
+          onSubmit={handleSubmit}
+          className="card-bordered m-medium w-full lg:w-1/2"
+        >
+          <div className="p-large flex flex-col gap-4">
+            <h1 className="text-large border-b-2 p-small">Applicant Form</h1>
 
-    <BackButton />
-    <div className="flex justify-center items-center">
-      <form
-        onSubmit={handleSubmit}
-        className="card-bordered m-medium w-full lg:w-1/2"
-      >
-        <div className="p-large flex flex-col gap-4">
-          <h1 className="text-large border-b-2 p-small">Applicant Form</h1>
+            <Input
+              name="fullName"
+              placeholder="Enter full name"
+              type="text"
+              value={formData.fullName}
+              onChange={handleChange}
+              error={formErrors.fullName}
+            />
+            <Input
+              name="email"
+              placeholder="Enter email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={formErrors.email}
+            />
+            <Input
+              name="address"
+              placeholder="Enter address"
+              type="text"
+              value={formData.address || ""}
+              onChange={handleChange}
+              error={formErrors.address}
+            />
+            <Input
+              name="phone"
+              placeholder="Enter phone number"
+              type="text"
+              value={formData.phone || ""}
+              onChange={handleChange}
+              error={formErrors.phone}
+            />
+            <Input
+              name="resume"
+              placeholder="Enter resume"
+              isTextArea={true}
+              value={formData.resume || ""}
+              onChange={handleChange}
+              error={formErrors.resume}
+            />
 
-          <Input
-            name="Name"
-            placeholder="Enter full name"
-            type="text"
-            value={formData.Name}
-            onChange={handleChange}
-            error={formErrors.Name}
-          />
-          <Input
-            name="Email"
-            placeholder="Enter email"
-            type="email"
-            value={formData.Email}
-            onChange={handleChange}
-            error={formErrors.Email}
-          />
-          <Input
-            name="Address"
-            placeholder="Enter address"
-            type="text"
-            value={formData.Address}
-            onChange={handleChange}
-            error={formErrors.Address}
-          />
-          <Input
-            name="Phone"
-            placeholder="Enter phone number"
-            type="text"
-            value={formData.Phone}
-            onChange={handleChange}
-            error={formErrors.Phone}
-          />
-          <Input
-            name="Resume"
-            placeholder="Enter resume"
-            isTextArea={true}
-            value={formData.Resume}
-            onChange={handleChange}
-            error={formErrors.Resume}
-          />
-
-          <div className="flex gap-3 justify-end">
-            {isEditing && (
-              <button type="button" className="btn-destructive w-full">
-                Delete
+            <div className="flex gap-3 mt-4 justify-end">
+              {isEditing && (
+                <button type="button" className="btn-destructive w-full">
+                  Delete
+                </button>
+              )}
+              <button type="submit" className="btn-primary w-full">
+                Save
               </button>
-            )}
-            <button type="submit" className="btn-primary w-full">
-              Save
-            </button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -130,6 +130,14 @@ export const handlers = [
     )
   }),
 
+  http.get('/users', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    return HttpResponse.json(users)
+  }),
+
   http.post<never, RegistrationRequest>('/users/registration/admin', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'admin') {

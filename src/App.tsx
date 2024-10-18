@@ -28,17 +28,20 @@ function App() {
             element={<ApplicantForm isEditing={false} />}
           />
           <Route
-            path="/admin/applicantManagement"
+            path="/admin/applicants"
             element={<ApplicantManagementPage />}
           />
+          <Route path="/admin/managers" element={<ManagerManagementPage />} />
+          <Route path="/admin/tables" element={<DataTableManagementPage />} />
           <Route
-            path="/admin/managerManagement"
-            element={<ManagerManagementPage />}
+            path="/admin/applicant/:id"
+            element={<ApplicantForm isEditing={true} />}
           />
           <Route
-            path="/admin/tableManagement"
-            element={<DataTableManagementPage />}
+            path="/admin/manager/:id"
+            element={<ManagerForm isEditing={true} />}
           />
+          <Route path="/admin/tables/:name" element={<p>Table Data</p>} />
         </Routes>
       </main>
       <Footer />
