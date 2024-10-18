@@ -5,16 +5,25 @@ import App from './App.tsx';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-);
+async function startMockServiceWorker() {
+  if (process.env.NODE_ENV === 'development') {
+    const { worker } = await import('./mocks/browser.ts');
+    return worker.start({
+      onUnhandledRequest: 'bypass',
+    });
+  }
+  return Promise.resolve();
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+startMockServiceWorker().then(() => {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+
+  reportWebVitals();
+}).catch(console.error);

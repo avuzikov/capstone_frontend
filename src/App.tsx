@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
+import TestMockAPI from "./TestMockAPI.tsx";
 
 function App() {
   return (
@@ -8,6 +9,8 @@ function App() {
       <Header />
       <main className="flex-grow">
         {/* Content / Routes Go Here */}
+        <h1>Mock API Test</h1>
+        <TestMockAPI />
       </main>
       <Footer />
     </div>
