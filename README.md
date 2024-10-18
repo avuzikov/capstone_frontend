@@ -399,7 +399,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` of the job listing.
 - Response: HTTP status `204 No Content`
 
-#### GET /api/job/page={page}/items={items}
+#### GET /api/job/page?=page&items=items
 - Description: Retrieve job listings based on pagination
 - Path Parameters:
   - `page` (required) – Page number
@@ -409,7 +409,7 @@ The frontend relies on the following backend API endpoints for functionality:
 
 ### Applications
 
-#### POST /application
+#### POST /api/application
 - Description: Submit a new job application
 - Request Body:
   ```json
@@ -425,7 +425,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Response: Same as the request body with created values
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` in the request.
 
-#### GET /application/{id}
+#### GET /api/application/{id}
 - Description: Retrieve application details by ID
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -443,7 +443,7 @@ The frontend relies on the following backend API endpoints for functionality:
   ```
 - Authorization: Requires JWT token in a cookie. Applicants can only view their own applications. Hiring managers and admins can view any application.
 
-#### PUT /application/{id}
+#### PUT /api/application/{id}
 - Description: Update an existing job application (Applicant only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -459,7 +459,7 @@ The frontend relies on the following backend API endpoints for functionality:
   ```
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `id` in the request.
 
-#### PUT /application/manager/{id}
+#### PUT /api/application/manager/{id}
 - Description: Update application status (Hiring Manager only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -471,7 +471,7 @@ The frontend relies on the following backend API endpoints for functionality:
   ```
 - Authorization: Requires JWT token
 
-#### PUT /application/manager/{id}
+#### PUT /api/application/manager/{id}
 - Description: Update application status (Hiring Manager only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -483,7 +483,7 @@ The frontend relies on the following backend API endpoints for functionality:
   ```
 - Authorization: Requires JWT token in a cookie with role "hiring-manager".
 
-#### DELETE /application/{id}
+#### DELETE /api/application/{id}
 - Description: Delete a job application
 - Path Parameters:
   - `id` (required) – The ID of the application
