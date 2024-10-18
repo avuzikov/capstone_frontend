@@ -1,7 +1,7 @@
 # Hiring Platform Frontend
 
 ## Project Overview
-This project is a full-stack hiring platform with a React + TypeScript frontend. The frontend will be containerized and run alongside other services using Docker Compose.
+This project is a full-stack hiring platform with a React + TypeScript frontend. The frontend can be run standalone or containerized using Docker.
 
 ## Technology Stack
 - React with TypeScript
@@ -11,19 +11,77 @@ This project is a full-stack hiring platform with a React + TypeScript frontend.
 - JWT for authentication
 
 ## Project Structure
+
 ```
 frontend-service/
 ├── src/
 │   ├── components/
+│   │   ├── shared/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   └── LoadingSpinner.tsx
+│   │   ├── applicant/
+│   │   │   ├── JobList.tsx
+│   │   │   ├── JobSearchForm.tsx
+│   │   │   ├── JobDetails.tsx
+│   │   │   ├── ApplyButton.tsx
+│   │   │   ├── RegistrationForm.tsx
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── ApplicationList.tsx
+│   │   │   ├── ApplicationStatusFilter.tsx
+│   │   │   ├── ProfileForm.tsx
+│   │   │   └── ApplicationForm.tsx
+│   │   ├── hiringManager/
+│   │   │   ├── ManagerStats.tsx
+│   │   │   ├── ActiveJobsList.tsx
+│   │   │   ├── JobForm.tsx
+│   │   │   ├── ApplicantList.tsx
+│   │   │   ├── ApplicantStatusUpdate.tsx
+│   │   │   └── ApplicantSortOptions.tsx
+│   │   └── admin/
+│   │       ├── AdminStats.tsx
+│   │       ├── QuickActions.tsx
+│   │       ├── ManagerList.tsx
+│   │       ├── ManagerForm.tsx
+│   │       └── JobTransferForm.tsx
 │   ├── contexts/
+│   │   ├── AuthContext.tsx
+│   │   └── JobContext.tsx
 │   ├── pages/
+│   │   ├── applicant/
+│   │   │   ├── JobListingPage.tsx
+│   │   │   ├── JobDetailsPage.tsx
+│   │   │   ├── RegisterPage.tsx
+│   │   │   ├── LoginPage.tsx
+│   │   │   ├── ApplicationsPage.tsx
+│   │   │   └── ProfilePage.tsx
+│   │   ├── hiringManager/
+│   │   │   ├── ManagerDashboard.tsx
+│   │   │   ├── ManageJobsPage.tsx
+│   │   │   └── JobApplicantsPage.tsx
+│   │   └── admin/
+│   │       ├── AdminDashboard.tsx
+│   │       ├── ManageManagersPage.tsx
+│   │       └── ManageAllJobsPage.tsx
 │   ├── services/
+│   │   ├── api.ts
+│   │   ├── auth.ts
+│   │   └── job.ts
 │   ├── types/
+│   │   ├── User.ts
+│   │   ├── Job.ts
+│   │   └── Application.ts
 │   ├── utils/
-│   └── App.tsx
+│   │   ├── formatDate.ts
+│   │   └── validateInput.ts
+│   ├── App.tsx
+│   └── index.tsx
 ├── public/
+│   ├── index.html
+│   └── favicon.ico
 ├── Dockerfile
-└── package.json
+├── package.json
+└── README.md
 ```
 
 ## Routes and Components
@@ -59,6 +117,7 @@ frontend-service/
      - LoginForm
    - Functionality:
      - User authentication for all user types
+     - Available functionality depends on user type (Admin, Hiring Manager or Applicant)
 
 ### Protected Routes - Applicant
 
@@ -166,13 +225,30 @@ Shared Responsibilities:
   - Code reviews and documentation
 
 ## Getting Started
+
+### Running without Docker
+
 1. Clone the repository
 2. Navigate to the `frontend-service` directory
 3. Run `npm install` to install dependencies
 4. Use `npm start` to run the development server
 
+### Running with Docker
+
+1. Make sure you have Docker installed on your machine
+2. Navigate to the `frontend-service` directory
+3. Build the Docker image:
+   ```
+   docker build -t hiring-platform-frontend .
+   ```
+4. Run the container:
+   ```
+   docker run -p 3000:3000 hiring-platform-frontend
+   ```
+5. Access the application at `http://localhost:3000` in your web browser
+
 ## Docker
-The `Dockerfile` in the `frontend-service` directory will be used to containerize the frontend application. The `docker-compose.yml` file in the root of the project will orchestrate all services, including the frontend.
+The `Dockerfile` in the `frontend-service` directory is used to containerize the frontend application. The `docker-compose.yml` file in the root of the project will orchestrate all services, including the frontend.
 
 ## API Endpoints
 
@@ -338,7 +414,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
       {
         "id": "job123",
         "title": "Frontend Developer",
-        "company": "TechCorp",
         "location": "New York, NY",
         "shortDescription": "Exciting opportunity for a Frontend Developer...",
         "postedDate": "2023-05-01T00:00:00Z",
@@ -360,7 +435,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
   {
     "id": "job123",
     "title": "Frontend Developer",
-    "company": "TechCorp",
     "location": "New York, NY",
     "fullDescription": "We are seeking a talented Frontend Developer...",
     "requirements": ["3+ years of experience", "Proficiency in React"],
@@ -383,7 +457,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
   ```json
   {
     "title": "Backend Developer",
-    "company": "TechCorp",
     "location": "San Francisco, CA",
     "fullDescription": "We are seeking a talented Backend Developer...",
     "requirements": ["5+ years of experience", "Proficiency in Node.js"],
@@ -396,7 +469,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
   {
     "id": "job789",
     "title": "Backend Developer",
-    "company": "TechCorp",
     "location": "San Francisco, CA",
     "fullDescription": "We are seeking a talented Backend Developer...",
     "requirements": ["5+ years of experience", "Proficiency in Node.js"],
@@ -430,7 +502,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
   {
     "id": "job789",
     "title": "Senior Backend Developer",
-    "company": "TechCorp",
     "location": "Remote",
     "fullDescription": "We are seeking a talented Senior Backend Developer...",
     "requirements": ["7+ years of experience", "Proficiency in Node.js"],
@@ -478,7 +549,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
     "id": "app456",
     "jobId": "job123",
     "jobTitle": "Frontend Developer",
-    "company": "TechCorp",
     "appliedDate": "2023-05-20T00:00:00Z",
     "status": "applied"
   }
@@ -499,7 +569,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
         "id": "app456",
         "jobId": "job123",
         "jobTitle": "Frontend Developer",
-        "company": "TechCorp",
         "appliedDate": "2023-05-20T00:00:00Z",
         "status": "applied"
       }
@@ -552,7 +621,6 @@ The `Dockerfile` in the `frontend-service` directory will be used to containeriz
     "id": "app456",
     "jobId": "job123",
     "jobTitle": "Frontend Developer",
-    "company": "TechCorp",
     "appliedDate": "2023-05-20T00:00:00Z",
     "status": "passedPreInterview"
   }
