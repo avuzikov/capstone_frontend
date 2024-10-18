@@ -2,7 +2,7 @@ import React from "react";
 
 // Shared Input component that has error state and label etc.
 
-const Input = ({ title, placeholder, type, isTextArea, error }) => {
+const Input = ({ title, placeholder, type, isTextArea, error, onChange }) => {
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={title} className="txt-small pl-2.5">
@@ -21,6 +21,7 @@ const Input = ({ title, placeholder, type, isTextArea, error }) => {
           type={type}
           placeholder={placeholder}
           className="input-bordered"
+          onChange={onChange}
         />
       )}
       {error && (
