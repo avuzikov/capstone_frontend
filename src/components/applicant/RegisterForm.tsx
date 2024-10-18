@@ -90,61 +90,62 @@ const RegisterForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-1/3 mx-auto my-10 bg-adp-gray p-large rounded-xl shadow-md"
-    >
-      <h2 className="text-xl m-small">Register</h2>
-      <div className="flex gap-4 justify-items-stretch">
-        <div className="flex-grow">
-          <Input
-            title="First Name"
-            placeholder="First Name"
-            value={data.firstName}
-            onChange={(event) => handleChange("firstName", event)}
-            error={errors.firstName}
-          />
+    <div className="p-large rounded-lg w-[28rem]">
+      <h2 className="text-xl text-adp-navy text-center m-medium">
+        Register a new user
+      </h2>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+        <div className="flex gap-4 justify-items-stretch">
+          <div className="flex-grow">
+            <Input
+              title="First Name"
+              placeholder="First Name"
+              value={data.firstName}
+              onChange={(event) => handleChange("firstName", event)}
+              error={errors.firstName}
+            />
+          </div>
+          <div className="flex-grow">
+            <Input
+              title="Last Name"
+              placeholder="Last Name"
+              value={data.lastName}
+              onChange={(event) => handleChange("lastName", event)}
+              error={errors.lastName}
+            />
+          </div>
         </div>
-        <div className="flex-grow">
-          <Input
-            title="Last Name"
-            placeholder="Last Name"
-            value={data.lastName}
-            onChange={(event) => handleChange("lastName", event)}
-            error={errors.lastName}
-          />
+        <Input
+          title="Email"
+          placeholder="example@example.com"
+          type="email"
+          value={data.email}
+          onChange={(event) => handleChange("email", event)}
+          error={errors.email}
+        />
+        <Input
+          title="Password"
+          placeholder="Password"
+          type="password"
+          value={data.password}
+          onChange={(event) => handleChange("password", event)}
+          error={errors.password}
+        />
+        <Input
+          title="Confirm password"
+          placeholder="Confirm password"
+          type="password"
+          value={data.confirmPassword}
+          onChange={(event) => handleChange("confirmPassword", event)}
+          error={errors.confirmPassword}
+        />
+        <div className="flex justify-end">
+          <button className="mt-4 btn-primary" type="submit">
+            Register
+          </button>
         </div>
-      </div>
-      <Input
-        title="Email"
-        placeholder="example@example.com"
-        type="email"
-        value={data.email}
-        onChange={(event) => handleChange("email", event)}
-        error={errors.email}
-      />
-      <Input
-        title="Password"
-        placeholder="Password"
-        type="password"
-        value={data.password}
-        onChange={(event) => handleChange("password", event)}
-        error={errors.password}
-      />
-      <Input
-        title="Confirm password"
-        placeholder="Confirm password"
-        type="password"
-        value={data.confirmPassword}
-        onChange={(event) => handleChange("confirmPassword", event)}
-        error={errors.confirmPassword}
-      />
-      <div className="flex justify-end">
-        <button className="mt-4 btn-primary" type="submit">
-          Register
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 
