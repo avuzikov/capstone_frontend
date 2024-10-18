@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 import Input from "../shared/Input.tsx";
 
 type RegisterForm = {
@@ -18,6 +18,7 @@ type RegisterFormErrors = {
 };
 
 const RegisterForm = () => {
+  const [data, setData] = useState({} as RegisterForm);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -29,10 +30,16 @@ const RegisterForm = () => {
     console.log("Provided data:", formData);
   };
 
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    console.log(event.target.value);
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-1/3 mx-auto bg-adp-gray p-large rounded-xl shadow-md"
+      className="w-1/3 mx-auto my-10 bg-adp-gray p-large rounded-xl shadow-md"
     >
       <h2 className="text-xl m-medium">Register</h2>
       <div className="flex gap-4 justify-items-stretch">
@@ -40,8 +47,8 @@ const RegisterForm = () => {
           <Input
             title="First Name"
             placeholder="First Name"
-            type="text"
-            isTextArea={false}
+            value={data.firstName}
+            onChange={handleChange}
             error={errors.firstName}
           />
         </div>
@@ -49,8 +56,8 @@ const RegisterForm = () => {
           <Input
             title="Last Name"
             placeholder="Last Name"
-            type="text"
-            isTextArea={false}
+            value={data.lastName}
+            onChange={handleChange}
             error={errors.lastName}
           />
         </div>
@@ -59,21 +66,24 @@ const RegisterForm = () => {
         title="Email"
         placeholder="example@example.com"
         type="email"
-        isTextArea={false}
+        value={data.email}
+        onChange={handleChange}
         error={errors.email}
       />
       <Input
         title="Password"
         placeholder="Password"
         type="password"
-        isTextArea={false}
+        value={data.password}
+        onChange={handleChange}
         error={errors.password}
       />
       <Input
         title="Confirm password"
         placeholder="Confirm password"
         type="password"
-        isTextArea={false}
+        value={data.confirmPassword}
+        onChange={handleChange}
         error={errors.confirmPassword}
       />
       <div className="flex justify-end">
