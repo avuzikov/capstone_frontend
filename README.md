@@ -133,10 +133,8 @@ frontend-service/
 5. `/applications`
    - Components:
      - ApplicationList
-     - ApplicationStatusFilter
    - Functionality:
      - Display list of user's job applications with status
-     - Filter applications by status
 
 6. `/profile`
    - Components:
@@ -150,7 +148,7 @@ frontend-service/
 
 7. `/hiring-manager/dashboard`
    - Components:
-     - ManagerStats
+     - RelatedVacanciesStats
      - ActiveJobsList
    - Functionality:
      - Overview of active job postings and applications
@@ -170,8 +168,8 @@ frontend-service/
    - Functionality:
      - View and manage applicants for a specific job
      - Update applicant status
-     - Sort applicants by date or status
-     - View applicant statistics on hover (number of applications with each status)
+     - (Optional) Sort applicants by date or status
+     - (Optional) View applicant statistics on hover (number of applications with each status)
 
 ### Protected Routes - Admin
 
@@ -310,35 +308,6 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
   ```
 
 ### Users
-
-#### GET /users
-- Page: Admin Dashboard
-- Description: Get all users (admin only)
-- Headers: 
-  ```
-  Authorization: Bearer <JWT_TOKEN>
-  ```
-- Response:
-  ```json
-  {
-    "users": [
-      {
-        "id": "123",
-        "username": "john.doe@example.com",
-        "firstName": "John",
-        "lastName": "Doe",
-        "role": "applicant"
-      },
-      {
-        "id": "789",
-        "username": "alice.manager@example.com",
-        "firstName": "Alice",
-        "lastName": "Manager",
-        "role": "hiringManager"
-      }
-    ]
-  }
-  ```
 
 #### GET /users/{id}
 - Page: User Profile
@@ -611,9 +580,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
   }
   ```
 
-#### PUT /applications/{id}
+#### PUT /jobs/{jobId}/applications/{applicationId}
 - Page: Hiring Manager Dashboard
-- Description: Update application status
+- Description: Update application status for a specific job
 - Headers: 
   ```
   Authorization: Bearer <JWT_TOKEN>
@@ -629,6 +598,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
   {
     "id": "app456",
     "jobId": "job123",
+    "applicantId": "user789",
     "jobTitle": "Frontend Developer",
     "appliedDate": "2023-05-20T00:00:00Z",
     "status": "passedPreInterview"
@@ -665,9 +635,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
   }
   ```
 
-#### GET /hiring-managers
+#### GET /managers
 - Page: Admin Dashboard
-- Description: Get all hiring managers
+- Description: Get all hiring managers (admin only)
 - Headers: 
   ```
   Authorization: Bearer <JWT_TOKEN>
@@ -675,19 +645,13 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 - Response:
   ```json
   {
-    "hiringManagers": [
+    "managers": [
       {
-        "id": "manager456",
+        "id": "789",
         "username": "alice.manager@example.com",
         "firstName": "Alice",
         "lastName": "Manager",
-        "department": "Sales"
-      },
-      {
-        "id": "manager789",
-        "username": "bob.manager@example.com",
-        "firstName": "Bob",
-        "lastName": "Manager",
+        "role": "hiringManager",
         "department": "Engineering"
       }
     ]
@@ -756,6 +720,30 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
   }
   ```
 
+### Applicants
+
+#### GET /applicants
+- Page: Admin Dashboard or Hiring Manager Dashboard
+- Description: Get all applicants (admin or hiring manager only)
+- Headers: 
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+- Response:
+  ```json
+  {
+    "applicants": [
+      {
+        "id": "123",
+        "username": "john.doe@example.com",
+        "firstName": "John",
+        "lastName": "Doe",
+        "role": "applicant"
+      }
+    ]
+  }
+  ```
+
 ### Statistics
 
 #### GET /applicants/{id}/statistics
@@ -793,6 +781,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - What file size and format restrictions should be in place?
 
 2. CV Upload:
+   - Should there be a CV upload or it is too complicated for the backend side?
    - Should CV upload be part of the initial application process or a separate feature in the applicant's profile?
    - What file formats should be supported for CV uploads (e.g., PDF, DOCX)?
    - Are there any file size limitations?
@@ -803,6 +792,11 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 
 4. Error Handling:
    - What error codes and messages can we expect from the backend for various scenarios?
+
+5. API Structure:
+   - Confirm the changes to the application status update endpoint (`PUT /jobs/{jobId}/applications/{applicationId}`)
+   - Discuss the separation of user types into distinct endpoints (`GET /managers` and `GET /applicants`)
+   - Are there any other endpoints that need restructuring to better fit the application's needs?
 
 ## Error Handling
 
