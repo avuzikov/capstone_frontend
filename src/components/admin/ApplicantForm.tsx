@@ -3,16 +3,23 @@ import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
 import { User } from "../../mocks/types";
+import { useNavigate } from "react-router-dom";
 
 interface ApplicantFormProps {
   isEditing: boolean;
 }
 
+export interface RegistrationData extends User {
+  password: string;
+}
+
 const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
+    const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [formData, setFormData] = useState<User>({
+  const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
     fullName: "",
+    password: "",
     email: "",
     address: "",
     phone: "",
@@ -21,6 +28,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
   });
   const [formErrors, setFormErrors] = useState({
     fullName: "",
+    password: "",
     email: "",
     address: "",
     phone: "",
@@ -36,7 +44,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            email: 'admin@example.com',
+            email: "admin@example.com",
             password: "password",
           }),
         });
@@ -65,7 +73,10 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
         }
 
         const data: User = await response.json();
-        setFormData(data);
+        setFormData((prevData) => ({
+          ...data,
+          password: prevData.password,
+        }));
       } catch (error) {
         console.error("Failed to fetch applicant data:", error);
       }
@@ -89,6 +100,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
   const validateForm = () => {
     const errors = {
       fullName: "",
+      password: "",
       email: "",
       address: "",
       phone: "",
@@ -98,22 +110,27 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
     if (!formData.fullName) {
       errors.fullName = "Full name is required";
     }
+    if (!formData.password && !isEditing) {
+      errors.password = "Password is required";
+    }
     if (!formData.email) {
       errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email address is invalid";
     }
-    if (!formData.address) {
+    if (!formData.address && isEditing) {
       errors.address = "Address is required";
     }
-    if (!formData.phone) {
+    if (!formData.phone && isEditing) {
       errors.phone = "Phone number is required";
     }
-    if (!formData.resume) {
+    if (!formData.resume && isEditing) {
       errors.resume = "Resume is required";
     }
 
     setFormErrors(errors);
+
+    console.log(errors);
 
     return !Object.values(errors).some((error) => error);
   };
@@ -121,6 +138,8 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
+        console.log("Form data:", formData);
+        navigate(-1);
     }
   };
 
@@ -143,6 +162,16 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
               onChange={handleChange}
               error={formErrors.fullName}
             />
+            {!isEditing && (
+              <Input
+                name="password"
+                placeholder="Enter password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                error={formErrors.password}
+              />
+            )}
             <Input
               name="email"
               placeholder="Enter email"
@@ -151,30 +180,36 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
               onChange={handleChange}
               error={formErrors.email}
             />
-            <Input
-              name="address"
-              placeholder="Enter address"
-              type="text"
-              value={formData.address || ""}
-              onChange={handleChange}
-              error={formErrors.address}
-            />
-            <Input
-              name="phone"
-              placeholder="Enter phone number"
-              type="text"
-              value={formData.phone || ""}
-              onChange={handleChange}
-              error={formErrors.phone}
-            />
-            <Input
-              name="resume"
-              placeholder="Enter resume"
-              isTextArea={true}
-              value={formData.resume || ""}
-              onChange={handleChange}
-              error={formErrors.resume}
-            />
+
+            {isEditing && (
+              <>
+                <Input
+                  name="address"
+                  placeholder="Enter address"
+                  type="text"
+                  value={formData.address || ""}
+                  onChange={handleChange}
+                  error={formErrors.address}
+                />
+
+                <Input
+                  name="phone"
+                  placeholder="Enter phone number"
+                  type="text"
+                  value={formData.phone || ""}
+                  onChange={handleChange}
+                  error={formErrors.phone}
+                />
+                <Input
+                  name="resume"
+                  placeholder="Enter resume"
+                  isTextArea={true}
+                  value={formData.resume || ""}
+                  onChange={handleChange}
+                  error={formErrors.resume}
+                />
+              </>
+            )}
 
             <div className="flex gap-3 mt-4 justify-end">
               {isEditing && (
