@@ -14,7 +14,7 @@ export interface RegistrationData extends User {
 }
 
 const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
@@ -54,7 +54,6 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
         }
 
         const token = loginResponse.headers.get("Authorization");
-        console.log(token);
 
         if (!token) {
           throw new Error("No token received");
@@ -86,6 +85,121 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
       fetchApplicant();
     }
   }, [id]);
+
+  const createApplicant = async () => {
+    try {
+      const response = await fetch("/users/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create applicant");
+      }
+
+      const data = await response.json();
+      console.log("Applicant created:", data);
+    } catch (error) {
+      console.error("Failed to create applicant:", error);
+    }
+  };
+
+  const updateApplicant = async () => {
+    try {
+      const loginResponse = await fetch("/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "admin@example.com",
+          password: "password",
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error("Failed to login");
+      }
+
+      const token = loginResponse.headers.get("Authorization");
+
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      const response = await fetch(`/users/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          throw new Error(
+            "Forbidden: You do not have permission to update this applicant."
+          );
+        }
+        throw new Error("Failed to update applicant");
+      }
+
+      const data = await response.json();
+      console.log("Applicant updated:", data);
+    } catch (error) {
+      console.error("Failed to update applicant:", error);
+    }
+  };
+
+  const deleteApplicant = async () => {
+    try {
+
+      const loginResponse = await fetch("/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "admin@example.com",
+          password: "password",
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error("Failed to login");
+      }
+
+      const token = loginResponse.headers.get("Authorization");
+
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      const response = await fetch(`/users/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      navigate(-1);
+
+      if (!response.ok) {
+        throw new Error("Failed to delete applicant");
+      }
+
+    } catch (error) {
+      console.error("Failed to delete applicant:", error);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -130,16 +244,19 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
 
     setFormErrors(errors);
 
-    console.log(errors);
-
     return !Object.values(errors).some((error) => error);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
-        console.log("Form data:", formData);
-        navigate(-1);
+      if (isEditing) {
+        updateApplicant();
+      } else {
+        createApplicant();
+      }
+
+      navigate(-1);
     }
   };
 
@@ -213,7 +330,11 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
 
             <div className="flex gap-3 mt-4 justify-end">
               {isEditing && (
-                <button type="button" className="btn-destructive w-full">
+                <button
+                  type="button"
+                  className="btn-destructive w-full"
+                  onClick={deleteApplicant}
+                >
                   Delete
                 </button>
               )}

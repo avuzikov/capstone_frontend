@@ -177,7 +177,7 @@ export const handlers = [
   http.put<{ id: string }>('/users/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    if (!user || user.id !== parseInt(id)) {
+    if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json() as Partial<User>
@@ -193,7 +193,7 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     users = users.filter(u => u.id !== parseInt(id))
-    return HttpResponse.json(null, { status: 204 })
+    return HttpResponse.json({ status: 204 });
   }),
 
   // Jobs
