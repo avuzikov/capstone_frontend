@@ -336,7 +336,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   return (
     <div className="m-medium">
       <BackButton />
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center  items-center">
         <form
           onSubmit={handleSubmit}
           className="card-bordered mt-4 w-full lg:w-1/2"
@@ -410,7 +410,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       </div>
 
       {jobs.length > 0 && (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center mt-2 items-center">
           <JobTransferCard currentManagerId={id || ""} jobs={jobs} />
         </div>
       )}

@@ -113,7 +113,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
       <div className="p-large">
         <h1 className="text-large border-b-2 p-small">Transfer Jobs</h1>
 
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2  my-6">
           <p>Select Manager:</p>
 
           <select
@@ -133,7 +133,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
           </select>
         </div>
 
-        <button className="btn-primary mt-4 w-full" onClick={transferJobs}>
+        <button className="btn-primary w-full" onClick={transferJobs}>
           Transfer Jobs
         </button>
       </div>
