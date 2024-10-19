@@ -26,7 +26,6 @@ const ManagerList: React.FC = () => {
         }
 
         const token = loginResponse.headers.get("Authorization");
-        console.log(token);
 
         if (!token) {
           throw new Error("No token received");

@@ -266,15 +266,15 @@ export const handlers = [
   }),
 
  
-  http.get<{ page: string, items: string }>('/api/job', ({ params, request }) => {
+  http.get('/api/job', ({ request }) => {
     const user = authenticateUser(request)
     if (!user) {
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
-    const { page, items } = params
-    const pageSize = parseInt(items) || 20
-    const startIndex = (parseInt(page) - 1) * pageSize
-    const endIndex = startIndex + pageSize
+    const page = parseInt(new URL(request.url).searchParams.get('page') || '1')
+    const items = parseInt(new URL(request.url).searchParams.get('items') || '10')
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
     const paginatedJobs = jobs.slice(startIndex, endIndex)
     return HttpResponse.json(paginatedJobs)
   }),
@@ -341,6 +341,19 @@ export const handlers = [
     const updatedApplication = { ...application, applicationStatus }
     applications = applications.map(a => a.id === parseInt(id) ? updatedApplication : a)
     return HttpResponse.json(updatedApplication)
+  }),
+
+  http.get('/api/application', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    const page = parseInt(new URL(request.url).searchParams.get('page') || '1')
+    const items = parseInt(new URL(request.url).searchParams.get('items') || '10')
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = applications.slice(startIndex, endIndex)
+    return HttpResponse.json(paginatedApplications)
   }),
 
   http.delete<{ id: string }>('/api/application/:id', ({ params, request }) => {

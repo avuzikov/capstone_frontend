@@ -9,6 +9,7 @@ import ApplicantForm from "./components/admin/ApplicantForm.tsx";
 import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
 import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
 import ApplicantManagementPage from "./pages/admin/ApplicantManagementPage.tsx";
+import TableDisplay from "./components/admin/TableDisplay.tsx";
 
 function App() {
   return (
@@ -41,7 +42,7 @@ function App() {
             path="/admin/manager/:id"
             element={<ManagerForm isEditing={true} />}
           />
-          <Route path="/admin/tables/:name" element={<p>Table Data</p>} />
+          <Route path="/admin/tables/:name" element={<TableDisplay /> }/>
         </Routes>
       </main>
       <Footer />

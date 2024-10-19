@@ -4,6 +4,13 @@ import { Link, useLocation } from "react-router-dom";
 const Header = () => {
   const location = useLocation();
 
+  const getFirstSegment = (pathname: string) => {
+    const segments = pathname.split("/").filter(Boolean);
+    return segments[0] || "";
+  };
+
+  const firstSegment = getFirstSegment(location.pathname);
+
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
       <Link to={"/"}>
@@ -18,7 +25,7 @@ const Header = () => {
           <Link
             to="/jobs"
             className={`hover:underline px-small py-small ${
-              location.pathname.includes("jobs")
+              firstSegment === "jobs" || location.pathname === "/"
                 ? "bg-adp-white text-adp-red rounded-md"
                 : ""
             }`}
@@ -30,7 +37,7 @@ const Header = () => {
           <Link
             to="/applications"
             className={`hover:underline px-small py-small ${
-              location.pathname.includes("applications")
+              firstSegment === "applications"
                 ? "bg-adp-white text-adp-red rounded-md"
                 : ""
             }`}
@@ -42,7 +49,7 @@ const Header = () => {
           <Link
             to="/profile"
             className={`hover:underline px-small py-small ${
-              location.pathname.includes("profile")
+              firstSegment === "profile"
                 ? "bg-adp-white text-adp-red rounded-md"
                 : ""
             }`}
@@ -54,7 +61,7 @@ const Header = () => {
           <Link
             to="/admin/dashboard"
             className={`hover:underline px-small py-small ${
-              location.pathname.includes("admin")
+              firstSegment === "admin"
                 ? "bg-adp-white text-adp-red rounded-md"
                 : ""
             }`}
