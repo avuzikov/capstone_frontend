@@ -471,6 +471,13 @@ The frontend relies on the following backend API endpoints for functionality:
   ```
 - Authorization: Requires JWT token in a cookie with role "hiring-manager".
 
+#### DELETE /api/application/{id}
+- Description: Delete a job application
+- Path Parameters:
+  - `id` (required) – The ID of the application
+- Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` of the application.
+- Response: HTTP status `204 No Content`
+
 ## Additional Required API Endpoints
 
 1. GET /api/job/manager
@@ -545,13 +552,6 @@ The frontend relies on the following backend API endpoints for functionality:
      }
      ```
    - Explanation: While the existing `/users/{id}` endpoint can retrieve user details, it may contain sensitive information not suitable for public viewing. This new endpoint provides a way to fetch only the public information about a manager, which is necessary for the unprotected ManagerProfilePage.
-
-#### DELETE /api/application/{id}
-- Description: Delete a job application
-- Path Parameters:
-  - `id` (required) – The ID of the application
-- Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` of the application.
-- Response: HTTP status `204 No Content`
 
 ## Error Handling
 
