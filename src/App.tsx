@@ -5,10 +5,10 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
-import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import UserForm from "./components/admin/UserForm.tsx";
 import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
 import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
-import ApplicantManagementPage from "./pages/admin/ApplicantManagementPage.tsx";
+import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import TableDisplay from "./components/admin/TableDisplay.tsx";
 
 function App() {
@@ -25,24 +25,24 @@ function App() {
             element={<ManagerForm isEditing={false} />}
           />
           <Route
-            path="/admin/newApplicant"
-            element={<ApplicantForm isEditing={false} />}
+            path="/admin/newUser"
+            element={<UserForm isEditing={false} />}
           />
           <Route
-            path="/admin/applicants"
-            element={<ApplicantManagementPage />}
+            path="/admin/users"
+            element={<UserManagementPage />}
           />
           <Route path="/admin/managers" element={<ManagerManagementPage />} />
           <Route path="/admin/tables" element={<DataTableManagementPage />} />
           <Route
-            path="/admin/applicant/:id"
-            element={<ApplicantForm isEditing={true} />}
+            path="/admin/user/:id"
+            element={<UserForm isEditing={true} />}
           />
           <Route
             path="/admin/manager/:id"
             element={<ManagerForm isEditing={true} />}
           />
-          <Route path="/admin/tables/:name" element={<TableDisplay /> }/>
+          <Route path="/admin/tables/:name" element={<TableDisplay />} />
         </Routes>
       </main>
       <Footer />

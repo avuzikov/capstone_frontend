@@ -339,7 +339,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       <div className="flex justify-center items-center">
         <form
           onSubmit={handleSubmit}
-          className="card-bordered m-medium w-full lg:w-1/2"
+          className="card-bordered mt-4 w-full lg:w-1/2"
         >
           <div className="p-large flex flex-col gap-4">
             <h1 className="text-large border-b-2 p-small">Manager Form</h1>

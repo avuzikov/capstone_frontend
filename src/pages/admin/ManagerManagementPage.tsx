@@ -13,7 +13,7 @@ const ManagerManagementPage = () => {
         </Link>
       </div>
       <div className="flex justify-between">
-        <h1 className="text-large">Manager Management</h1>
+        <h1 className="text-large">Managers</h1>
       </div>
 
       <ManagerList />

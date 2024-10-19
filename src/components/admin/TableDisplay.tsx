@@ -103,8 +103,8 @@ const TableDisplay = () => {
         {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Default Name"}
       </h1> 
 
-      <div className="overflow-x-auto">
-      <table className="table-auto" style={{ emptyCells: "show" }}>
+      <div className="overflow-x-auto w-full">
+      <table className="table-auto w-full" style={{ emptyCells: "show" }}>
         <thead>
           <tr className="bg-gray-100">
             {allKeys.map((key) => (

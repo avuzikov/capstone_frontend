@@ -16,11 +16,11 @@ const Header = () => {
       <Link to={"/"}>
         <div className="flex items-center gap-3">
           <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
-          <h1 className="text-large">Talent Site</h1>
+          <h1 className="hidden md:block text-large">Talent Site</h1>
         </div>
       </Link>
 
-      <ul className="flex gap-4">
+      <ul className="flex gap-1">
         <li className="cursor-pointer p-small">
           <Link
             to="/jobs"

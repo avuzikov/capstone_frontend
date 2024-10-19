@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
-import { User } from "../../mocks/types";
+import { User } from "../../mocks/types.ts";
 import { useNavigate } from "react-router-dom";
 
-interface ApplicantFormProps {
+interface UserFormProps {
   isEditing: boolean;
 }
 
@@ -13,7 +13,7 @@ export interface RegistrationData extends User {
   password: string;
 }
 
-const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
+const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
@@ -36,7 +36,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
   });
 
   useEffect(() => {
-    const fetchApplicant = async () => {
+    const fetchUser = async () => {
       try {
         const loginResponse = await fetch("/users/login", {
           method: "POST",
@@ -77,16 +77,16 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
           password: prevData.password,
         }));
       } catch (error) {
-        console.error("Failed to fetch applicant data:", error);
+        console.error("Failed to fetch user data:", error);
       }
     };
 
     if (id) {
-      fetchApplicant();
+      fetchUser();
     }
   }, [id]);
 
-  const createApplicant = async () => {
+  const createUser = async () => {
     try {
       const response = await fetch("/users/registration", {
         method: "POST",
@@ -101,17 +101,17 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create applicant");
+        throw new Error("Failed to create user");
       }
 
       const data = await response.json();
-      console.log("Applicant created:", data);
+      console.log("User created:", data);
     } catch (error) {
-      console.error("Failed to create applicant:", error);
+      console.error("Failed to create user:", error);
     }
   };
 
-  const updateApplicant = async () => {
+  const updateUser = async () => {
     try {
       const loginResponse = await fetch("/users/login", {
         method: "POST",
@@ -146,22 +146,21 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
       if (!response.ok) {
         if (response.status === 403) {
           throw new Error(
-            "Forbidden: You do not have permission to update this applicant."
+            "Forbidden: You do not have permission to update this user."
           );
         }
-        throw new Error("Failed to update applicant");
+        throw new Error("Failed to update user");
       }
 
       const data = await response.json();
-      console.log("Applicant updated:", data);
+      console.log("User updated:", data);
     } catch (error) {
-      console.error("Failed to update applicant:", error);
+      console.error("Failed to update user:", error);
     }
   };
 
-  const deleteApplicant = async () => {
+  const deleteUser = async () => {
     try {
-
       const loginResponse = await fetch("/users/login", {
         method: "POST",
         headers: {
@@ -193,11 +192,10 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
       navigate(-1);
 
       if (!response.ok) {
-        throw new Error("Failed to delete applicant");
+        throw new Error("Failed to delete user");
       }
-
     } catch (error) {
-      console.error("Failed to delete applicant:", error);
+      console.error("Failed to delete user:", error);
     }
   };
 
@@ -251,9 +249,9 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
     e.preventDefault();
     if (validateForm()) {
       if (isEditing) {
-        updateApplicant();
+        updateUser();
       } else {
-        createApplicant();
+        createUser();
       }
 
       navigate(-1);
@@ -266,10 +264,10 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
       <div className="flex justify-center items-center">
         <form
           onSubmit={handleSubmit}
-          className="card-bordered m-medium w-full lg:w-1/2"
+          className="card-bordered mt-4 w-full lg:w-1/2"
         >
           <div className="p-large flex flex-col gap-4">
-            <h1 className="text-large border-b-2 p-small">Applicant Form</h1>
+            <h1 className="text-large border-b-2 p-small">User Form</h1>
 
             <Input
               name="fullName"
@@ -333,7 +331,7 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
                 <button
                   type="button"
                   className="btn-destructive w-full"
-                  onClick={deleteApplicant}
+                  onClick={deleteUser}
                 >
                   Delete
                 </button>
@@ -349,4 +347,4 @@ const ApplicantForm: React.FC<ApplicantFormProps> = ({ isEditing }) => {
   );
 };
 
-export default ApplicantForm;
+export default UserForm;

@@ -9,8 +9,8 @@ const AdminDashboardPage = () => {
           <h1 className="text-large">Admin Dashboard</h1>
         </div>
 
-        <div className="flex gap-4">
-          <AdminDashboardCard title="Applicants" link="/admin/applicants">
+        <div className="flex flex-col md:flex-row gap-4">
+          <AdminDashboardCard title="Users" link="/admin/users">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
