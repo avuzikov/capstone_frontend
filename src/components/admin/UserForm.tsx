@@ -266,7 +266,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
           onSubmit={handleSubmit}
           className="card-bordered mt-4 w-full lg:w-1/2"
         >
-          <div className="p-large flex flex-col gap-4">
+          <div className="p-medium md:p-large flex flex-col gap-4">
             <h1 className="text-large border-b-2 p-small">User Form</h1>
 
             <Input

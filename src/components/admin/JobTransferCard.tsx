@@ -109,17 +109,17 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   }, []);
 
   return (
-    <div className="card-bordered m-medium w-full lg:w-1/2">
-      <div className="p-large">
+    <div className="card-bordered mt-4 w-full lg:w-1/2">
+      <div className="p-medium md:p-large">
         <h1 className="text-large border-b-2 p-small">Transfer Jobs</h1>
 
-        <div className="flex gap-2  my-6">
+        <div className="flex gap-3  my-6 w-full">
           <p>Select Manager:</p>
 
           <select
             name="manager"
             id="manager"
-            className="input-filled"
+            className="input-filled w-full md:w-auto"
             value={selectedManagerId}
             onChange={(e) => setSelectedManagerId(e.target.value)}
           >

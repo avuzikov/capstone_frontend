@@ -13,17 +13,17 @@ const ManagerCard = ({ link, manager }: ManagerCardProps) => {
       <div className="card-bordered cursor-pointer flex items-center justify-between h-18">
         <div className="flex flex-col">
           <h1 className="text-medium">{manager.fullName}</h1>
-          <div className="flex gap-4 items-center text-small">
+          <div className="flex gap-2 items-center text-small">
             <p className="text-gray-500">{manager.email}</p>
             {manager.phone && (
               <>
-                <div className="w-2 h-2 rounded-full bg-adp-navy"></div>
+                <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
                 <p className="text-gray-500">{manager.phone}</p>
               </>
             )}
             {manager.department && (
                 <>
-                    <div className="w-2 h-2 rounded-full bg-adp-navy"></div>
+                    <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
                     <p className="text-gray-500">{manager.department}</p>
                 </>
                 )       
