@@ -101,8 +101,9 @@ const TableDisplay = () => {
       <BackButton />
       <h1 className="text-large">
         {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Default Name"}
-      </h1>
+      </h1> 
 
+      <div className="overflow-x-auto">
       <table className="table-auto" style={{ emptyCells: "show" }}>
         <thead>
           <tr className="bg-gray-100">
@@ -136,6 +137,7 @@ const TableDisplay = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

@@ -83,6 +83,72 @@ let jobs: Job[] = [
     listingStatus: 'open',
     experienceLevel: '3-5 years'
   },
+  { 
+    id: 3, 
+    userId: 5, 
+    department: 'Marketing',
+    listingTitle: 'Marketing Specialist', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'Marketing Specialist',
+    jobDescription: 'We are looking for a marketing specialist...',
+    listingStatus: 'open',
+    experienceLevel: '2-3 years'
+  },
+  { 
+    id: 4, 
+    userId: 5, 
+    department: 'Marketing',
+    listingTitle: 'Social Media Manager', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'Social Media Manager',
+    jobDescription: 'We are seeking a social media manager...',
+    listingStatus: 'open',
+    experienceLevel: '3-5 years'
+  },
+  { 
+    id: 5, 
+    userId: 7, 
+    department: 'Sales',
+    listingTitle: 'Sales Representative', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'Sales Representative',
+    jobDescription: 'We are looking for a sales representative...',
+    listingStatus: 'open',
+    experienceLevel: '1-2 years'
+  },
+  { 
+    id: 6, 
+    userId: 7, 
+    department: 'Sales',
+    listingTitle: 'Sales Manager', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'Sales Manager',
+    jobDescription: 'We are seeking a sales manager...',
+    listingStatus: 'open',
+    experienceLevel: '3-5 years'
+  },
+  { 
+    id: 7, 
+    userId: 9, 
+    department: 'HR',
+    listingTitle: 'HR Specialist', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'HR Specialist',
+    jobDescription: 'We are looking for an HR specialist...',
+    listingStatus: 'open',
+    experienceLevel: '2-3 years'
+  },
+  { 
+    id: 8, 
+    userId: 9, 
+    department: 'HR',
+    listingTitle: 'HR Manager', 
+    dateListed: new Date().toISOString(),
+    jobTitle: 'HR Manager',
+    jobDescription: 'We are seeking an HR manager...',
+    listingStatus: 'open',
+    experienceLevel: '3-5 years'
+  },
 ]
 
 let applications: Application[] = [
@@ -225,6 +291,24 @@ export const handlers = [
     jobs.push(newJob)
     return HttpResponse.json(newJob)
   }),
+  
+  http.put<never, JobTransferRequest>('/api/job/transfer', async ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const { jobId, fromUserId, toUserId } = await request.json()
+    
+    const jobToTransfer = jobs.find(j => j.id === jobId)
+
+    if (!jobToTransfer) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
+    }
+
+    jobToTransfer.userId = Number(toUserId);
+
+    return HttpResponse.json(jobToTransfer)
+  }),
 
   http.put<{ id: string }, JobRequest>('/api/job/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
@@ -239,20 +323,6 @@ export const handlers = [
     return HttpResponse.json(updatedJob)
   }),
 
-  http.put<never, JobTransferRequest>('/api/job/transfer', async ({ request }) => {
-    const user = authenticateUser(request)
-    if (!user || user.role !== 'admin') {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
-    }
-    const { jobId, fromUserId, toUserId } = await request.json()
-    const job = jobs.find(j => j.id === jobId && j.userId === fromUserId)
-    if (!job) {
-      return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
-    }
-    const updatedJob = { ...job, userId: toUserId }
-    jobs = jobs.map(j => j.id === jobId ? updatedJob : j)
-    return HttpResponse.json(updatedJob)
-  }),
 
   http.delete<{ id: string }>('/api/job/:id', ({ params, request }) => {
     const user = authenticateUser(request)

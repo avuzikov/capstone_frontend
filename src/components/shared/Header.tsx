@@ -26,7 +26,7 @@ const Header = () => {
             to="/jobs"
             className={`hover:underline px-small py-small ${
               firstSegment === "jobs" || location.pathname === "/"
-                ? "bg-adp-white text-adp-red rounded-md"
+                ? "bg-adp-white shadow-md text-adp-red rounded-md"
                 : ""
             }`}
           >
@@ -38,8 +38,8 @@ const Header = () => {
             to="/applications"
             className={`hover:underline px-small py-small ${
               firstSegment === "applications"
-                ? "bg-adp-white text-adp-red rounded-md"
-                : ""
+              ? "bg-adp-white shadow-md text-adp-red rounded-md"
+              : ""
             }`}
           >
             Applications
@@ -50,8 +50,8 @@ const Header = () => {
             to="/profile"
             className={`hover:underline px-small py-small ${
               firstSegment === "profile"
-                ? "bg-adp-white text-adp-red rounded-md"
-                : ""
+              ? "bg-adp-white shadow-md text-adp-red rounded-md"
+              : ""
             }`}
           >
             Profile
@@ -62,8 +62,8 @@ const Header = () => {
             to="/admin/dashboard"
             className={`hover:underline px-small py-small ${
               firstSegment === "admin"
-                ? "bg-adp-white text-adp-red rounded-md"
-                : ""
+              ? "bg-adp-white shadow-md text-adp-red rounded-md"
+              : ""
             }`}
           >
             Admin

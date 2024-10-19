@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
-import { User } from "../../mocks/types";
+import { User, Job } from "../../mocks/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import JobTransferCard from "./JobTransferCard.tsx";
 
 interface ManagerFormProps {
   isEditing: boolean;
@@ -32,6 +33,8 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     phone: "",
     department: "",
   });
+
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const fetchManager = async () => {
@@ -182,6 +185,13 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   };
 
   const deleteManager = async () => {
+    if (jobs.length > 0) {
+      alert(
+        "Cannot delete manager with active jobs. Please transfer all jobs to another manager first."
+      );
+      return;
+    }
+
     try {
       const loginResponse = await fetch("/users/login", {
         method: "POST",
@@ -220,6 +230,53 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       console.error("Failed to delete applicant:", error);
     }
   };
+
+  const fetchJobs = async () => {
+    try {
+      const loginResponse = await fetch("/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "admin@example.com",
+          password: "password",
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error("Failed to login");
+      }
+
+      const token = loginResponse.headers.get("Authorization");
+
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      const response = await fetch("/api/job?page=1&items=1000", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      const filteredJobs = data.filter(
+        (job: Job) => job.userId.toString() === id
+      );
+
+      setJobs(filteredJobs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, [jobs]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -351,6 +408,12 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
           </div>
         </form>
       </div>
+
+      {jobs.length > 0 && (
+        <div className="flex justify-center items-center">
+          <JobTransferCard currentManagerId={id || ""} jobs={jobs} />
+        </div>
+      )}
     </div>
   );
 };
