@@ -99,7 +99,9 @@ const TableDisplay = () => {
 
   const handleNavigation = (row: Record<string, any>) => {
     if (name === "users") {
-      if (row.role === "applicant") {
+      if (row.role === "admin") {
+        alert("Admins cannot be modified!");
+      } else if (row.role === "applicant") {
         navigate(`/admin/user/${row.id}`);
       } else if (row.role === "hiring-manager") {
         navigate(`/admin/manager/${row.id}`);
@@ -133,10 +135,7 @@ const TableDisplay = () => {
           <thead>
             <tr className="bg-gray-100">
               {allKeys.map((key) => (
-                <th
-                  key={key}
-                  className="border font-normal px-4 py-2"
-                >
+                <th key={key} className="border font-normal px-4 py-2">
                   {key.charAt(0).toUpperCase() + key.slice(1)}
                 </th>
               ))}
