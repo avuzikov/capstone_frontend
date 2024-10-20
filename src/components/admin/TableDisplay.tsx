@@ -8,9 +8,10 @@ const TableDisplay = () => {
 
   const [tableData, setTableData] = useState<Record<string, any>[]>([]);
   const [allKeys, setAllKeys] = useState<string[]>([]);
+  const [token, setToken] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
-
-  const fetchTableData = useCallback(async () => {
+  const fetchToken = async () => {
     try {
       const loginResponse = await fetch("/users/login", {
         method: "POST",
@@ -22,7 +23,6 @@ const TableDisplay = () => {
           password: "password",
         }),
       });
-
       if (!loginResponse.ok) {
         throw new Error("Failed to login");
       }
@@ -33,6 +33,14 @@ const TableDisplay = () => {
         throw new Error("No token received");
       }
 
+      setToken(token);
+    } catch (error) {
+      console.error("Failed to get token:", error);
+    }
+  };
+
+  const fetchTableData = useCallback(async () => {
+    try {
       let url: string;
 
       // Ideally this will not be hardcoded later
@@ -72,20 +80,27 @@ const TableDisplay = () => {
         return acc;
       }, []);
       setAllKeys(keys);
+
+      setLoading(false);
     } catch (error) {
       console.error("Failed to fetch table data:", error);
     }
-  }, [name]);
+  }, [name, token]);
 
   useEffect(() => {
-    fetchTableData();
-  }, [fetchTableData]);
+    fetchToken();
+  }, []);
 
+  useEffect(() => {
+    if (token) {
+      fetchTableData();
+    }
+  }, [token, fetchTableData]);
 
   const handleNavigation = (row: Record<string, any>) => {
     if (name === "users") {
       if (row.role === "applicant") {
-        navigate(`/admin/applicant/${row.id}`);
+        navigate(`/admin/user/${row.id}`);
       } else if (row.role === "hiring-manager") {
         navigate(`/admin/manager/${row.id}`);
       }
@@ -96,47 +111,57 @@ const TableDisplay = () => {
     }
   };
 
+  if (loading) {
+    <div className="flex flex-col gap-3 m-medium">
+      <BackButton />
+      <h1 className="text-large">
+        {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Default Name"}
+      </h1>
+      return <div>Loading...</div>;
+    </div>;
+  }
+
   return (
     <div className="flex flex-col gap-3 m-medium">
       <BackButton />
       <h1 className="text-large">
         {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Default Name"}
-      </h1> 
+      </h1>
 
       <div className="overflow-x-auto w-full">
-      <table className="table-auto w-full" style={{ emptyCells: "show" }}>
-        <thead>
-          <tr className="bg-gray-100">
-            {allKeys.map((key) => (
-              <th
-                key={key}
-                className="border text-medium font-normal px-4 py-2"
-              >
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, rowIndex) => (
-            <tr
-              className="text-center hover:underline cursor-pointer"
-              key={rowIndex}
-              onClick={() => handleNavigation(row)}
-            >
-              {allKeys.map((key, cellIndex) => (
-                <td key={cellIndex} className="border px-4 py-2">
-                  {row[key] !== null &&
-                  row[key] !== undefined &&
-                  row[key] !== ""
-                    ? row[key]
-                    : "-"}
-                </td>
+        <table className="table-auto w-full" style={{ emptyCells: "show" }}>
+          <thead>
+            <tr className="bg-gray-100">
+              {allKeys.map((key) => (
+                <th
+                  key={key}
+                  className="border font-normal px-4 py-2"
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {tableData.map((row, rowIndex) => (
+              <tr
+                className="text-center  hover:underline cursor-pointer"
+                key={rowIndex}
+                onClick={() => handleNavigation(row)}
+              >
+                {allKeys.map((key, cellIndex) => (
+                  <td key={cellIndex} className="border px-4 py-2">
+                    {row[key] !== null &&
+                    row[key] !== undefined &&
+                    row[key] !== ""
+                      ? row[key]
+                      : "-"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

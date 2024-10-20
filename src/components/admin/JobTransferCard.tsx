@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { User, Job } from "../../mocks/types.ts";
 
 interface JobTransferCardProps {
   currentManagerId: string;
   jobs: Job[];
+  handleShouldFetchJobs: () => void;
 }
 
 const JobTransferCard: React.FC<JobTransferCardProps> = ({
   currentManagerId,
   jobs,
+  handleShouldFetchJobs,
 }) => {
   const [managers, setManagers] = useState<User[]>([]);
+
+  const [token, setToken] = useState<string>("");
   const [selectedManagerId, setSelectedManagerId] = useState<string>("");
 
-  const fetchManagers = async () => {
+  const fetchToken = async () => {
     try {
       const loginResponse = await fetch("/users/login", {
         method: "POST",
@@ -35,6 +39,14 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
         throw new Error("No token received");
       }
 
+      setToken(token);
+    } catch (error) {
+      console.error("Failed to get token:", error);
+    }
+  };
+
+  const fetchManagers = useCallback(async () => {
+    try {
       const response = await fetch("/users", {
         method: "GET",
         headers: {
@@ -51,70 +63,62 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
       const managers = data.filter((user) => user.role === "hiring-manager");
 
+      managers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
       setManagers(managers);
+
+      if (managers.length > 0 && !selectedManagerId) {
+        setSelectedManagerId(String(managers[0].id));
+      }
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [token, selectedManagerId]);
 
   const transferJobs = async () => {
-    const loginResponse = await fetch("/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: "admin@example.com",
-        password: "password",
-      }),
-    });
-    if (!loginResponse.ok) {
-      throw new Error("Failed to login");
-    }
+    try {
+      for (const job of jobs) {
+        const response = await fetch("/api/job/transfer", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+          body: JSON.stringify({
+            jobId: job.id,
+            fromUserId: currentManagerId,
+            toUserId: selectedManagerId,
+          }),
+        });
 
-    const token = loginResponse.headers.get("Authorization");
+        if (!response.ok) {
+          console.error("Failed to transfer job", job.id);
+        }
 
-    if (!token) {
-      throw new Error("No token received");
-    }
-
-    console.log(token);
-
-    for (const job of jobs) {
-      const response = await fetch("/api/job/transfer", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-        body: JSON.stringify({
-          jobId: job.id,
-          fromUserId: currentManagerId,
-          toUserId: selectedManagerId,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to transfer job", job.id);
+        handleShouldFetchJobs();
       }
-
-      const data = await response.json();
-
-      console.log("Job transferred:", data);
+    } catch (error) {
+      console.error("Failed to transfer jobs:", error);
     }
   };
 
   useEffect(() => {
-    fetchManagers();
-  }, []);
+    fetchToken();
+  });
+
+  useEffect(() => {
+    if (token) {
+      fetchManagers();
+    }
+  }, [token, fetchManagers]);
 
   return (
-    <div className="card-bordered mt-4 w-full lg:w-1/2">
-      <div className="p-medium md:p-large">
-        <h1 className="text-large border-b-2 p-small">Transfer Jobs</h1>
+      <div className="flex flex-col w-full items-center justify-center">
+        <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
+      <div className=" card-bordered mt-1 w-full lg:w-1/2">
 
-        <div className="flex gap-3  my-6 w-full">
-          <p>Select Manager:</p>
+        <div className="flex flex-col p-medium lg:p-large ">
+          <p className="pl-small mb-1">Manager</p>
 
           <select
             name="manager"
@@ -131,11 +135,11 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
                 </option>
               ))}
           </select>
-        </div>
 
-        <button className="btn-primary w-full" onClick={transferJobs}>
+        <button className="btn-primary mt-6 w-full" onClick={transferJobs}>
           Transfer Jobs
         </button>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
 import { User, Job } from "../../mocks/types";
@@ -35,60 +35,14 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   });
 
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [shouldFetchJobs, setShouldFetchJobs] = useState<boolean>(true);
+  const [token, setToken] = useState<string>("");
 
-  useEffect(() => {
-    const fetchManager = async () => {
-      try {
-        const loginResponse = await fetch("/users/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "admin@example.com",
-            password: "password",
-          }),
-        });
+  const handleShouldFetchJobs = () => {
+    setShouldFetchJobs((prev) => !prev);
+  };
 
-        if (!loginResponse.ok) {
-          throw new Error("Failed to login");
-        }
-
-        const token = loginResponse.headers.get("Authorization");
-        console.log(token);
-
-        if (!token) {
-          throw new Error("No token received");
-        }
-
-        const response = await fetch(`/users/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch users");
-        }
-
-        const data: User = await response.json();
-        setFormData((prevData) => ({
-          ...data,
-          password: prevData.password,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch manager data:", error);
-      }
-    };
-
-    if (id) {
-      fetchManager();
-    }
-  }, [id]);
-
-  const createManager = async () => {
+  const fetchToken = async () => {
     try {
       const loginResponse = await fetch("/users/login", {
         method: "POST",
@@ -100,18 +54,58 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
           password: "password",
         }),
       });
-
       if (!loginResponse.ok) {
         throw new Error("Failed to login");
       }
 
       const token = loginResponse.headers.get("Authorization");
-      console.log(token);
 
       if (!token) {
         throw new Error("No token received");
       }
 
+      setToken(token);
+    } catch (error) {
+      console.error("Failed to get token:", error);
+    }
+  };
+
+  const fetchManager = useCallback(async () => {
+    try {
+      const response = await fetch(`/users/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+
+      const data: User = await response.json();
+      setFormData((prevData) => ({
+        ...data,
+        password: prevData.password,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch manager data:", error);
+    }
+  }, [id, token]);
+
+  useEffect(() => {
+    fetchToken();
+  }, [id]);
+
+  useEffect(() => {
+    if (token) {
+      fetchManager();
+    }
+  }, [token, fetchManager]);
+
+  const createManager = async () => {
+    try {
       const response = await fetch("/users/registration/admin", {
         method: "POST",
         headers: {
@@ -138,27 +132,6 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const updateManager = async () => {
     try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
       const response = await fetch(`/users/${id}`, {
         method: "PUT",
         headers: {
@@ -193,27 +166,6 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     }
 
     try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
       const response = await fetch(`/users/${id}`, {
         method: "DELETE",
         headers: {
@@ -231,8 +183,10 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     }
   };
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
     try {
+        console.log("fetching jobs");   
+
       const loginResponse = await fetch("/users/login", {
         method: "POST",
         headers: {
@@ -268,15 +222,16 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
         (job: Job) => job.userId.toString() === id
       );
 
+
       setJobs(filteredJobs);
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchJobs();
-  }, [jobs]);
+  }, [fetchJobs, shouldFetchJobs]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -334,15 +289,15 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   };
 
   return (
-    <div className="m-medium">
+    <div className="m-medium flex flex-col gap-3">
       <BackButton />
-      <div className="flex justify-center  items-center">
+      <div className="flex flex-col justify-center  items-center">
+          <h1 className="text-large w-full lg:w-1/2"> {isEditing ? "Edit Manager" : "Add Manager"} </h1>
         <form
           onSubmit={handleSubmit}
-          className="card-bordered mt-4 w-full lg:w-1/2"
+          className="card-bordered w-full  mt-2 lg:w-1/2"
         >
           <div className="p-medium md:p-large flex flex-col gap-4">
-            <h1 className="text-large border-b-2 p-small">Manager Form</h1>
 
             <Input
               name="fullName"
@@ -410,8 +365,8 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       </div>
 
       {jobs.length > 0 && (
-        <div className="flex justify-center mt-2 items-center">
-          <JobTransferCard currentManagerId={id || ""} jobs={jobs} />
+        <div className="flex justify-center mt-6 items-center">
+          <JobTransferCard currentManagerId={id || ""} jobs={jobs} handleShouldFetchJobs={handleShouldFetchJobs} />
         </div>
       )}
     </div>

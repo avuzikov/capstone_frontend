@@ -2,8 +2,8 @@ import React from "react";
 import TableCard from "./TableCard.tsx";
 
 const tables = [
-  { name: "Jobs", link: "/admin/tables/jobs" },
   { name: "Users", link: "/admin/tables/users" },
+  { name: "Jobs", link: "/admin/tables/jobs" },
   { name: "Applications", link: "/admin/tables/applications" },
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
@@ -35,30 +35,38 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
     resume: "",
   });
 
-  useEffect(() => {
-    const fetchUser = async () => {
+  const [token, setToken] = useState<string>("");
+
+  const fetchToken = async () => {
+    try {
+      const loginResponse = await fetch("/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "admin@example.com",
+          password: "password",
+        }),
+      });
+      if (!loginResponse.ok) {
+        throw new Error("Failed to login");
+      }
+
+      const token = loginResponse.headers.get("Authorization");
+
+      if (!token) {
+        throw new Error("No token received");
+      }
+
+      setToken(token);
+    } catch (error) {
+      console.error("Failed to get token:", error);
+    }
+  };
+
+    const fetchUser = useCallback(async () => {
       try {
-        const loginResponse = await fetch("/users/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: "admin@example.com",
-            password: "password",
-          }),
-        });
-
-        if (!loginResponse.ok) {
-          throw new Error("Failed to login");
-        }
-
-        const token = loginResponse.headers.get("Authorization");
-
-        if (!token) {
-          throw new Error("No token received");
-        }
-
         const response = await fetch(`/users/${id}`, {
           method: "GET",
           headers: {
@@ -79,12 +87,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
-    };
-
-    if (id) {
-      fetchUser();
-    }
-  }, [id]);
+    }, [id, token]);
 
   const createUser = async () => {
     try {
@@ -113,27 +116,6 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
 
   const updateUser = async () => {
     try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
       const response = await fetch(`/users/${id}`, {
         method: "PUT",
         headers: {
@@ -161,26 +143,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
 
   const deleteUser = async () => {
     try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
+    
 
       const response = await fetch(`/users/${id}`, {
         method: "DELETE",
@@ -198,6 +161,17 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
       console.error("Failed to delete user:", error);
     }
   };
+
+  useEffect(() => {
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    if (isEditing && token) {
+      fetchUser();
+    }
+  }, [isEditing, token, fetchUser]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -259,15 +233,15 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
   };
 
   return (
-    <div className="m-medium">
+    <div className="m-medium flex flex-col gap-3">
       <BackButton />
-      <div className="flex justify-center items-center">
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-large w-full lg:w-1/2"> {isEditing ? "Edit User" : "Add User"} </h1>
         <form
           onSubmit={handleSubmit}
-          className="card-bordered mt-4 w-full lg:w-1/2"
+          className="card-bordered mt-2 w-full lg:w-1/2"
         >
           <div className="p-medium md:p-large flex flex-col gap-4">
-            <h1 className="text-large border-b-2 p-small">User Form</h1>
 
             <Input
               name="fullName"
