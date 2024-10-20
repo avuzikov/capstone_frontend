@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Input from "../shared/Input.tsx";
+import Input from "../shared/Input";
 
 const ManagerForm = () => {
   const [formData, setFormData] = useState({
