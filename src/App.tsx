@@ -1,27 +1,68 @@
 import React from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
-import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
+
+const ProtectedRoute: React.FC<{ element: React.ReactElement; allowedRoles: string[] }> = ({ element, allowedRoles }) => {
+  const { token, role } = useAuth();
+  
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (role && allowedRoles.includes(role)) {
+    return element;
+  }
+  
+  return <Navigate to="/" replace />;
+};
 
 function App() {
   return (
-    <div className="flex flex-col justify-between min-h-screen">
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<p>Dummy Data</p>} />
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/manager" element={<ManagerForm />} />
-          <Route path="/admin/applicant" element={<ApplicantForm />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div className="flex flex-col justify-between min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<p>Dummy Data</p>} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route 
+              path="/admin/dashboard" 
+              element={
+                <ProtectedRoute 
+                  element={<AdminDashboardPage />} 
+                  allowedRoles={['admin']} 
+                />
+              } 
+            />
+            <Route 
+              path="/admin/manager" 
+              element={
+                <ProtectedRoute 
+                  element={<ManagerForm />} 
+                  allowedRoles={['admin']} 
+                />
+              } 
+            />
+            <Route 
+              path="/admin/applicant" 
+              element={
+                <ProtectedRoute 
+                  element={<ApplicantForm />} 
+                  allowedRoles={['admin']} 
+                />
+              } 
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }
 
