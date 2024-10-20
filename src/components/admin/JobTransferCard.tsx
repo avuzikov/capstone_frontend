@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { User, Job } from "../../mocks/types.ts";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface JobTransferCardProps {
   currentManagerId: string;
@@ -14,44 +15,17 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 }) => {
   const [managers, setManagers] = useState<User[]>([]);
 
-  const [token, setToken] = useState<string>("");
+  const { token } = useAuth();
   const [selectedManagerId, setSelectedManagerId] = useState<string>("");
 
-  const fetchToken = async () => {
-    try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setToken(token);
-    } catch (error) {
-      console.error("Failed to get token:", error);
-    }
-  };
-
+  
   const fetchManagers = useCallback(async () => {
     try {
       const response = await fetch("/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -69,11 +43,15 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
       if (managers.length > 0 && !selectedManagerId) {
         setSelectedManagerId(String(managers[0].id));
+        const firstAvailableManager = managers.find(manager => manager.id.toString() !== currentManagerId);
+        if (firstAvailableManager) {
+          setSelectedManagerId(String(firstAvailableManager.id));
+        }
       }
     } catch (err) {
       console.error(err);
     }
-  }, [token, selectedManagerId]);
+  }, [token, selectedManagerId, currentManagerId]);
 
   const transferJobs = async () => {
     try {
@@ -82,7 +60,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             jobId: job.id,
@@ -102,9 +80,6 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
     }
   };
 
-  useEffect(() => {
-    fetchToken();
-  });
 
   useEffect(() => {
     if (token) {

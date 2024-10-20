@@ -5,6 +5,7 @@ import { User, Job } from "../../mocks/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import JobTransferCard from "./JobTransferCard.tsx";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface ManagerFormProps {
   isEditing: boolean;
@@ -17,6 +18,8 @@ export interface RegistrationData extends User {
 const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+const { token } = useAuth();
+
   const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
     fullName: "",
@@ -36,47 +39,19 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [shouldFetchJobs, setShouldFetchJobs] = useState<boolean>(true);
-  const [token, setToken] = useState<string>("");
 
   const handleShouldFetchJobs = () => {
     setShouldFetchJobs((prev) => !prev);
   };
 
-  const fetchToken = async () => {
-    try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setToken(token);
-    } catch (error) {
-      console.error("Failed to get token:", error);
-    }
-  };
-
+  
   const fetchManager = useCallback(async () => {
     try {
       const response = await fetch(`/users/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -95,10 +70,6 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
   }, [id, token]);
 
   useEffect(() => {
-    fetchToken();
-  }, [id]);
-
-  useEffect(() => {
     if (token) {
       fetchManager();
     }
@@ -110,7 +81,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: formData.fullName,
@@ -136,7 +107,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -169,7 +140,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       const response = await fetch(`/users/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -185,49 +156,26 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const fetchJobs = useCallback(async () => {
     try {
-        console.log("fetching jobs");   
-
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
+       
       const response = await fetch("/api/job?page=1&items=1000", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
 
-      const filteredJobs = data.filter(
+      const filteredJobs = data.jobs.filter(
         (job: Job) => job.userId.toString() === id
       );
-
 
       setJobs(filteredJobs);
     } catch (err) {
       console.error(err);
     }
-  }, [id]);
+  }, [id, token]);
 
   useEffect(() => {
     fetchJobs();

@@ -2,42 +2,20 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../shared/BackButton.tsx";
 
+import { useAuth } from "../../contexts/AuthContext.tsx";
+
 const TableDisplay = () => {
   const navigate = useNavigate();
   const { name } = useParams<{ name: string }>();
 
   const [tableData, setTableData] = useState<Record<string, any>[]>([]);
   const [allKeys, setAllKeys] = useState<string[]>([]);
-  const [token, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchToken = async () => {
-    try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
+  const { token } = useAuth();
 
-      const token = loginResponse.headers.get("Authorization");
 
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setToken(token);
-    } catch (error) {
-      console.error("Failed to get token:", error);
-    }
-  };
+  
 
   const fetchTableData = useCallback(async () => {
     try {
@@ -63,15 +41,23 @@ const TableDisplay = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
+
       const data = await response.json();
 
-      setTableData(data);
+      if (name === "jobs") {
+        const jobs = data.jobs || [];
+        console.log(jobs);
+        setTableData(jobs);
+      } else {
+        console.log(data);
+        setTableData(data);
+      }
 
-      const keys = data.reduce((acc: string[], row: Record<string, any>) => {
+      const keys = (Array.isArray(data.jobs || data) ? (data.jobs || data) : []).reduce((acc: string[], row: Record<string, any>) => {
         Object.keys(row).forEach((key) => {
           if (!acc.includes(key)) {
             acc.push(key);
@@ -80,16 +66,14 @@ const TableDisplay = () => {
         return acc;
       }, []);
       setAllKeys(keys);
-
+    
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch table data:", error);
     }
   }, [name, token]);
 
-  useEffect(() => {
-    fetchToken();
-  }, []);
+ 
 
   useEffect(() => {
     if (token) {

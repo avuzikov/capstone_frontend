@@ -137,8 +137,11 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Display list of available jobs
      - Search and filter jobs
+   - API Endpoints:
+     - **GET /api/job/page?={page}&items?={items}**
+       - Retrieves paginated list of job listings
 
-2. `/job/:id`
+2. `/jobs/:id`
    - Components:
      - JobDetails
      - ApplyButton
@@ -147,12 +150,20 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
      - Display detailed job information
      - Show responsible manager information
      - Allow application submission (redirect to login if not authenticated)
+   - API Endpoints:
+     - **GET /api/job/{id}**
+       - Retrieves details of a specific job
+     - **POST /api/application** (if user is logged in)
+       - Submits a new job application
 
 3. `/register`
    - Components:
      - RegistrationForm
    - Functionality:
      - User registration for applicants
+   - API Endpoints:
+     - **POST /users/registration**
+       - Registers a new user account
 
 4. `/login`
    - Components:
@@ -160,6 +171,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - User authentication for all user types
      - Available functionality depends on user type (Admin, Hiring Manager or Applicant)
+   - API Endpoints:
+     - **POST /users/login**
+       - Authenticates user and receives JWT token
 
 ### Protected Routes - Applicant
 
@@ -170,6 +184,13 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Display list of user's job applications with status
      - Filter applications by status
+   - API Endpoints:
+     - **GET /api/application/{id}** (multiple times)
+       - Retrieves details of user's applications
+     - **PUT /api/application/{id}**
+       - Updates an existing job application
+     - **DELETE /api/application/{id}**
+       - Deletes a job application
 
 6. `/profile`
    - Components:
@@ -178,59 +199,93 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Edit user profile information
      - Manage standard application details (experience, skills, motivation letter)
+   - API Endpoints:
+     - **GET /users/{id}**
+       - Retrieves user's profile information
+     - **PUT /users/{id}**
+       - Updates user's profile information
+     - **DELETE /users/{id}**
+       - Deletes user's account
 
 ### Protected Routes - Hiring Manager
 
-7. `/hiring-manager/dashboard`
-   - Components:
-     - ManagerStats
-     - ActiveJobsList
+7. `/manager/console` (ManagerDashboardPage)
    - Functionality:
-     - Overview of active job postings and applications
+     - Display a list of jobs created by the current manager
+     - Provide a form to create a new job
+     - Allow navigation to JobManagementPage for each job
+   - API Endpoints:
+     - **GET /api/job/page?={page}&items?={items}**
+       - Retrieves paginated list of job listings (can be filtered by the manager's userId)
+     - **POST /api/job**
+       - Creates a new job listing
 
-8. `/hiring-manager/jobs`
-   - Components:
-     - JobList (with CRUD operations)
-     - JobForm
+8. `/manager/{jobid}` (JobManagementPage)
    - Functionality:
-     - Create, read, update, and delete job postings
-
-9. `/hiring-manager/job/:id/applicants`
-   - Components:
-     - ApplicantList
-     - ApplicantStatusUpdate
-     - ApplicantSortOptions
-   - Functionality:
-     - View and manage applicants for a specific job
-     - Update applicant status
-     - Sort applicants by date or status
-     - View applicant statistics on hover (number of applications with each status)
+     - Show description and details of the specific job
+     - Display a list of applicants for the job
+     - Allow CRUD operations on the job
+     - Enable status updates for applicants
+     - Display basic information about the responsible hiring manager
+     - Provide navigation to applicant profiles (read-only)
+   - API Endpoints:
+     - **GET /api/job/{id}**
+       - Retrieves details of a specific job
+     - **PUT /api/job/{id}**
+       - Updates an existing job listing
+     - **DELETE /api/job/{id}**
+       - Deletes a job listing
+     - **GET /api/job/{id}/applications**
+       - Retrieves applications for a specific job
+     - **PUT /api/application/manager/{id}**
+       - Updates status of an application
+     - **GET /api/job/{id}/filter={filter}**
+       - Retrieves filtered list of applications for a job
 
 ### Protected Routes - Admin
 
-10. `/admin/dashboard`
+9. `/admin/dashboard`
     - Components:
       - AdminStats
       - QuickActions
     - Functionality:
       - Overview of platform statistics
       - Quick access to common admin actions
+    - API Endpoints:
+      - **GET /api/job/page?={page}&items?={items}**
+        - Retrieves paginated list of all job listings
 
-11. `/admin/hiring-managers`
+10. `/admin/managers`
     - Components:
       - ManagerList
       - ManagerForm
     - Functionality:
       - CRUD operations for hiring managers
       - Transfer ownership of positions between managers
+    - API Endpoints:
+      - **POST /users/registration/admin**
+        - Registers a new hiring manager
+      - **GET /users/admin/{id}** 
+        - Retrieves details of hiring managers associated with the admin
+      - **PUT /users/admin/{id}**
+        - Updates a hiring manager's details
+      - **DELETE /users/admin/{id}**
+        - Deletes a hiring manager account
 
-12. `/admin/jobs`
+11. `/admin/jobs`
     - Components:
       - JobList (all jobs)
       - JobTransferForm
     - Functionality:
       - View all job postings
       - Transfer job ownership between managers
+    - API Endpoints:
+      - **GET /api/job/page?={page}&items?={items}**
+        - Retrieves paginated list of all job listings
+      - **PUT /api/job/transfer**
+        - Transfers job ownership between managers
+      - **DELETE /api/job/{id}**
+        - Deletes a job listing
 
 ## API Endpoints
 
@@ -489,6 +544,81 @@ The frontend relies on the following backend API endpoints for functionality:
   - `id` (required) – The ID of the application
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` of the application.
 - Response: HTTP status `204 No Content`
+
+## Additional Required API Endpoints
+
+1. GET /api/job/manager
+   - Description: Retrieve jobs created by the current manager
+   - Request:
+     - Query Parameters:
+       - `page` (optional): Page number for pagination
+       - `items` (optional): Number of items per page
+     - Headers:
+       - Authorization: JWT token
+   - Response:
+     ```json
+     {
+       "total": 100,
+       "page": 1,
+       "items": 20,
+       "jobs": [
+         {
+           "id": "int",
+           "listingTitle": "string",
+           "dateListed": "timestamp",
+           "listingStatus": "string",
+           "applicantCount": "int"
+         }
+       ]
+     }
+     ```
+   - Explanation: This endpoint is needed because the existing `/api/job/page` endpoint doesn't provide a way to filter jobs by the creator. It also includes an applicant count, which is useful for the manager dashboard.
+
+2. GET /api/application/job/{jobId}
+   - Description: Retrieve applications for a specific job
+   - Request:
+     - Path Parameters:
+       - `jobId` (required): The ID of the job
+     - Query Parameters:
+       - `page` (optional): Page number for pagination
+       - `items` (optional): Number of items per page
+     - Headers:
+       - Authorization: JWT token
+   - Response:
+     ```json
+     {
+       "total": 50,
+       "page": 1,
+       "items": 20,
+       "applications": [
+         {
+           "id": "int",
+           "userId": "int",
+           "dateApplied": "timestamp",
+           "applicationStatus": "string",
+           "applicantName": "string"
+         }
+       ]
+     }
+     ```
+   - Explanation: This endpoint is necessary because there's no existing API to list applicants for a specific job. The current `/api/application/{id}` endpoint only retrieves a single application by its ID, which is not sufficient for displaying all applicants for a job on the JobManagementPage.
+
+3. GET /api/user/manager/{id}
+   - Description: Retrieve public profile information for a manager
+   - Request:
+     - Path Parameters:
+       - `id` (required): The ID of the manager
+   - Response:
+     ```json
+     {
+       "id": "int",
+       "fullName": "string",
+       "department": "string",
+       "jobTitle": "string",
+       "publicContactInfo": "string"
+     }
+     ```
+   - Explanation: While the existing `/users/{id}` endpoint can retrieve user details, it may contain sensitive information not suitable for public viewing. This new endpoint provides a way to fetch only the public information about a manager, which is necessary for the unprotected ManagerProfilePage.
 
 ## Error Handling
 

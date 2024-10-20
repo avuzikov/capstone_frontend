@@ -1,69 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ManagerCard from "./ManagerCard.tsx";
 import { User } from "../../mocks/types";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 const ManagerList: React.FC = () => {
   const [managers, setManagers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [token, setToken] = useState<string>("");
+  const { token } = useAuth();
 
-  const fetchToken = async () => {
+  
+
+  const fetchManagers = useCallback(async () => {
     try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setToken(token);
-    } catch (error) {
-      console.error("Failed to get token:", error);
-    }
-  };
-
-  const fetchManagers = async () => {
-    try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
       const response = await fetch("/users", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -80,17 +34,12 @@ const ManagerList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchToken();
-  }, []);
-
-  useEffect(() => {
-    if (token) {
-      fetchManagers();
-    }
   }, [token]);
+
+ 
+  useEffect(() => {
+      fetchManagers();
+  }, [fetchManagers]);
 
   if (loading) {
     return <div>Loading...</div>;

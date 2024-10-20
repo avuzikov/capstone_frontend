@@ -4,6 +4,7 @@ import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
 import { User } from "../../mocks/types.ts";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface UserFormProps {
   isEditing: boolean;
@@ -35,43 +36,16 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
     resume: "",
   });
 
-  const [token, setToken] = useState<string>("");
+  const { token } = useAuth();
 
-  const fetchToken = async () => {
-    try {
-      const loginResponse = await fetch("/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "admin@example.com",
-          password: "password",
-        }),
-      });
-      if (!loginResponse.ok) {
-        throw new Error("Failed to login");
-      }
-
-      const token = loginResponse.headers.get("Authorization");
-
-      if (!token) {
-        throw new Error("No token received");
-      }
-
-      setToken(token);
-    } catch (error) {
-      console.error("Failed to get token:", error);
-    }
-  };
-
+  
     const fetchUser = useCallback(async () => {
       try {
         const response = await fetch(`/users/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -120,7 +94,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -148,7 +122,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
       const response = await fetch(`/users/${id}`, {
         method: "DELETE",
         headers: {
-          Authorization: `${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -161,10 +135,6 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
       console.error("Failed to delete user:", error);
     }
   };
-
-  useEffect(() => {
-    fetchToken();
-  }, []);
 
   useEffect(() => {
     if (isEditing && token) {
