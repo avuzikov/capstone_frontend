@@ -138,7 +138,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
      - Display list of available jobs
      - Search and filter jobs
 
-2. `/job/:id`
+2. `/jobs/:id`
    - Components:
      - JobDetails
      - ApplyButton
