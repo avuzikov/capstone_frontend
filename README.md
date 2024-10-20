@@ -137,6 +137,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Display list of available jobs
      - Search and filter jobs
+   - API Endpoints:
+     - **GET /api/job/page?={page}&items?={items}**
+       - Retrieves paginated list of job listings
 
 2. `/jobs/:id`
    - Components:
@@ -147,12 +150,20 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
      - Display detailed job information
      - Show responsible manager information
      - Allow application submission (redirect to login if not authenticated)
+   - API Endpoints:
+     - **GET /api/job/{id}**
+       - Retrieves details of a specific job
+     - **POST /api/application** (if user is logged in)
+       - Submits a new job application
 
 3. `/register`
    - Components:
      - RegistrationForm
    - Functionality:
      - User registration for applicants
+   - API Endpoints:
+     - **POST /users/registration**
+       - Registers a new user account
 
 4. `/login`
    - Components:
@@ -160,6 +171,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - User authentication for all user types
      - Available functionality depends on user type (Admin, Hiring Manager or Applicant)
+   - API Endpoints:
+     - **POST /users/login**
+       - Authenticates user and receives JWT token
 
 ### Protected Routes - Applicant
 
@@ -170,6 +184,13 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Display list of user's job applications with status
      - Filter applications by status
+   - API Endpoints:
+     - **GET /api/application/{id}** (multiple times)
+       - Retrieves details of user's applications
+     - **PUT /api/application/{id}**
+       - Updates an existing job application
+     - **DELETE /api/application/{id}**
+       - Deletes a job application
 
 6. `/profile`
    - Components:
@@ -178,21 +199,48 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
    - Functionality:
      - Edit user profile information
      - Manage standard application details (experience, skills, motivation letter)
+   - API Endpoints:
+     - **GET /users/{id}**
+       - Retrieves user's profile information
+     - **PUT /users/{id}**
+       - Updates user's profile information
+     - **DELETE /users/{id}**
+       - Deletes user's account
 
 ### Protected Routes - Hiring Manager
 
 7. `/manager/console` (ManagerDashboardPage)
-   - Display a list of jobs created by the current manager
-   - Provide a form to create a new job
-   - Allow navigation to JobManagementPage for each job
+   - Functionality:
+     - Display a list of jobs created by the current manager
+     - Provide a form to create a new job
+     - Allow navigation to JobManagementPage for each job
+   - API Endpoints:
+     - **GET /api/job/page?={page}&items?={items}**
+       - Retrieves paginated list of job listings (can be filtered by the manager's userId)
+     - **POST /api/job**
+       - Creates a new job listing
 
 8. `/manager/{jobid}` (JobManagementPage)
-   - Show description and details of the specific job
-   - Display a list of applicants for the job
-   - Allow CRUD operations on the job
-   - Enable status updates for applicants
-   - Display basic information about the responsible hiring manager
-   - Provide navigation to applicant profiles (read-only)
+   - Functionality:
+     - Show description and details of the specific job
+     - Display a list of applicants for the job
+     - Allow CRUD operations on the job
+     - Enable status updates for applicants
+     - Display basic information about the responsible hiring manager
+     - Provide navigation to applicant profiles (read-only)
+   - API Endpoints:
+     - **GET /api/job/{id}**
+       - Retrieves details of a specific job
+     - **PUT /api/job/{id}**
+       - Updates an existing job listing
+     - **DELETE /api/job/{id}**
+       - Deletes a job listing
+     - **GET /api/job/{id}/applications**
+       - Retrieves applications for a specific job
+     - **PUT /api/application/manager/{id}**
+       - Updates status of an application
+     - **GET /api/job/{id}/filter={filter}**
+       - Retrieves filtered list of applications for a job
 
 ### Protected Routes - Admin
 
@@ -203,14 +251,26 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
     - Functionality:
       - Overview of platform statistics
       - Quick access to common admin actions
+    - API Endpoints:
+      - **GET /api/job/page?={page}&items?={items}**
+        - Retrieves paginated list of all job listings
 
-10. `/admin/hiring-managers`
+10. `/admin/managers`
     - Components:
       - ManagerList
       - ManagerForm
     - Functionality:
       - CRUD operations for hiring managers
       - Transfer ownership of positions between managers
+    - API Endpoints:
+      - **POST /users/registration/admin**
+        - Registers a new hiring manager
+      - **GET /users/admin/{id}** 
+        - Retrieves details of hiring managers associated with the admin
+      - **PUT /users/admin/{id}**
+        - Updates a hiring manager's details
+      - **DELETE /users/admin/{id}**
+        - Deletes a hiring manager account
 
 11. `/admin/jobs`
     - Components:
@@ -219,6 +279,13 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
     - Functionality:
       - View all job postings
       - Transfer job ownership between managers
+    - API Endpoints:
+      - **GET /api/job/page?={page}&items?={items}**
+        - Retrieves paginated list of all job listings
+      - **PUT /api/job/transfer**
+        - Transfers job ownership between managers
+      - **DELETE /api/job/{id}**
+        - Deletes a job listing
 
 ## API Endpoints
 
