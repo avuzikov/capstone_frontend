@@ -1,5 +1,5 @@
 import React from "react";
-import AdminDashboardCard from "../../components/admin/AdminDashboardCard";
+import AdminDashboardCard from "../../components/admin/AdminDashboardCard.tsx";
 import { Link } from "react-router-dom";
 
 const AdminDashboardPage = () => {

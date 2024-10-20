@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import Input from "../shared/Input";
+import Input from "../shared/Input.tsx";
 
 type RegisterForm = {
   firstName: string;

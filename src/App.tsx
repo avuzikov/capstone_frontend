@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Header from "./components/shared/Header";
-import Footer from "./components/shared/Footer";
-import LoginPage from "./pages/LoginPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import ManagerForm from "./components/admin/ManagerForm";
-import ApplicantForm from "./components/admin/ApplicantForm";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import Header from "./components/shared/Header.tsx";
+import Footer from "./components/shared/Footer.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
+import ManagerForm from "./components/admin/ManagerForm.tsx";
+import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
 
 const ProtectedRoute: React.FC<{ element: React.ReactElement; allowedRoles: string[] }> = ({ element, allowedRoles }) => {
   const { token, role } = useAuth();
@@ -58,7 +58,6 @@ function App() {
                 />
               } 
             />
-            <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </main>
         <Footer />

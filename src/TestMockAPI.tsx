@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 
-interface LoginResponse {
-  message: string;
-  token?: string;
-  role?: string;
-}
-
 function TestMockAPI() {
-  const [result, setResult] = useState<string>('');
+  const [result, setResult] = useState('');
 
   const testLogin = async () => {
     try {
@@ -22,20 +16,16 @@ function TestMockAPI() {
         }),
       });
 
-      const data: LoginResponse = await response.json();
+      const data = await response.json();
       
       if (response.ok) {
         const authToken = response.headers.get('Authorization');
-        setResult(`Login successful. Token: ${authToken || 'Not provided'}`);
+        setResult(`Login successful. Token: ${authToken}`);
       } else {
         setResult(`Login failed: ${data.message}`);
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setResult(`Error: ${error.message}`);
-      } else {
-        setResult('An unknown error occurred');
-      }
+    } catch (error) {
+      setResult(`Error: ${error.message}`);
     }
   };
 
