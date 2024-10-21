@@ -1,7 +1,5 @@
 import React from 'react';
-import ApplicantStatusUpdate from './ApplicantStatusUpdate';
-
-type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+import ApplicantStatusUpdate from './ApplicantStatusUpdate.tsx';
 
 interface User {
     id: number;
@@ -15,14 +13,14 @@ interface Application {
     userId: number;
     jobId: number;
     dateApplied: string;
-    applicationStatus: ApplicationStatus;
+    applicationStatus: string;
     coverLetter: string;
     customResume: string;
 }
 
 interface ApplicantListProps {
   applicants: (Application & { user: User })[];
-  onStatusChange: (applicantId: number, newStatus: ApplicationStatus) => void;
+  onStatusChange: (applicantId: number, newStatus: string) => void;
 }
 
 const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, onStatusChange }) => {

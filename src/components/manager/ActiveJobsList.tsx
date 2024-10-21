@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { jobs } from '../../mocks/mockData';
+import { jobs } from '../../mocks/mockData.ts';
 
 
 const ActiveJobsList: React.FC = () => {
