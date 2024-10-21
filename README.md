@@ -631,28 +631,33 @@ The frontend relies on the following backend API endpoints for functionality:
 
 ## Team Responsibilities
 
-The team will work in pairs, with each pair focusing on one type of user:
+The team will work individually, with each member focusing on specific tasks:
 
-1. Alexander & Lalitha (Hiring Manager):
-   - Hiring manager dashboard features
-   - Create and manage job postings
-   - Update applicant statuses
-   - Job listing page and job search functionality
-   - Job description page
+1. Alex:
+   - Providing documentation for the team
+   - Supporting the team in case of technical problems
+   - Reducing technical debt
+   - Creating and supporting the Mock API
 
-2. Matt & Abideet (Admin):
-   - Admin dashboard features
-   - Create and manage hiring managers
-   - User management
-   - Authentication and authorization logic
-   - Project architecture and setup
+2. Lalitha:
+   - Implementation of manager pages:
+     - Manager console (/manager/console)
+     - Job management page (/manager/{jobid})
 
-3. Piotr & Sergio (Applicant):
-   - User applications page
-   - Apply button logic
-   - Registration and login forms for applicants
-   - Applicant profile management
-   - Job search and filtering features
+3. Matt:
+   - Implementation of admin pages
+   - Design of pages across the application
+
+4. Abideet:
+   - Implementation of admin pages
+
+5. Piotr:
+   - Implementation of the registration page (/register)
+   - Implementation of the job detail page (/jobs/:id)
+
+6. Sergio:
+   - Implementation of the login page (/login)
+   - Implementation of the job listing page (/jobs)
 
 Shared Responsibilities:
 - All pairs will contribute to:
