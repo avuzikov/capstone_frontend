@@ -15,7 +15,8 @@ const ManagerCard = (link) => {
 }
 
 
-ManagerCard.propTypes = {
+ManagerCard.propTypes = 
+{
     link: PropTypes.string.isRequired,
 };
 

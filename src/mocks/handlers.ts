@@ -83,7 +83,43 @@ let applications: Application[] = [
     coverLetter: 'I am excited to apply for this position...',
     customResume: 'My resume content goes here...'
   },
-]
+  { 
+    id: 2, 
+    userId: 2, 
+    jobId: 2, 
+    dateApplied: new Date().toISOString(), 
+    applicationStatus: 'reviewed',
+    coverLetter: 'I believe my skills are a perfect match for this role...',
+    customResume: 'Detailed resume content for user 2...'
+  },
+  { 
+    id: 3, 
+    userId: 3, 
+    jobId: 3, 
+    dateApplied: new Date().toISOString(), 
+    applicationStatus: 'accepted',
+    coverLetter: 'I am very interested in this job opportunity...',
+    customResume: 'Resume content for user 3...'
+  },
+  { 
+    id: 4, 
+    userId: 4, 
+    jobId: 4, 
+    dateApplied: new Date().toISOString(), 
+    applicationStatus: 'rejected',
+    coverLetter: 'I have the experience and skills required for this job...',
+    customResume: 'Resume content for user 4...'
+  },
+  { 
+    id: 5, 
+    userId: 5, 
+    jobId: 5, 
+    dateApplied: new Date().toISOString(), 
+    applicationStatus: 'pending',
+    coverLetter: 'I am eager to bring my expertise to your team...',
+    customResume: 'Resume content for user 5...'
+  }
+];
 
 // Updated utility function
 const authenticateUser = (request: Request): User | null => {
@@ -277,6 +313,15 @@ export const handlers = [
     return HttpResponse.json(newApplication)
   }),
 
+  http.get('/api/application', ({ request }) => 
+  {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    return HttpResponse.json(applications);
+  }),
+
   http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
@@ -284,9 +329,9 @@ export const handlers = [
     if (!application) {
       return HttpResponse.json({ message: 'Application not found' }, { status: 404 })
     }
-    if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
-    }
+    // if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
+    //   return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    // }
     return HttpResponse.json(application)
   }),
 

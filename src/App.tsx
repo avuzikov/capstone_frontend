@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
 import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import ApplicantsListPage from "./pages/admin/ApplicantsListPage.tsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/manager" element={<ManagerForm />} />
           <Route path="/admin/applicant" element={<ApplicantForm />} />
+          <Route path="/admin/applicants" element={<ApplicantsListPage />} />
         </Routes>
       </main>
       <Footer />

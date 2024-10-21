@@ -26,6 +26,8 @@ const ApplicantForm = () => {
   };
 
   return (
+
+    <div>
     <form onSubmit={handleSubmit} className="card-bordered m-medium">
         <div className="p-large flex flex-col gap-4">
       <h1 className="text-large border-b-2 p-small">Applicant Form</h1>
@@ -75,6 +77,12 @@ const ApplicantForm = () => {
       </div>
       </div>
     </form>
+
+
+    </div>
+
+
+
   );
 };
 

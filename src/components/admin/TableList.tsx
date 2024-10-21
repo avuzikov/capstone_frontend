@@ -1,7 +1,12 @@
 import React from "react";
+import ApplicantList from "./ApplicantList";
 
 const TableList = () => {
-  return <></>;
+  return (
+    <>
+      
+    </>
+  );
 };
 
 export default TableList;
