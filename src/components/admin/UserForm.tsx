@@ -8,13 +8,14 @@ import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface UserFormProps {
   isEditing: boolean;
+  userId?: string;
 }
 
 export interface RegistrationData extends User {
   password: string;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
+const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
@@ -38,30 +39,40 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
 
   const { token } = useAuth();
 
-  
-    const fetchUser = useCallback(async () => {
-      try {
-        const response = await fetch(`/users/${id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  let url: string;
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch users");
-        }
+  console.log(userId);
 
-        const data: User = await response.json();
-        setFormData((prevData) => ({
-          ...data,
-          password: prevData.password,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
+  if (userId != "" && userId != undefined) {
+    url = `/users/${userId}`;
+  } else {
+    url = `/users/${id}`;
+  }
+
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
       }
-    }, [id, token]);
+
+      const data: User = await response.json();
+      setFormData((prevData) => ({
+        ...data,
+        password: prevData.password,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+  }, [id, token]);
 
   const createUser = async () => {
     try {
@@ -90,7 +101,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
 
   const updateUser = async () => {
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -117,9 +128,9 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
 
   const deleteUser = async () => {
     try {
-    
 
-      const response = await fetch(`/users/${id}`, {
+
+      const response = await fetch(url, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,6 +138,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
       });
 
       navigate(-1);
+
 
       if (!response.ok) {
         throw new Error("Failed to delete user");
@@ -198,7 +210,10 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
         createUser();
       }
 
-      navigate(-1);
+
+      if (!userId) {
+        navigate(-1);
+      }
     }
   };
 
@@ -206,7 +221,16 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
     <div className="m-medium flex flex-col gap-3">
       <BackButton />
       <div className="flex flex-col justify-center items-center">
-        <h1 className="text-large w-full lg:w-1/2"> {isEditing ? "Edit User" : "Add User"} </h1>
+        {isEditing && !userId && (
+          <h1 className="text-large w-full lg:w-1/2">Edit User</h1>
+        )}
+        {isEditing && userId && (
+          <h1 className="text-large w-full lg:w-1/2">Profile</h1>
+        )}
+        {!isEditing && !userId && (
+          <h1 className="text-large w-full lg:w-1/2">Add User</h1>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="card-bordered mt-2 w-full lg:w-1/2"
@@ -271,7 +295,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
             )}
 
             <div className="flex gap-3 mt-4 justify-end">
-              {isEditing && (
+              {isEditing && !userId && (
                 <button
                   type="button"
                   className="btn-destructive w-full"
