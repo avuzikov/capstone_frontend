@@ -313,12 +313,13 @@ export const handlers = [
     return HttpResponse.json(newApplication)
   }),
 
+  //TODO: Set up for authorized users
   http.get('/api/application', ({ request }) => 
   {
     const user = authenticateUser(request)
-    if (!user) {
-      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
+    // if (!user) {
+    //   return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    // }
     return HttpResponse.json(applications);
   }),
 
