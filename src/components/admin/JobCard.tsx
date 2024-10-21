@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Job, User } from "../../types/types.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import { Job, User } from "../../types/types";
+import { useAuth } from "../../contexts/AuthContext";
 
 const JobCard = ({ job }: { job: Job }) => {
 

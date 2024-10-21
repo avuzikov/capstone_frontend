@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import ManagerCard from "./ManagerCard.tsx";
-import { User } from "../../types/types.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import { useAuth } from "../../contexts/AuthContext";
+import ManagerCard from "./ManagerCard";
+import { User } from "../../types/types"; // Adjust the import path as necessary
 
 const ManagerList: React.FC = () => {
   const [managers, setManagers] = useState<User[]>([]);
@@ -9,9 +9,13 @@ const ManagerList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
 
-  
-
   const fetchManagers = useCallback(async () => {
+    if (!token) {
+      setError("No authentication token available");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("/users", {
         method: "GET",
@@ -30,15 +34,14 @@ const ManagerList: React.FC = () => {
 
       setManagers(managers);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setLoading(false);
     }
   }, [token]);
 
- 
   useEffect(() => {
-      fetchManagers();
+    fetchManagers();
   }, [fetchManagers]);
 
   if (loading) {

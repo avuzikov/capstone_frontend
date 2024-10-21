@@ -1,13 +1,13 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Input from "../shared/Input.tsx";
-import { isNotEmpty, isValidEmail } from "../../utils/validateInput.ts";
-import useFetch from "../../hooks/useFetch.tsx";
-import { register } from "../../services/api.ts";
-import { UserRegistration } from "../../types/User.ts";
-import LoadingSpinner from "../shared/LoadingSpinner.tsx";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import Input from "../shared/Input";
+import { isNotEmpty, isValidEmail } from "../../utils/validateInput";
+import useFetch from "../../hooks/useFetch";
+import { register } from "../../services/api";
+import { UserRegistration } from "../../types/User";
+import LoadingSpinner from "../shared/LoadingSpinner";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface RegisterFormType {
   firstName: string;

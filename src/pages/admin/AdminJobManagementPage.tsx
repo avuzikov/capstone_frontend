@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import AdminJobList from "../../components/admin/AdminJobList.tsx";
-import BackButton from "../../components/shared/BackButton.tsx";
+import AdminJobList from "../../components/admin/AdminJobList";
+import BackButton from "../../components/shared/BackButton";
 
 const AdminJobManagementPage = () => {
     return (

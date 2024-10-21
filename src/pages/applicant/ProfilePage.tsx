@@ -1,6 +1,6 @@
 import React from "react";
-import UserForm from "../../components/admin/UserForm.tsx";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import UserForm from "../../components/admin/UserForm";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 const ProfilePage = () => {

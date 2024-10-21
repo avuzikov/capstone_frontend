@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import JobForm from '../../components/manager/JobForm.tsx';
-import ApplicantList from '../../components/manager/ApplicantList.tsx';
-import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate.tsx';
-import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions.tsx';
-import { jobs, applications, users, updateJob, updateApplication } from '../../mocks/mockData.ts';
-import { Job, Application, User } from '../../types/types.ts';
+import JobForm from '../../components/manager/JobForm';
+import ApplicantList from '../../components/manager/ApplicantList';
+import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate';
+import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions';
+import { jobs, applications, users, updateJob, updateApplication } from '../../mocks/mockData';
+import { Job, Application, User } from '../../types/types';
 
 type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
 type FilterStatus = ApplicationStatus | 'all';

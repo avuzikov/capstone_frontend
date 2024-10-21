@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext.tsx'; 
+import { useAuth } from '../../contexts/AuthContext'; 
 
 
 interface ApplicationRequest {

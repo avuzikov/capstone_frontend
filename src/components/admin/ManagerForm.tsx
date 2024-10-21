@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Input from "../shared/Input.tsx";
-import BackButton from "../shared/BackButton.tsx";
-import { User, Job } from "../../types/types.ts";
+import Input from "../shared/Input";
+import BackButton from "../shared/BackButton";
+import { User, Job } from "../../types/types";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import JobTransferCard from "./JobTransferCard.tsx";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import JobTransferCard from "./JobTransferCard";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface ManagerFormProps {
   isEditing: boolean;

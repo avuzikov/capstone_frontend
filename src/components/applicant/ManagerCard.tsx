@@ -1,9 +1,9 @@
 import React, { useEffect, ReactNode } from "react";
-import useFetch from "../../hooks/useFetch.tsx";
+import useFetch from "../../hooks/useFetch";
 
-import { getUserDetails } from "../../services/api.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
-import LoadingSpinner from "../shared/LoadingSpinner.tsx";
+import { getUserDetails } from "../../services/api";
+import { useAuth } from "../../contexts/AuthContext";
+import LoadingSpinner from "../shared/LoadingSpinner";
 
 const ManagerCard = ({ id }: { id: string | undefined }) => {
   const { token } = useAuth();

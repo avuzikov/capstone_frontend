@@ -1,21 +1,24 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
-import UserCard from "./UserCard.tsx";
-import { User } from "../../types/types.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import UserCard from "./UserCard";
+import { User } from "../../types/types";
+import { useAuth } from "../../contexts/AuthContext";
 
-const UserList = () => {
+const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // use the auth context
   const { token } = useAuth();
 
   const fetchUsers = useCallback(async () => {
-    try {
-      console.log(token);
+    if (!token) {
+      setError("No authentication token available");
+      setLoading(false);
+      return;
+    }
 
+    try {
       const response = await fetch("/users", {
         method: "GET",
         headers: {
@@ -29,11 +32,11 @@ const UserList = () => {
       }
 
       const data: User[] = await response.json();
-      const managers = data.filter((user) => user.role === "applicant");
+      const applicants = data.filter((user) => user.role === "applicant");
 
-      setUsers(managers);
+      setUsers(applicants);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setLoading(false);
     }
@@ -41,7 +44,6 @@ const UserList = () => {
 
   useEffect(() => {
     if (token) {
-      console.log(token);
       fetchUsers();
     }
   }, [token, fetchUsers]);

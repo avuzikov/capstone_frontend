@@ -1,14 +1,14 @@
 import React, { ReactNode, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
-import { useAuth } from "../../contexts/AuthContext.tsx";
-import useFetch from "../../hooks/useFetch.tsx";
-import { getJobDetails } from "../../services/api.ts";
-import LoadingSpinner from "../../components/shared/LoadingSpinner.tsx";
-import { JobDetailsType } from "../../types/Job.ts";
-import JobDetails from "../../components/applicant/JobDetails.tsx";
-import ManagerCard from "../../components/applicant/ManagerCard.tsx";
-import ApplyButton from "../../components/applicant/ApplyButton.tsx";
+import { useAuth } from "../../contexts/AuthContext";
+import useFetch from "../../hooks/useFetch";
+import { getJobDetails } from "../../services/api";
+import LoadingSpinner from "../../components/shared/LoadingSpinner";
+import { JobDetailsType } from "../../types/Job";
+import JobDetails from "../../components/applicant/JobDetails";
+import ManagerCard from "../../components/applicant/ManagerCard";
+import ApplyButton from "../../components/applicant/ApplyButton";
 
 const JobDetailsPage = () => {
   const { id } = useParams();

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ManagerList from "../../components/admin/ManagerList.tsx";
-import BackButton from "../../components/shared/BackButton.tsx";
+import ManagerList from "../../components/admin/ManagerList";
+import BackButton from "../../components/shared/BackButton";
 
 const ManagerManagementPage = () => {
   return (

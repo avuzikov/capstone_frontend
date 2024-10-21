@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import JobList from "../components/applicant/JobList.tsx";
-import {fetchJobs} from "../contexts/JobApi.tsx";
-import { useAuth } from "../contexts/AuthContext.tsx";
+import JobList from "../components/applicant/JobList";
+import {fetchJobs} from "../contexts/JobApi";
+import { useAuth } from "../contexts/AuthContext";
 
 const JobPage: React.FC = () => {
     

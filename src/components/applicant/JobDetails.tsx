@@ -1,6 +1,6 @@
 import React from "react";
-import { JobDetailsType } from "../../types/Job.tsx";
-import { format } from "../../utils/formatDate.ts";
+import { JobDetailsType } from "../../types/Job";
+import { format } from "../../utils/formatDate";
 
 const JobDetails = ({ job }: { job: JobDetailsType }) => {
   return (

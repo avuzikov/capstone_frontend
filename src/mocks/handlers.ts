@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
-import { User, Job, Application } from '../types/types.ts'
-import { users, jobs, applications, addUser, updateUser, deleteUser, addJob, updateJob, deleteJob, addApplication, updateApplication, deleteApplication } from './mockData.ts'
+import { User, Job, Application } from '../types/types'
+import { users, jobs, applications, addUser, updateUser, deleteUser, addJob, updateJob, deleteJob, addApplication, updateApplication, deleteApplication } from './mockData'
 
 // Define interfaces for request bodies
 interface LoginRequest {

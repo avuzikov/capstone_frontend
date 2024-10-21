@@ -1,5 +1,5 @@
 import React from 'react';
-import ApplicantStatusUpdate from './ApplicantStatusUpdate.tsx';
+import ApplicantStatusUpdate from './ApplicantStatusUpdate';
 import { User, Application } from './types';
 
 type ApplicationStatus = Application['applicationStatus'];

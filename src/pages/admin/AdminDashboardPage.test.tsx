@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminDashboardPage from './AdminDashboardPage.tsx';
+import AdminDashboardPage from './AdminDashboardPage';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
