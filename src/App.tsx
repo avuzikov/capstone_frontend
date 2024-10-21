@@ -14,6 +14,8 @@ import TableDisplay from "./components/admin/TableDisplay.tsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
 import ProfilePage from "./pages/applicant/ProfilePage.tsx";
 import JobDetailsPage from "./pages/applicant/JobDetailsPage.tsx";
+import JobPage from "./pages/JobPage.tsx";
+import ApplicationForm from "./components/applicant/ApplicationForm.tsx";
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -44,6 +46,9 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/jobs" element={<JobPage />} />
+      <Route path="/apply/:jobId" element={<ApplicationForm />} />
             <Route
               path="/admin/dashboard"
               element={
