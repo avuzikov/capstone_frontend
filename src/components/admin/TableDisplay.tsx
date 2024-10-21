@@ -15,8 +15,6 @@ const TableDisplay = () => {
   const { token } = useAuth();
 
 
-  
-
   const fetchTableData = useCallback(async () => {
     try {
       let url: string;
@@ -66,14 +64,14 @@ const TableDisplay = () => {
         return acc;
       }, []);
       setAllKeys(keys);
-    
+
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch table data:", error);
     }
   }, [name, token]);
 
- 
+
 
   useEffect(() => {
     if (token) {
@@ -135,8 +133,8 @@ const TableDisplay = () => {
                 {allKeys.map((key, cellIndex) => (
                   <td key={cellIndex} className="border px-4 py-2">
                     {row[key] !== null &&
-                    row[key] !== undefined &&
-                    row[key] !== ""
+                      row[key] !== undefined &&
+                      row[key] !== ""
                       ? row[key]
                       : "-"}
                   </td>

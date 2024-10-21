@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
   token: string | null;
+  id: string | null;
   role: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -12,6 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
   const [role, setRole] = useState<string | null>(localStorage.getItem('userRole'));
+  const [id, setId] = useState<string | null>(localStorage.getItem('userId'));
 
   useEffect(() => {
     if (token) {
@@ -29,6 +31,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [role]);
 
+  useEffect(() => {
+    if (id) {
+      localStorage.setItem('userId', id);
+    } else {
+      localStorage.removeItem('userId');
+    }
+  }, [id]);
+
   const login = async (email: string, password: string) => {
     const response = await fetch('/users/login', {
       method: 'POST',
@@ -42,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data = await response.json();
       setToken(data.token);
       setRole(data.role);
+      setId(data.id)
     } else {
       throw new Error('Login failed');
     }
@@ -50,10 +61,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setToken(null);
     setRole(null);
+    setId(null);
   };
 
   return (
-    <AuthContext.Provider value={{ token, role, login, logout }}>
+    <AuthContext.Provider value={{ token, id, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
