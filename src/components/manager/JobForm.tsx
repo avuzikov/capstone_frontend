@@ -1,76 +1,127 @@
-import React, { useState, useEffect } from 'react';
-
-interface Job {
-  id: number;
-  listingTitle: string;
-  dateListed: string;
-  applicantsCount: number;
-}
+import React, { useState } from 'react';
 
 interface JobFormProps {
-  onSubmit: (job: Job) => void;
-  initialJob?: Job | null;
+  initialJob?: {
+    listingTitle: string;
+    department: string;
+    listingStatus: string;
+    jobTitle: string;
+    jobDescription: string;
+    experienceLevel: string;
+    additionalInformation?: string;
+  };
+  onSubmit: (jobData: any) => void;
 }
 
-const JobForm: React.FC<JobFormProps> = ({ onSubmit, initialJob }) => {
-  const [listingTitle, setListingTitle] = useState(initialJob?.listingTitle || '');
-  const [dateListed, setDateListed] = useState(initialJob?.dateListed || '');
+const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit }) => {
+  const [job, setJob] = useState(initialJob || {
+    listingTitle: '',
+    department: '',
+    listingStatus: 'open',
+    jobTitle: '',
+    jobDescription: '',
+    experienceLevel: '',
+    additionalInformation: ''
+  });
 
-  useEffect(() => {
-    if (initialJob) {
-      setListingTitle(initialJob.listingTitle);
-      setDateListed(initialJob.dateListed);
-    }
-  }, [initialJob]);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setJob(prevJob => ({ ...prevJob, [name]: value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      id: initialJob?.id || 0,
-      listingTitle,
-      dateListed,
-      applicantsCount: initialJob?.applicantsCount || 0,
-    });
-    setListingTitle('');
-    setDateListed('');
+    onSubmit(job);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-8 bg-white shadow rounded-lg p-6">
-      <h2 className="text-xl font-semibold mb-4">
-        {initialJob ? 'Edit Job' : 'Add New Job'}
-      </h2>
-      <div className="mb-4">
-        <label htmlFor="listingTitle" className="block text-sm font-medium text-gray-700">
-          Job Title
-        </label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label htmlFor="listingTitle" className="block text-sm font-medium text-gray-700">Listing Title</label>
         <input
           type="text"
+          name="listingTitle"
           id="listingTitle"
-          value={listingTitle}
-          onChange={(e) => setListingTitle(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          value={job.listingTitle}
+          onChange={handleChange}
           required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
         />
       </div>
-      <div className="mb-4">
-        <label htmlFor="dateListed" className="block text-sm font-medium text-gray-700">
-          Date Listed
-        </label>
+      <div>
+        <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
         <input
-          type="date"
-          id="dateListed"
-          value={dateListed}
-          onChange={(e) => setDateListed(e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          type="text"
+          name="department"
+          id="department"
+          value={job.department}
+          onChange={handleChange}
           required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
         />
       </div>
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        {initialJob ? 'Update Job' : 'Add Job'}
+      <div>
+        <label htmlFor="listingStatus" className="block text-sm font-medium text-gray-700">Listing Status</label>
+        <select
+          name="listingStatus"
+          id="listingStatus"
+          value={job.listingStatus}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        >
+          <option value="open">Open</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">Job Title</label>
+        <input
+          type="text"
+          name="jobTitle"
+          id="jobTitle"
+          value={job.jobTitle}
+          onChange={handleChange}
+          required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        />
+      </div>
+      <div>
+        <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">Job Description</label>
+        <textarea
+          name="jobDescription"
+          id="jobDescription"
+          value={job.jobDescription}
+          onChange={handleChange}
+          required
+          rows={4}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        ></textarea>
+      </div>
+      <div>
+        <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">Experience Level</label>
+        <input
+          type="text"
+          name="experienceLevel"
+          id="experienceLevel"
+          value={job.experienceLevel}
+          onChange={handleChange}
+          required
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        />
+      </div>
+      <div>
+        <label htmlFor="additionalInformation" className="block text-sm font-medium text-gray-700">Additional Information</label>
+        <textarea
+          name="additionalInformation"
+          id="additionalInformation"
+          value={job.additionalInformation}
+          onChange={handleChange}
+          rows={4}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+        ></textarea>
+      </div>
+      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        {initialJob ? 'Update Job' : 'Create Job'}
       </button>
     </form>
   );

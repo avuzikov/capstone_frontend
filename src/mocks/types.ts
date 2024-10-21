@@ -2,6 +2,7 @@ export interface User {
     id: number;
     fullName: string;
     email: string;
+    password: string;
     role: 'applicant' | 'hiring-manager' | 'admin';
     address?: string;
     phone?: string;

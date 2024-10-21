@@ -1,29 +1,133 @@
 import React from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/shared/Header.tsx";
 import Footer from "./components/shared/Footer.tsx";
-import { Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
-import ApplicantForm from "./components/admin/ApplicantForm.tsx";
-import ManagerDashboardPage from "./pages/manager/ManagerDashboardPage.tsx";
+import RegisterPage from "./pages/applicant/RegisterPage.tsx";
+import UserForm from "./components/admin/UserForm.tsx";
+import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
+import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
+import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
+import TableDisplay from "./components/admin/TableDisplay.tsx";
+import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
+import ProfilePage from "./pages/applicant/ProfilePage.tsx";
+
+const ProtectedRoute: React.FC<{
+  element: React.ReactElement;
+  allowedRoles: string[];
+}> = ({ element, allowedRoles }) => {
+  const { token, role } = useAuth();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (role && allowedRoles.includes(role)) {
+    return element;
+  }
+
+  return <Navigate to="/" replace />;
+};
 
 function App() {
   return (
-    <div className="flex flex-col justify-between min-h-screen">
-      <Header />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<p>Dummy Data</p>} />
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          <Route path="/admin/manager" element={<ManagerForm />} />
-          <Route path="/admin/applicant" element={<ApplicantForm />} />
-          <Route path="/jobs" Component={ManagerDashboardPage} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div className="flex flex-col justify-between min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<p>Dummy Data</p>} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute
+                  element={<AdminDashboardPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/newManager"
+              element={
+                <ProtectedRoute
+                  element={<ManagerForm isEditing={false} />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/newUser"
+              element={
+                <ProtectedRoute
+                  element={<UserForm isEditing={false} />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute
+                  element={<UserManagementPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/managers"
+              element={
+                <ProtectedRoute
+                  element={<ManagerManagementPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/tables"
+              element={
+                <ProtectedRoute
+                  element={<DataTableManagementPage />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/user/:id"
+              element={
+                <ProtectedRoute
+                  element={<UserForm isEditing={true} />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/manager/:id"
+              element={
+                <ProtectedRoute
+                  element={<ManagerForm isEditing={true} />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+            <Route
+              path="/admin/tables/:name"
+              element={
+                <ProtectedRoute
+                  element={<TableDisplay />}
+                  allowedRoles={["admin"]}
+                />
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </AuthProvider>
   );
 }
 
