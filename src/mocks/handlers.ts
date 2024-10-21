@@ -100,6 +100,33 @@ export const handlers = [
     return HttpResponse.json(users)
   }),
 
+  http.get<{ id: string }>('/users/managers/:id', ({ params, request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+
+    const { id } = params
+    const managerId = parseInt(id);
+
+    const managers = users.filter(u => u.role === 'hiring-manager')
+
+    const manager = managers.find(u => u.id === managerId)
+
+    if (!manager) {
+      return HttpResponse.json({ message: 'Manager not found' }, { status: 404 })
+    }
+
+    // return only the manager fullName, email, and department
+    return HttpResponse.json({
+      id: manager.id,
+      fullName: manager.fullName,
+      email: manager.email,
+      department: manager.department
+    })
+    
+  }),
+
   http.post<never, RegistrationRequest>('/users/registration/admin', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'admin') {
