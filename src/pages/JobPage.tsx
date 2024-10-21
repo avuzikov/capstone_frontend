@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext.tsx";
 const JobPage: React.FC = () => {
     
     const {token} = useAuth();
+    const {id} = useAuth();
     const [jobs, setJobs] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -31,9 +32,7 @@ const JobPage: React.FC = () => {
         <div>
           <div className="container mx-auto p-4">
             
-
-
-            {loading ? (<p>Loading jobs...</p>) : (<JobList jobs={jobs} />)}
+            {loading ? (<p>Loading jobs...</p>) : (<JobList jobs={jobs} token={token} userId={id}/>)}
 
             <div className="flex justify-between items-center p-medium">
             <button

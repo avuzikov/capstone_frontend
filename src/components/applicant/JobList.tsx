@@ -15,15 +15,19 @@ interface Job {
 
 interface JobListProps {
   jobs: Job[];
+  token: string | null;
+  userId: string | null;
 }
 
-const JobList: React.FC<JobListProps> = ({ jobs }) => {
+const JobList: React.FC<JobListProps> = ({ jobs, token, userId }) => {
   if (jobs.length === 0) {
     return <p>No jobs found</p>;
   }
 
   const hangleApply = (id) =>{
     console.log(id)
+    console.log(token)
+    console.log(userId)
   }
 
   return (
