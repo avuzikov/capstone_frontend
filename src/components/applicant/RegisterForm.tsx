@@ -7,6 +7,7 @@ import useFetch from "../../hooks/useFetch.tsx";
 import { register } from "../../services/api.ts";
 import { UserRegistration } from "../../types/User.ts";
 import LoadingSpinner from "../shared/LoadingSpinner.tsx";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface RegisterFormType {
   firstName: string;
@@ -33,8 +34,13 @@ const RegisterForm = () => {
     confirmPassword: "",
   } as RegisterFormType);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
-  const { isPending, error, fetchDispatch } = useFetch(register);
-  const [wasRegisterSend, setWasRegisterSend] = useState(false);
+  const {
+    data: responseData,
+    isPending,
+    error,
+    fetchDispatch,
+  } = useFetch(register);
+  const { setData: setAuth } = useAuth();
 
   const checkErrors = (
     field: Field,
@@ -86,7 +92,6 @@ const RegisterForm = () => {
       name: data.firstName + " " + data.lastName,
     };
 
-    setWasRegisterSend(true);
     await fetchDispatch(body);
   };
 
@@ -98,15 +103,10 @@ const RegisterForm = () => {
     checkErrors(field, event.target.value);
   };
 
-  useEffect(() => {
-    if (wasRegisterSend && !isPending && !error) {
-      setWasRegisterSend(false);
-      navigate("/profile");
-    }
-    if (wasRegisterSend && !isPending && error) {
-      setWasRegisterSend(false);
-    }
-  }, [isPending, error, wasRegisterSend, navigate]);
+  if (responseData) {
+    setAuth(responseData.token, responseData.role);
+    navigate("/profile");
+  }
 
   return (
     <div className="p-large rounded-lg w-[28rem]">
