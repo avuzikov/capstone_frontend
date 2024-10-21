@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button type="submit" className="btn-primary mt-medium">
+                    <button type="submit" className="btn-primary mt-[16px]">
                         Log In
                     </button>
 
