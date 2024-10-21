@@ -8,12 +8,12 @@ import LoadingSpinner from "../../components/shared/LoadingSpinner.tsx";
 import { JobDetailsType } from "../../types/Job.ts";
 import JobDetails from "../../components/applicant/JobDetails.tsx";
 import ManagerCard from "../../components/applicant/ManagerCard.tsx";
+import ApplyButton from "../../components/applicant/ApplyButton.tsx";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
   const { token, role } = useAuth();
   const { data, isPending, error, fetchDispatch } = useFetch(getJobDetails);
-  const navigate = useNavigate();
 
   const isAuthenticatedApplicant = token && role === "applicant";
 
@@ -57,12 +57,6 @@ const JobDetailsPage = () => {
     jobData = <JobDetails job={data} />;
   }
 
-  const handleApply = (id: string) => {
-    if (isAuthenticatedApplicant) {
-      navigate(`/apply/${id}`);
-    }
-  };
-
   return (
     <div className="mx-auto w-2/3 min-h-[calc(100vh-64px-56px)] m-4 gap-2 flex flex-row">
       <main className="bg-adp-gray border-adp-navy-light border rounded-lg p-4 w-1/2">
@@ -73,14 +67,7 @@ const JobDetailsPage = () => {
           <ManagerCard id={data?.userId} />
         </div>
 
-        {isAuthenticatedApplicant && (
-          <button
-            className="py-1.5 px-3 bg-adp-red text-adp-white border border-adp-red-light rounded-md shadow-sm hover:bg-adp-red-light transition-colors w-full mt-2 text-medium"
-            onClick={() => handleApply(data.id)}
-          >
-            Apply now!
-          </button>
-        )}
+        {isAuthenticatedApplicant && <ApplyButton id={data?.id} />}
         {!isAuthenticatedApplicant && (
           <Link
             to="/login"
