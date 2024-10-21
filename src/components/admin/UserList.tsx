@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import UserCard from "./UserCard.tsx";
-import { User } from "../../mocks/types.ts";
+import { User } from "../../types/types.ts";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 
 const UserList = () => {

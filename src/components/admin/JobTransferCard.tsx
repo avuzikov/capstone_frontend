@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { User, Job } from "../../mocks/types.ts";
+import { User, Job } from "../../types/types.ts";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface JobTransferCardProps {

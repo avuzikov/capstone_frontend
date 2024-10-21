@@ -1,4 +1,4 @@
-import { User, Job, Application } from './types';
+import { User, Job, Application } from '../types/types';
 
 export let users: User[] = [
   { 

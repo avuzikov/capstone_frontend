@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
-import { User, Job } from "../../mocks/types";
+import { User, Job } from "../../types/types.ts";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import JobTransferCard from "./JobTransferCard.tsx";

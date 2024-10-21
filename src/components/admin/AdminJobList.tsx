@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext.tsx";
-import { Job } from "../../mocks/types";
+import { Job } from "../../types/types.ts";
 import JobCard from "./JobCard.tsx";
 
 const AdminJobList = () => {

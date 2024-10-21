@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ManagerCard from "./ManagerCard.tsx";
-import { User } from "../../mocks/types";
+import { User } from "../../types/types.ts";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 
 const ManagerList: React.FC = () => {

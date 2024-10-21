@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
-import { User } from "../../mocks/types.ts";
+import { User } from "../../types/types.ts";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 

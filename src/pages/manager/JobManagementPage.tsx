@@ -5,7 +5,7 @@ import ApplicantList from '../../components/manager/ApplicantList.tsx';
 import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate.tsx';
 import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions.tsx';
 import { jobs, applications, users, updateJob, updateApplication } from '../../mocks/mockData.ts';
-import { Job, Application, User } from '../../mocks/types.ts';
+import { Job, Application, User } from '../../types/types.ts';
 
 type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
 type FilterStatus = ApplicationStatus | 'all';
