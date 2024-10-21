@@ -1,6 +1,8 @@
 import React from 'react';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate';
 
+type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+
 interface User {
     id: number;
     fullName: string;
@@ -13,14 +15,14 @@ interface Application {
     userId: number;
     jobId: number;
     dateApplied: string;
-    applicationStatus: string;
+    applicationStatus: ApplicationStatus;
     coverLetter: string;
     customResume: string;
 }
 
 interface ApplicantListProps {
   applicants: (Application & { user: User })[];
-  onStatusChange: (applicantId: number, newStatus: string) => void;
+  onStatusChange: (applicantId: number, newStatus: ApplicationStatus) => void;
 }
 
 const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, onStatusChange }) => {

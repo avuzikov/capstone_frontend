@@ -1,15 +1,17 @@
 import React from 'react';
 
+type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+
 interface ApplicantStatusUpdateProps {
-  currentStatus: string;
-  onStatusChange: (newStatus: string) => void;
+  currentStatus: ApplicationStatus;
+  onStatusChange: (newStatus: ApplicationStatus) => void;
 }
 
 const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({ currentStatus, onStatusChange }) => {
   return (
     <select
       value={currentStatus}
-      onChange={(e) => onStatusChange(e.target.value)}
+      onChange={(e) => onStatusChange(e.target.value as ApplicationStatus)}
       className="border border-gray-300 rounded-md shadow-sm p-2"
     >
       <option value="pending">Pending</option>

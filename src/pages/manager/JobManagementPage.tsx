@@ -2,32 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import JobForm from '../../components/manager/JobForm';
 import ApplicantList from '../../components/manager/ApplicantList';
-import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate';
 import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions';
 import { jobs, applications, users, updateJob, updateApplication } from '../../mocks/mockData';
 import { Job, Application, User } from '../../mocks/types';
 
-type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted' | 'undefined'
+type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+type FilterStatus = ApplicationStatus | 'all';
 
 const JobManagementPage: React.FC = () => {
     const { jobId } = useParams<{ jobId: string }>();
-    const [job, setJob] = useState(jobs.find(j => j.id === parseInt(jobId || '')));
-    const [applicants, setApplicants] = useState<Application[]>([]);
+    const [job, setJob] = useState<Job | undefined>(jobs.find(j => j.id === parseInt(jobId || '')));
+    const [applicants, setApplicants] = useState<(Application & { user: User })[]>([]);
     const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
-    const [filterStatus, setFilterStatus] = useState<ApplicationStatus | 'all'> ('all');
+    const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
     useEffect(() => {
         const foundJob = jobs.find(j => j.id === parseInt(jobId || '0'));
         if (foundJob) {
-            setJob(foundJob as Job);
+            setJob(foundJob);
             const jobApplicants = applications
                 .filter(app => app.jobId === foundJob.id)
                 .map(app => ({
                     ...app,
-                    user: users.find(u => u.id === app.userId)
+                    user: users.find(u => u.id === app.userId) as User
                 }));
-            setApplicants(jobApplicants as Application[]);
+            setApplicants(jobApplicants);
         }
     }, [jobId]);
 
@@ -36,17 +36,21 @@ const JobManagementPage: React.FC = () => {
     }
 
     const handleUpdateJob = (updatedJobData: Partial<Job>) => {
-        updateJob(job.id, updatedJobData);
-        setJob({ ...job, ...updatedJobData });
+        const updatedJob = { ...job, ...updatedJobData };
+        updateJob(job.id, updatedJob);
+        setJob(updatedJob);
         setIsEditing(false);
     };
 
     const handleStatusChange = (applicantId: number, newStatus: ApplicationStatus) => {
         setApplicants(prevApplicants =>
             prevApplicants.map(app =>
-                app.id === applicantId ? { ...app, applicationStatus: newStatus } : app
+                app.id === applicantId 
+                    ? { ...app, applicationStatus: newStatus } 
+                    : app
             )
         );
+        updateApplication(applicantId, { applicationStatus: newStatus });
     };
 
     const sortedAndFilteredApplicants = applicants
@@ -83,7 +87,7 @@ const JobManagementPage: React.FC = () => {
                 sortBy={sortBy}
                 filterStatus={filterStatus}
                 onSortChange={setSortBy}
-                onFilterChange={setFilterStatus}
+                onFilterChange={(status) => setFilterStatus(status as FilterStatus)}
             />
             <ApplicantList
                 applicants={sortedAndFilteredApplicants}

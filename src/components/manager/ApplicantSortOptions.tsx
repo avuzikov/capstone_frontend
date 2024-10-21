@@ -1,10 +1,12 @@
 import React from 'react';
 
+type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted' | 'all';
+
 interface ApplicantSortOptionsProps {
   sortBy: 'date' | 'status';
-  filterStatus: string;
+  filterStatus: ApplicationStatus;
   onSortChange: (sortBy: 'date' | 'status') => void;
-  onFilterChange: (filterStatus: string) => void;
+  onFilterChange: (filterStatus: ApplicationStatus) => void;
 }
 
 const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
@@ -25,7 +27,7 @@ const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
       </select>
       <select
         value={filterStatus}
-        onChange={(e) => onFilterChange(e.target.value)}
+        onChange={(e) => onFilterChange(e.target.value as ApplicationStatus)}
         className="border border-gray-300 rounded-md shadow-sm p-2"
       >
         <option value="all">All Statuses</option>
