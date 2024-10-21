@@ -5,20 +5,27 @@ import Footer from "./components/shared/Footer.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
-import ApplicantForm from "./components/admin/ApplicantForm.tsx";
+import UserForm from "./components/admin/UserForm.tsx";
+import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
+import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
+import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
+import TableDisplay from "./components/admin/TableDisplay.tsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
 
-const ProtectedRoute: React.FC<{ element: React.ReactElement; allowedRoles: string[] }> = ({ element, allowedRoles }) => {
+const ProtectedRoute: React.FC<{
+  element: React.ReactElement;
+  allowedRoles: string[];
+}> = ({ element, allowedRoles }) => {
   const { token, role } = useAuth();
-  
+
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (role && allowedRoles.includes(role)) {
     return element;
   }
-  
+
   return <Navigate to="/" replace />;
 };
 
@@ -28,37 +35,91 @@ function App() {
       <div className="flex flex-col justify-between min-h-screen">
         <Header />
         <main className="flex-grow">
-          <Routes>
+            <Routes>
             <Route path="/" element={<p>Dummy Data</p>} />
             <Route path="/login" element={<LoginPage />} />
-            <Route 
-              path="/admin/dashboard" 
+            <Route
+              path="/admin/dashboard"
               element={
-                <ProtectedRoute 
-                  element={<AdminDashboardPage />} 
-                  allowedRoles={['admin']} 
-                />
-              } 
+              <ProtectedRoute
+                element={<AdminDashboardPage />}
+                allowedRoles={["admin"]}
+              />
+              }
             />
-            <Route 
-              path="/admin/manager" 
+            <Route
+              path="/admin/newManager"
               element={
-                <ProtectedRoute 
-                  element={<ManagerForm />} 
-                  allowedRoles={['admin']} 
-                />
-              } 
+              <ProtectedRoute
+                element={<ManagerForm isEditing={false} />}
+                allowedRoles={["admin"]}
+              />
+              }
             />
-            <Route 
-              path="/admin/applicant" 
+            <Route
+              path="/admin/newUser"
               element={
-                <ProtectedRoute 
-                  element={<ApplicantForm />} 
-                  allowedRoles={['admin']} 
-                />
-              } 
+              <ProtectedRoute
+                element={<UserForm isEditing={false} />}
+                allowedRoles={["admin"]}
+              />
+              }
             />
-          </Routes>
+            <Route
+              path="/admin/users"
+              element={
+              <ProtectedRoute
+                element={<UserManagementPage />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            <Route
+              path="/admin/managers"
+              element={
+              <ProtectedRoute
+                element={<ManagerManagementPage />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            <Route
+              path="/admin/tables"
+              element={
+              <ProtectedRoute
+                element={<DataTableManagementPage />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            <Route
+              path="/admin/user/:id"
+              element={
+              <ProtectedRoute
+                element={<UserForm isEditing={true} />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            <Route
+              path="/admin/manager/:id"
+              element={
+              <ProtectedRoute
+                element={<ManagerForm isEditing={true} />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            <Route
+              path="/admin/tables/:name"
+              element={
+              <ProtectedRoute
+                element={<TableDisplay />}
+                allowedRoles={["admin"]}
+              />
+              }
+            />
+            </Routes>
         </main>
         <Footer />
       </div>

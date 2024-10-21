@@ -92,6 +92,14 @@ export const handlers = [
     )
   }),
 
+  http.get('/users', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    return HttpResponse.json(users)
+  }),
+
   http.post<never, RegistrationRequest>('/users/registration/admin', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'admin') {
@@ -120,7 +128,7 @@ export const handlers = [
   http.put<{ id: string }>('/users/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    if (!user || user.id !== parseInt(id)) {
+    if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json() as Partial<User>
@@ -171,6 +179,24 @@ export const handlers = [
     }
     addJob(newJob)
     return HttpResponse.json(newJob)
+  }),
+  
+  http.put<never, JobTransferRequest>('/api/job/transfer', async ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const { jobId, fromUserId, toUserId } = await request.json()
+    
+    const jobToTransfer = jobs.find(j => j.id === jobId)
+
+    if (!jobToTransfer) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
+    }
+
+    jobToTransfer.userId = Number(toUserId);
+
+    return HttpResponse.json(jobToTransfer)
   }),
 
   http.put<{ id: string }, JobRequest>('/api/job/:id', async ({ params, request }) => {
@@ -293,6 +319,19 @@ export const handlers = [
     updateApplication(parseInt(id), { applicationStatus })
     const updatedApplication = applications.find(a => a.id === parseInt(id))
     return HttpResponse.json(updatedApplication)
+  }),
+
+  http.get('/api/application', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    const page = parseInt(new URL(request.url).searchParams.get('page') || '1')
+    const items = parseInt(new URL(request.url).searchParams.get('items') || '10')
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = applications.slice(startIndex, endIndex)
+    return HttpResponse.json(paginatedApplications)
   }),
 
   http.delete<{ id: string }>('/api/application/:id', ({ params, request }) => {

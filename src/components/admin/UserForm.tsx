@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import Input from "../shared/Input.tsx";
 import BackButton from "../shared/BackButton.tsx";
-import { User, Job } from "../../mocks/types";
-import { useParams } from "react-router-dom";
+import { User } from "../../mocks/types.ts";
 import { useNavigate } from "react-router-dom";
-import JobTransferCard from "./JobTransferCard.tsx";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 
-interface ManagerFormProps {
+interface UserFormProps {
   isEditing: boolean;
 }
 
@@ -15,73 +14,61 @@ export interface RegistrationData extends User {
   password: string;
 }
 
-const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
+const UserForm: React.FC<UserFormProps> = ({ isEditing }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-const { token } = useAuth();
-
   const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
     fullName: "",
     password: "",
     email: "",
+    address: "",
     phone: "",
-    department: "",
-    role: "hiring-manager",
+    resume: "",
+    role: "applicant",
   });
   const [formErrors, setFormErrors] = useState({
     fullName: "",
     password: "",
     email: "",
+    address: "",
     phone: "",
-    department: "",
+    resume: "",
   });
 
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [shouldFetchJobs, setShouldFetchJobs] = useState<boolean>(true);
-
-  const handleShouldFetchJobs = () => {
-    setShouldFetchJobs((prev) => !prev);
-  };
+  const { token } = useAuth();
 
   
-  const fetchManager = useCallback(async () => {
-    try {
-      const response = await fetch(`/users/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const fetchUser = useCallback(async () => {
+      try {
+        const response = await fetch(`/users/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const data: User = await response.json();
+        setFormData((prevData) => ({
+          ...data,
+          password: prevData.password,
+        }));
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
       }
+    }, [id, token]);
 
-      const data: User = await response.json();
-      setFormData((prevData) => ({
-        ...data,
-        password: prevData.password,
-      }));
-    } catch (error) {
-      console.error("Failed to fetch manager data:", error);
-    }
-  }, [id, token]);
-
-  useEffect(() => {
-    if (token) {
-      fetchManager();
-    }
-  }, [token, fetchManager]);
-
-  const createManager = async () => {
+  const createUser = async () => {
     try {
-      const response = await fetch("/users/registration/admin", {
+      const response = await fetch("/users/registration", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name: formData.fullName,
@@ -91,17 +78,17 @@ const { token } = useAuth();
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create applicant");
+        throw new Error("Failed to create user");
       }
 
       const data = await response.json();
-      console.log("Applicant created:", data);
+      console.log("User created:", data);
     } catch (error) {
-      console.error("Failed to create applicant:", error);
+      console.error("Failed to create user:", error);
     }
   };
 
-  const updateManager = async () => {
+  const updateUser = async () => {
     try {
       const response = await fetch(`/users/${id}`, {
         method: "PUT",
@@ -115,28 +102,23 @@ const { token } = useAuth();
       if (!response.ok) {
         if (response.status === 403) {
           throw new Error(
-            "Forbidden: You do not have permission to update this applicant."
+            "Forbidden: You do not have permission to update this user."
           );
         }
-        throw new Error("Failed to update applicant");
+        throw new Error("Failed to update user");
       }
 
       const data = await response.json();
-      console.log("Applicant updated:", data);
+      console.log("User updated:", data);
     } catch (error) {
-      console.error("Failed to update applicant:", error);
+      console.error("Failed to update user:", error);
     }
   };
 
-  const deleteManager = async () => {
-    if (jobs.length > 0) {
-      alert(
-        "Cannot delete manager with active jobs. Please transfer all jobs to another manager first."
-      );
-      return;
-    }
-
+  const deleteUser = async () => {
     try {
+    
+
       const response = await fetch(`/users/${id}`, {
         method: "DELETE",
         headers: {
@@ -147,39 +129,19 @@ const { token } = useAuth();
       navigate(-1);
 
       if (!response.ok) {
-        throw new Error("Failed to delete applicant");
+        throw new Error("Failed to delete user");
       }
     } catch (error) {
-      console.error("Failed to delete applicant:", error);
+      console.error("Failed to delete user:", error);
     }
   };
 
-  const fetchJobs = useCallback(async () => {
-    try {
-       
-      const response = await fetch("/api/job?page=1&items=1000", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      const filteredJobs = data.jobs.filter(
-        (job: Job) => job.userId.toString() === id
-      );
-
-      setJobs(filteredJobs);
-    } catch (err) {
-      console.error(err);
-    }
-  }, [id, token]);
-
   useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs, shouldFetchJobs]);
+    if (isEditing && token) {
+      fetchUser();
+    }
+  }, [isEditing, token, fetchUser]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -196,8 +158,9 @@ const { token } = useAuth();
       fullName: "",
       password: "",
       email: "",
+      address: "",
       phone: "",
-      department: "",
+      resume: "",
     };
 
     if (!formData.fullName) {
@@ -211,25 +174,28 @@ const { token } = useAuth();
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "Email address is invalid";
     }
+    if (!formData.address && isEditing) {
+      errors.address = "Address is required";
+    }
     if (!formData.phone && isEditing) {
       errors.phone = "Phone number is required";
     }
-    if (!formData.department && isEditing) {
-      errors.department = "Department is required";
+    if (!formData.resume && isEditing) {
+      errors.resume = "Resume is required";
     }
 
     setFormErrors(errors);
 
-    return Object.values(errors).every((err) => err === "");
+    return !Object.values(errors).some((error) => error);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
       if (isEditing) {
-        updateManager();
+        updateUser();
       } else {
-        createManager();
+        createUser();
       }
 
       navigate(-1);
@@ -239,11 +205,11 @@ const { token } = useAuth();
   return (
     <div className="m-medium flex flex-col gap-3">
       <BackButton />
-      <div className="flex flex-col justify-center  items-center">
-          <h1 className="text-large w-full lg:w-1/2"> {isEditing ? "Edit Manager" : "Add Manager"} </h1>
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-large w-full lg:w-1/2"> {isEditing ? "Edit User" : "Add User"} </h1>
         <form
           onSubmit={handleSubmit}
-          className="card-bordered w-full  mt-2 lg:w-1/2"
+          className="card-bordered mt-2 w-full lg:w-1/2"
         >
           <div className="p-medium md:p-large flex flex-col gap-4">
 
@@ -273,8 +239,18 @@ const { token } = useAuth();
               onChange={handleChange}
               error={formErrors.email}
             />
+
             {isEditing && (
               <>
+                <Input
+                  name="address"
+                  placeholder="Enter address"
+                  type="text"
+                  value={formData.address || ""}
+                  onChange={handleChange}
+                  error={formErrors.address}
+                />
+
                 <Input
                   name="phone"
                   placeholder="Enter phone number"
@@ -284,12 +260,12 @@ const { token } = useAuth();
                   error={formErrors.phone}
                 />
                 <Input
-                  name="department"
-                  placeholder="Enter department"
-                  type="text"
-                  value={formData.department || ""}
+                  name="resume"
+                  placeholder="Enter resume"
+                  isTextArea={true}
+                  value={formData.resume || ""}
                   onChange={handleChange}
-                  error={formErrors.department}
+                  error={formErrors.resume}
                 />
               </>
             )}
@@ -298,8 +274,8 @@ const { token } = useAuth();
               {isEditing && (
                 <button
                   type="button"
-                  onClick={deleteManager}
                   className="btn-destructive w-full"
+                  onClick={deleteUser}
                 >
                   Delete
                 </button>
@@ -311,14 +287,8 @@ const { token } = useAuth();
           </div>
         </form>
       </div>
-
-      {jobs.length > 0 && (
-        <div className="flex justify-center mt-6 items-center">
-          <JobTransferCard currentManagerId={id || ""} jobs={jobs} handleShouldFetchJobs={handleShouldFetchJobs} />
-        </div>
-      )}
     </div>
   );
 };
 
-export default ManagerForm;
+export default UserForm;
