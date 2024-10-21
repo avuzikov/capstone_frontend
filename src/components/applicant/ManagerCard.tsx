@@ -1,6 +1,6 @@
 // src\components\applicant\ManagerCard.tsx
-import React, { useEffect, ReactNode } from "react";
-import useFetch from "../../hooks/useFetch";
+import React, { useEffect, ReactNode } from 'react';
+import useFetch from '../../hooks/useFetch';
 
 import { getUserDetails } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';

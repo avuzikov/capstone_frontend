@@ -1,6 +1,6 @@
 // src\pages\applicant\JobDetailsPage.tsx
-import React, { ReactNode, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { ReactNode, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
 import useFetch from '../../hooks/useFetch';

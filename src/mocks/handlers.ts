@@ -1,7 +1,20 @@
 // src\mocks\handlers.ts
-import { http, HttpResponse } from 'msw'
-import { User, Job, Application } from '../types/types'
-import { users, jobs, applications, addUser, updateUser, deleteUser, addJob, updateJob, deleteJob, addApplication, updateApplication, deleteApplication } from './mockData'
+import { http, HttpResponse } from 'msw';
+import { User, Job, Application } from '../types/types';
+import {
+  users,
+  jobs,
+  applications,
+  addUser,
+  updateUser,
+  deleteUser,
+  addJob,
+  updateJob,
+  deleteJob,
+  addApplication,
+  updateApplication,
+  deleteApplication,
+} from './mockData';
 
 // Define interfaces for request bodies
 interface LoginRequest {

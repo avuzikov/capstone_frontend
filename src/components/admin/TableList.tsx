@@ -1,6 +1,6 @@
 // src\components\admin\TableList.tsx
-import React from "react";
-import TableCard from "./TableCard";
+import React from 'react';
+import TableCard from './TableCard';
 
 const tables = [
   { name: 'Users', link: '/admin/tables/users' },

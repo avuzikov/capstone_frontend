@@ -1,6 +1,6 @@
 // src\pages\admin\AdminDashboardPage.tsx
-import React from "react";
-import AdminDashboardCard from "../../components/admin/AdminDashboardCard";
+import React from 'react';
+import AdminDashboardCard from '../../components/admin/AdminDashboardCard';
 
 const AdminDashboardPage = () => {
   return (

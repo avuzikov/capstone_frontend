@@ -1,26 +1,30 @@
-// src\components\admin\UserForm.tsx
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
-import Input from "../shared/Input";
-import BackButton from "../shared/BackButton";
-import { User } from "../../types/types";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+// src/components/admin/UserForm.tsx
+
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import Input from '../shared/Input';
+import BackButton from '../shared/BackButton';
+import { User } from '../../types/types';
+import { useAuth } from '../../contexts/AuthContext';
+import { fetchUsers, createUser, updateUser, deleteUser } from '../../utils/apiUtils';
+import {
+  validateForm,
+  validateEmail,
+  validateRequired,
+  validatePassword,
+} from '../../utils/validationUtils';
 
 interface UserFormProps {
   isEditing: boolean;
   userId?: string;
 }
 
-export interface RegistrationData extends User {
-  password: string;
-}
-
 const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [formData, setFormData] = useState<RegistrationData>({
-    id: 0,
+  const { token } = useAuth();
+
+  const [formData, setFormData] = useState<Partial<User>>({
     fullName: '',
     password: '',
     email: '',
@@ -29,182 +33,79 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
     resume: '',
     role: 'applicant',
   });
-  const [formErrors, setFormErrors] = useState({
-    fullName: '',
-    password: '',
-    email: '',
-    address: '',
-    phone: '',
-    resume: '',
-  });
 
-  const { token } = useAuth();
-
-  let url: string;
-
-  console.log(userId);
-
-  if (userId != '' && userId != undefined) {
-    url = `/users/${userId}`;
-  } else {
-    url = `/users/${id}`;
-  }
-
-  const fetchUser = useCallback(async () => {
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data: User = await response.json();
-      setFormData(prevData => ({
-        ...data,
-        password: prevData.password,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch user data:', error);
-    }
-  }, [id, token]);
-
-  const createUser = async () => {
-    try {
-      const response = await fetch('/users/registration', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create user');
-      }
-
-      const data = await response.json();
-      console.log('User created:', data);
-    } catch (error) {
-      console.error('Failed to create user:', error);
-    }
-  };
-
-  const updateUser = async () => {
-    try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('Forbidden: You do not have permission to update this user.');
-        }
-        throw new Error('Failed to update user');
-      }
-
-      const data = await response.json();
-      console.log('User updated:', data);
-    } catch (error) {
-      console.error('Failed to update user:', error);
-    }
-  };
-
-  const deleteUser = async () => {
-    try {
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      navigate(-1);
-
-      if (!response.ok) {
-        throw new Error('Failed to delete user');
-      }
-    } catch (error) {
-      console.error('Failed to delete user:', error);
-    }
-  };
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (isEditing && token) {
-      fetchUser();
-    }
-  }, [isEditing, token, fetchUser]);
+    const fetchUserData = async () => {
+      if (isEditing && token) {
+        try {
+          const users = await fetchUsers(token);
+          const user = users.find(u => u.id.toString() === (userId || id));
+          if (user) {
+            setFormData(user);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [isEditing, token, userId, id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+    // Clear the error when the user starts typing
+    setFormErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
   };
 
-  const validateForm = () => {
-    const errors = {
-      fullName: '',
-      password: '',
-      email: '',
-      address: '',
-      phone: '',
-      resume: '',
+  const validateUserForm = () => {
+    const validations = {
+      fullName: validateRequired,
+      email: validateEmail,
+      password: isEditing ? () => null : validatePassword,
+      address: isEditing ? validateRequired : () => null,
+      phone: isEditing ? validateRequired : () => null,
+      resume: isEditing ? validateRequired : () => null,
     };
 
-    if (!formData.fullName) {
-      errors.fullName = 'Full name is required';
-    }
-    if (!formData.password && !isEditing) {
-      errors.password = 'Password is required';
-    }
-    if (!formData.email) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Email address is invalid';
-    }
-    if (!formData.address && isEditing) {
-      errors.address = 'Address is required';
-    }
-    if (!formData.phone && isEditing) {
-      errors.phone = 'Phone number is required';
-    }
-    if (!formData.resume && isEditing) {
-      errors.resume = 'Resume is required';
-    }
-
+    const errors = validateForm(formData as Record<string, string>, validations);
     setFormErrors(errors);
-
-    return !Object.values(errors).some(error => error);
+    return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateForm()) {
-      if (isEditing) {
-        updateUser();
-      } else {
-        createUser();
-      }
-
-      if (!userId) {
+    if (validateUserForm()) {
+      try {
+        if (isEditing) {
+          await updateUser(userId || id || '', formData, token);
+        } else {
+          await createUser(formData, token);
+        }
         navigate(-1);
+      } catch (error) {
+        console.error('Failed to save user:', error);
+        // You might want to set a general error message here
       }
+    }
+  };
+
+  const handleDelete = async () => {
+    const userIdToDelete = userId || id;
+    if (userIdToDelete && token) {
+      try {
+        await deleteUser(userIdToDelete, token);
+        navigate(-1);
+      } catch (error) {
+        console.error('Failed to delete user:', error);
+        // You might want to set a general error message here
+      }
+    } else {
+      console.error('No user ID available for deletion');
+      // You might want to set an error message or handle this case
     }
   };
 
@@ -222,7 +123,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
               name="fullName"
               placeholder="Enter full name"
               type="text"
-              value={formData.fullName}
+              value={formData.fullName || ''}
               onChange={handleChange}
               error={formErrors.fullName}
             />
@@ -231,7 +132,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
                 name="password"
                 placeholder="Enter password"
                 type="password"
-                value={formData.password}
+                value={formData.password || ''}
                 onChange={handleChange}
                 error={formErrors.password}
               />
@@ -240,7 +141,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
               name="email"
               placeholder="Enter email"
               type="email"
-              value={formData.email}
+              value={formData.email || ''}
               onChange={handleChange}
               error={formErrors.email}
             />
@@ -255,7 +156,6 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
                   onChange={handleChange}
                   error={formErrors.address}
                 />
-
                 <Input
                   name="phone"
                   placeholder="Enter phone number"
@@ -277,7 +177,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
 
             <div className="flex gap-3 mt-4 justify-end">
               {isEditing && !userId && (
-                <button type="button" className="btn-destructive w-full" onClick={deleteUser}>
+                <button type="button" className="btn-destructive w-full" onClick={handleDelete}>
                   Delete
                 </button>
               )}

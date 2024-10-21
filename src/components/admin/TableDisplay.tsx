@@ -1,9 +1,9 @@
 // src\components\admin\TableDisplay.tsx
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import BackButton from "../shared/BackButton";
-import { useAuth } from "../../contexts/AuthContext";
-import { data } from "@remix-run/router";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import BackButton from '../shared/BackButton';
+import { useAuth } from '../../contexts/AuthContext';
+import { data } from '@remix-run/router';
 
 const TableDisplay = () => {
   const navigate = useNavigate();

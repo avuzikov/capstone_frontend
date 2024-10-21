@@ -1,8 +1,7 @@
 // src\pages\applicant\ProfilePage.tsx
-import React from "react";
-import UserForm from "../../components/admin/UserForm";
-import { useAuth } from "../../contexts/AuthContext";
-
+import React from 'react';
+import UserForm from '../../components/admin/UserForm';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ProfilePage = () => {
   const { id } = useAuth();

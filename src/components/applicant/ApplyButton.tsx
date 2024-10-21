@@ -1,6 +1,6 @@
 // src\components\applicant\ApplyButton.tsx
-import React from "react";
-import { useNavigate } from "react-router";
+import React from 'react';
+import { useNavigate } from 'react-router';
 
 const ApplyButton = ({ id }: { id: string | undefined }) => {
   const navigate = useNavigate();

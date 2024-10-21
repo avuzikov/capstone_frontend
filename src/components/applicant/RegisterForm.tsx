@@ -1,6 +1,6 @@
 // src\components\applicant\RegisterForm.tsx
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../shared/Input';
 import { isNotEmpty, isValidEmail } from '../../utils/validateInput';

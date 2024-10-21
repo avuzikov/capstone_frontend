@@ -1,8 +1,8 @@
 // src\components\admin\ManagerList.tsx
-import React, { useCallback, useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import ManagerCard from "./ManagerCard";
-import { User } from "../../types/types"; // Adjust the import path as necessary
+import React, { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import ManagerCard from './ManagerCard';
+import { User } from '../../types/types'; // Adjust the import path as necessary
 
 const ManagerList: React.FC = () => {
   const [managers, setManagers] = useState<User[]>([]);

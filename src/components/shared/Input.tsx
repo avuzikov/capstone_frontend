@@ -1,5 +1,5 @@
 // src\components\shared\Input.tsx
-import React from "react";
+import React from 'react';
 
 interface InputProps {
   name: string;

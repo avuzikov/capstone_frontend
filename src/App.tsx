@@ -1,25 +1,26 @@
-// src\App.tsx
-import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import Header from "./components/shared/Header";
-import Footer from "./components/shared/Footer";
-import LoginPage from "./pages/LoginPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import ManagerForm from "./components/admin/ManagerForm";
-import RegisterPage from "./pages/applicant/RegisterPage";
-import UserForm from "./components/admin/UserForm";
-import UserManagementPage from "./pages/admin/UserManagementPage";
-import ManagerManagementPage from "./pages/admin/ManagerManagementPage";
-import DataTableManagementPage from "./pages/admin/DataTableManagementPage";
-import TableDisplay from "./components/admin/TableDisplay";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import ProfilePage from "./pages/applicant/ProfilePage";
-import ManagerDashboardPage from "./pages/manager/ManagerDashboardPage";
-import JobManagementPage from "./pages/manager/JobManagementPage";
-import JobDetailsPage from "./pages/applicant/JobDetailsPage";
-import JobPage from "./pages/JobPage";
-import ApplicationForm from "./components/applicant/ApplicationForm";
-import AdminJobManagementPage from "./pages/admin/AdminJobManagementPage";
+// src/App.tsx
+
+import React from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import Header from './components/shared/Header';
+import Footer from './components/shared/Footer';
+import LoginPage from './pages/LoginPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import RegisterPage from './pages/applicant/RegisterPage';
+import UserManagementPage from './pages/admin/UserManagementPage';
+import ManagerManagementPage from './pages/admin/ManagerManagementPage';
+import DataTableManagementPage from './pages/admin/DataTableManagementPage';
+import TableDisplay from './components/admin/TableDisplay';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProfilePage from './pages/applicant/ProfilePage';
+import ManagerDashboardPage from './pages/manager/ManagerDashboardPage';
+import JobManagementPage from './pages/manager/JobManagementPage';
+import JobDetailsPage from './pages/applicant/JobDetailsPage';
+import JobPage from './pages/JobPage';
+import ApplicationForm from './components/applicant/ApplicationForm';
+import AdminJobManagementPage from './pages/admin/AdminJobManagementPage';
+import ManagerFormPage from './pages/admin/ManagerFormPage';
+import UserForm from './components/admin/UserForm';
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -83,7 +84,7 @@ function App() {
               path="/admin/newManager"
               element={
                 <ProtectedRoute
-                  element={<ManagerForm isEditing={false} />}
+                  element={<ManagerFormPage isEditing={false} />}
                   allowedRoles={['admin']}
                 />
               }
@@ -120,7 +121,7 @@ function App() {
               path="/admin/manager/:id"
               element={
                 <ProtectedRoute
-                  element={<ManagerForm isEditing={true} />}
+                  element={<ManagerFormPage isEditing={true} />}
                   allowedRoles={['admin']}
                 />
               }

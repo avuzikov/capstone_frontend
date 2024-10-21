@@ -1,8 +1,8 @@
 // src\pages\admin\AdminJobManagementPage.tsx
-import React from "react";
-import { Link } from "react-router-dom";
-import AdminJobList from "../../components/admin/AdminJobList";
-import BackButton from "../../components/shared/BackButton";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import AdminJobList from '../../components/admin/AdminJobList';
+import BackButton from '../../components/shared/BackButton';
 
 const AdminJobManagementPage = () => {
   return (

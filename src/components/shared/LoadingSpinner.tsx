@@ -1,5 +1,5 @@
 // src\components\shared\LoadingSpinner.tsx
-import React from "react";
+import React from 'react';
 
 interface LoadingSpinnerProps {
   color?: string;

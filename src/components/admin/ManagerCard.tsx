@@ -1,7 +1,7 @@
 // src\components\admin\ManagerCard.tsx
-import React from "react";
-import { Link } from "react-router-dom";
-import { User } from "../../types/types";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { User } from '../../types/types';
 
 interface ManagerCardProps {
   link: string;

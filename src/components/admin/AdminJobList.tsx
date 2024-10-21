@@ -1,8 +1,8 @@
 // src\components\admin\AdminJobList.tsx
-import React, { useCallback, useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { Job } from "../../types/types";
-import JobCard from "./JobCard";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Job } from '../../types/types';
+import JobCard from './JobCard';
 
 const AdminJobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
