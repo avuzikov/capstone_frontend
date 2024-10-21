@@ -6,7 +6,7 @@ const JobDetails = ({ job }: { job: JobDetailsType }) => {
   return (
     <div>
       <header className="my-5">
-        <h2 className="text-large font-extrabold ml-5 mb-2 text-stone-950">
+        <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">
           {job.listingTitle}
         </h2>
         <div className="flex justify-between">

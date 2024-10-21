@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { useAuth } from "../../contexts/AuthContext.tsx";
 import useFetch from "../../hooks/useFetch.tsx";
@@ -7,11 +7,15 @@ import { getJobDetails } from "../../services/api.ts";
 import LoadingSpinner from "../../components/shared/LoadingSpinner.tsx";
 import { JobDetailsType } from "../../types/Job.ts";
 import JobDetails from "../../components/applicant/JobDetails.tsx";
+import ManagerCard from "../../components/applicant/ManagerCard.tsx";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
-  const { token } = useAuth();
+  const { token, role } = useAuth();
   const { data, isPending, error, fetchDispatch } = useFetch(getJobDetails);
+  const navigate = useNavigate();
+
+  const isAuthenticatedApplicant = token && role === "applicant";
 
   useEffect(() => {
     fetchDispatch({ id, token });
@@ -53,12 +57,39 @@ const JobDetailsPage = () => {
     jobData = <JobDetails job={data} />;
   }
 
+  const handleApply = (id: string) => {
+    if (isAuthenticatedApplicant) {
+      navigate(`/apply/${id}`);
+    }
+  };
+
   return (
     <div className="mx-auto w-2/3 min-h-[calc(100vh-64px-56px)] m-4 gap-2 flex flex-row">
       <main className="bg-adp-gray border-adp-navy-light border rounded-lg p-4 w-1/2">
         {jobData}
       </main>
-      <aside className="card-filled w-1/2">Aside</aside>
+      <aside className="flex-col text-center w-1/2">
+        <div>
+          <ManagerCard id={data?.userId} />
+        </div>
+
+        {isAuthenticatedApplicant && (
+          <button
+            className="py-1.5 px-3 bg-adp-red text-adp-white border border-adp-red-light rounded-md shadow-sm hover:bg-adp-red-light transition-colors w-full mt-2 text-medium"
+            onClick={() => handleApply(data.id)}
+          >
+            Apply now!
+          </button>
+        )}
+        {!isAuthenticatedApplicant && (
+          <Link
+            to="/login"
+            className="block py-1.5 px-3 bg-adp-gray text-adp-navy-light border border-red-200 rounded-md shadow-sm hover:bg-stone-200 transition-colors w-full mt-2 text-medium"
+          >
+            You should be logged in as applicant!
+          </Link>
+        )}
+      </aside>
     </div>
   );
 };
