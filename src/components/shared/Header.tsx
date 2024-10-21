@@ -94,7 +94,7 @@ const Header = () => {
 
         {!token && (
           <li className="cursor-pointer p-small">
-            <Link to="/login">Login</Link>
+            <Link className="hover:underline" to="/login">Login</Link>
           </li>
         )}
       </ul>
