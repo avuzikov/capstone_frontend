@@ -1,3 +1,4 @@
+// src\components\admin\JobTransferCard.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { User, Job } from "../../types/types";
 import { useAuth } from "../../contexts/AuthContext";

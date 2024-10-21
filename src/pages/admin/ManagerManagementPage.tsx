@@ -1,3 +1,4 @@
+// src\pages\admin\ManagerManagementPage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import ManagerList from "../../components/admin/ManagerList";

@@ -1,3 +1,4 @@
+// src\services\api.ts
 import { UserRegistration } from "../types/User";
 
 const BASE_URL = "";

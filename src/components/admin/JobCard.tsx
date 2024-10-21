@@ -1,3 +1,4 @@
+// src\components\admin\JobCard.tsx
 import React, { useState, useCallback, useEffect } from "react";
 import { Job, User } from "../../types/types";
 import { useAuth } from "../../contexts/AuthContext";

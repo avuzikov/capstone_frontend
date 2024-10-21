@@ -1,3 +1,4 @@
+// src\App.tsx
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Header from "./components/shared/Header";

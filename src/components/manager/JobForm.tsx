@@ -1,3 +1,4 @@
+// src\components\manager\JobForm.tsx
 import React, { useState } from 'react';
 
 interface JobFormProps {

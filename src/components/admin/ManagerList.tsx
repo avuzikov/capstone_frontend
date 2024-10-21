@@ -1,3 +1,4 @@
+// src\components\admin\ManagerList.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ManagerCard from "./ManagerCard";

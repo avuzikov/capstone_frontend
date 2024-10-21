@@ -1,3 +1,4 @@
+// src\types\Job.ts
 export interface JobDetailsType {
   id: number;
   userId: number;

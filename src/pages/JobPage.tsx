@@ -1,3 +1,4 @@
+// src\pages\JobPage.tsx
 import React, { useState } from "react";
 import JobList from "../components/applicant/JobList";
 import {fetchJobs} from "../contexts/JobApi";

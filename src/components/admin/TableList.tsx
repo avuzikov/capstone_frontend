@@ -1,3 +1,4 @@
+// src\components\admin\TableList.tsx
 import React from "react";
 import TableCard from "./TableCard";
 

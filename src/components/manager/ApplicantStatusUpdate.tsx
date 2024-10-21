@@ -1,3 +1,4 @@
+// src\components\manager\ApplicantStatusUpdate.tsx
 import React from 'react';
 import { Application } from './types';
 

@@ -1,3 +1,4 @@
+// src\pages\applicant\JobDetailsPage.tsx
 import React, { ReactNode, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 

@@ -1,3 +1,4 @@
+// src\components\admin\TableDisplay.tsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../shared/BackButton";

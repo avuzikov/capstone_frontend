@@ -1,3 +1,4 @@
+// src\components\manager\ApplicantSortOptions.tsx
 import React from 'react';
 
 type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted' | 'all';

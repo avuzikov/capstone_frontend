@@ -1,3 +1,4 @@
+// src\pages\applicant\RegisterPage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 

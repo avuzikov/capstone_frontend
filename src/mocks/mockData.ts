@@ -1,3 +1,4 @@
+// src\mocks\mockData.ts
 import { User, Job, Application } from '../types/types';
 
 export let users: User[] = [

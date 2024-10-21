@@ -1,3 +1,4 @@
+// src\pages\admin\UserManagementPage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import UserList from "../../components/admin/UserList";

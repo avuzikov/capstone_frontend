@@ -1,3 +1,4 @@
+// src\pages\manager\ManagerDashboardPage.tsx
 import React, { useState } from "react";
 import ActiveJobsList from "../../components/manager/ActiveJobsList";
 import JobForm from "../../components/manager/JobForm";

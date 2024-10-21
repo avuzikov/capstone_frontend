@@ -1,3 +1,4 @@
+// src\components\manager\ApplicantList.tsx
 import React from 'react';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate';
 import { User, Application } from './types';

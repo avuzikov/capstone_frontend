@@ -1,3 +1,4 @@
+// src\components\applicant\ManagerCard.tsx
 import React, { useEffect, ReactNode } from "react";
 import useFetch from "../../hooks/useFetch";
 

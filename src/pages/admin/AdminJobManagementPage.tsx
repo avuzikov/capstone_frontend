@@ -1,3 +1,4 @@
+// src\pages\admin\AdminJobManagementPage.tsx
 import React from "react";
 import { Link } from "react-router-dom";
 import AdminJobList from "../../components/admin/AdminJobList";
