@@ -5,6 +5,7 @@ import Footer from "./components/shared/Footer.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.tsx";
 import ManagerForm from "./components/admin/ManagerForm.tsx";
+import RegisterPage from "./pages/applicant/RegisterPage.tsx";
 import UserForm from "./components/admin/UserForm.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
@@ -31,6 +32,7 @@ const ProtectedRoute: React.FC<{
 
 function App() {
   return (
+
     <AuthProvider>
       <div className="flex flex-col justify-between min-h-screen">
         <Header />
@@ -38,6 +40,7 @@ function App() {
             <Routes>
             <Route path="/" element={<p>Dummy Data</p>} />
             <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/admin/dashboard"
               element={
