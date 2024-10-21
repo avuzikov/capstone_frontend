@@ -177,7 +177,7 @@ const RegisterForm = () => {
           </div>
         )}
         <div className="flex justify-end">
-          {isPending && <LoadingSpinner color="adp-navy-dark" size="small" />}
+          {isPending && <LoadingSpinner size="large" />}
           {!isPending && (
             <button className="mt-4 btn-primary" type="submit">
               Register

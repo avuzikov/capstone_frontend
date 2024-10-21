@@ -11,13 +11,10 @@ const sizeClasses = {
   large: "h-16 w-16 border-4 border-t-4",
 };
 
-const LoadingSpinner = ({
-  color = "adp-red",
-  size = "medium",
-}: LoadingSpinnerProps) => {
+const LoadingSpinner = ({ size = "medium" }: LoadingSpinnerProps) => {
   return (
     <div
-      className={`border-t-${color} ${sizeClasses[size]} border-gray-200 rounded-full animate-spin`}
+      className={`border-t-adp-red ${sizeClasses[size]} border-gray-200 rounded-full animate-spin`}
     ></div>
   );
 };
