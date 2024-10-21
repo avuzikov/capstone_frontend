@@ -1,7 +1,6 @@
 import React from "react";
 import UserForm from "../../components/admin/UserForm.tsx";
 import { useAuth } from "../../contexts/AuthContext.tsx";
-import { Link } from "react-router-dom";
 
 
 const ProfilePage = () => {
