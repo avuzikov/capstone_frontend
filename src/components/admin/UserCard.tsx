@@ -2,33 +2,25 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { User } from "../../mocks/types";
 
-interface ManagerCardProps {
+interface UserCardProps {
   link: string;
-  manager: User;
+  user: User;
 }
 
-const ManagerCard = ({ link, manager }: ManagerCardProps) => {
+const UserCard = ({ link, user }: UserCardProps) => {
   return (
     <Link to={link} className="w-full">
       <div className="card-bordered cursor-pointer flex items-center justify-between h-18">
         <div className="flex flex-col">
-          <h1 className="text-medium">{manager.fullName}</h1>
+          <h1 className="text-medium">{user.fullName}</h1>
           <div className="flex gap-2 items-center text-small">
-            <p className="text-gray-500">{manager.email}</p>
-            {manager.phone && (
+            <p className="text-gray-500">{user.email}</p>
+            {user.phone && (
               <>
                 <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
-                <p className="text-gray-500">{manager.phone}</p>
+                <p className="text-gray-500">{user.phone}</p>
               </>
             )}
-            {manager.department && (
-                <>
-                    <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
-                    <p className="text-gray-500">{manager.department}</p>
-                </>
-                )       
-            }
-
           </div>
         </div>
 
@@ -47,4 +39,4 @@ const ManagerCard = ({ link, manager }: ManagerCardProps) => {
   );
 };
 
-export default ManagerCard;
+export default UserCard;

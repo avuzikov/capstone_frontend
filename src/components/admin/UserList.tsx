@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import ManagerCard from "./ManagerCard.tsx";
-import { User } from "../../mocks/types";
+import React from "react";
+import { useState, useEffect, useCallback } from "react";
+import UserCard from "./UserCard.tsx";
+import { User } from "../../mocks/types.ts";
 import { useAuth } from "../../contexts/AuthContext.tsx";
 
-const ManagerList: React.FC = () => {
-  const [managers, setManagers] = useState<User[]>([]);
+const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // use the auth context
   const { token } = useAuth();
 
-  
-
-  const fetchManagers = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     try {
+      console.log(token);
+
       const response = await fetch("/users", {
         method: "GET",
         headers: {
@@ -26,9 +29,9 @@ const ManagerList: React.FC = () => {
       }
 
       const data: User[] = await response.json();
-      const managers = data.filter((user) => user.role === "hiring-manager");
+      const managers = data.filter((user) => user.role === "applicant");
 
-      setManagers(managers);
+      setUsers(managers);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -36,10 +39,12 @@ const ManagerList: React.FC = () => {
     }
   }, [token]);
 
- 
   useEffect(() => {
-      fetchManagers();
-  }, [fetchManagers]);
+    if (token) {
+      console.log(token);
+      fetchUsers();
+    }
+  }, [token, fetchUsers]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -51,15 +56,11 @@ const ManagerList: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {managers.map((manager) => (
-        <ManagerCard
-          key={manager.id}
-          manager={manager}
-          link={`/admin/manager/${manager.id}`}
-        />
+      {users.map((user) => (
+        <UserCard key={user.id} user={user} link={`/admin/user/${user.id}`} />
       ))}
     </div>
   );
 };
 
-export default ManagerList;
+export default UserList;

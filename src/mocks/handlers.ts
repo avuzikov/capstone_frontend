@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { User, Job, Application } from './types'
+import { users, jobs, applications, addUser, updateUser, deleteUser, addJob, updateJob, deleteJob, addApplication, updateApplication, deleteApplication } from './mockData.ts'
 
 // Define interfaces for request bodies
 interface LoginRequest {
@@ -21,8 +22,6 @@ interface JobRequest {
   listingStatus: 'open' | 'closed';
   experienceLevel: string;
   additionalInformation?: string;
-  modelResume?: string;
-  modelCoverLetter?: string;
 }
 
 interface JobTransferRequest {
@@ -41,87 +40,7 @@ interface ApplicationStatusUpdateRequest {
   applicationStatus: 'pending' | 'reviewed' | 'rejected' | 'accepted';
 }
 
-// Mock data
-let users: User[] = [
-  { id: 1, fullName: 'John Doe', email: 'john@example.com', role: 'applicant' },
-  { id: 2, fullName: 'Jane Smith', email: 'jane@example.com', role: 'hiring-manager' },
-  { id: 3, fullName: 'Admin User', email: 'admin@example.com', role: 'admin' },
-]
-
-let jobs: Job[] = [
-  { 
-    id: 1, 
-    userId: 2, 
-    department: 'Engineering',
-    listingTitle: 'Senior Software Engineer', 
-    dateListed: new Date().toISOString(),
-    jobTitle: 'Senior Software Engineer',
-    jobDescription: 'We are looking for an experienced software engineer...',
-    listingStatus: 'open',
-    experienceLevel: '5+ years'
-  },
-  { 
-    id: 2, 
-    userId: 2, 
-    department: 'Product',
-    listingTitle: 'Product Manager', 
-    dateListed: new Date().toISOString(),
-    jobTitle: 'Senior Product Manager',
-    jobDescription: 'We are seeking a talented product manager...',
-    listingStatus: 'open',
-    experienceLevel: '3-5 years'
-  },
-]
-
-let applications: Application[] = [
-  { 
-    id: 1, 
-    userId: 1, 
-    jobId: 1, 
-    dateApplied: new Date().toISOString(), 
-    applicationStatus: 'pending',
-    coverLetter: 'I am excited to apply for this position...',
-    customResume: 'My resume content goes here...'
-  },
-  { 
-    id: 2, 
-    userId: 2, 
-    jobId: 2, 
-    dateApplied: new Date().toISOString(), 
-    applicationStatus: 'reviewed',
-    coverLetter: 'I believe my skills are a perfect match for this role...',
-    customResume: 'Detailed resume content for user 2...'
-  },
-  { 
-    id: 3, 
-    userId: 3, 
-    jobId: 3, 
-    dateApplied: new Date().toISOString(), 
-    applicationStatus: 'accepted',
-    coverLetter: 'I am very interested in this job opportunity...',
-    customResume: 'Resume content for user 3...'
-  },
-  { 
-    id: 4, 
-    userId: 4, 
-    jobId: 4, 
-    dateApplied: new Date().toISOString(), 
-    applicationStatus: 'rejected',
-    coverLetter: 'I have the experience and skills required for this job...',
-    customResume: 'Resume content for user 4...'
-  },
-  { 
-    id: 5, 
-    userId: 5, 
-    jobId: 5, 
-    dateApplied: new Date().toISOString(), 
-    applicationStatus: 'pending',
-    coverLetter: 'I am eager to bring my expertise to your team...',
-    customResume: 'Resume content for user 5...'
-  }
-];
-
-// Updated utility function
+// Utility function to authenticate user
 const authenticateUser = (request: Request): User | null => {
   const token = request.headers.get('Authorization')?.split(' ')[1]
   if (!token) {
@@ -131,14 +50,21 @@ const authenticateUser = (request: Request): User | null => {
   return user || null
 }
 
+// Helper function to safely parse query parameters
+const safeParseInt = (value: string | null, defaultValue: number): number => {
+  if (value === null) return defaultValue;
+  const parsed = parseInt(value, 10);
+  return isNaN(parsed) ? defaultValue : parsed;
+};
+
 export const handlers = [
   // Authentication
   http.post<never, LoginRequest>('/users/login', async ({ request }) => {
     const { email, password } = await request.json()
-    const user = users.find(u => u.email === email)
-    if (user && password === 'password') { // simplified password check
+    const user = users.find(u => u.email === email && u.password === password)
+    if (user) {
       return HttpResponse.json(
-        { message: 'Login successful' },
+        { message: 'Login successful', token: user.id.toString(), role: user.role },
         {
           status: 200,
           headers: {
@@ -153,10 +79,10 @@ export const handlers = [
   // Users
   http.post<never, RegistrationRequest>('/users/registration', async ({ request }) => {
     const { email, password, name } = await request.json()
-    const newUser: User = { id: users.length + 1, fullName: name, email, role: 'applicant' }
-    users.push(newUser)
+    const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'applicant' }
+    addUser(newUser)
     return HttpResponse.json(
-      { message: 'User registered successfully' },
+      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role },
       {
         status: 200,
         headers: {
@@ -166,14 +92,22 @@ export const handlers = [
     )
   }),
 
+  http.get('/users', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    return HttpResponse.json(users)
+  }),
+
   http.post<never, RegistrationRequest>('/users/registration/admin', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'admin') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { email, password, name } = await request.json()
-    const newUser: User = { id: users.length + 1, fullName: name, email, role: 'hiring-manager' }
-    users.push(newUser)
+    const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'hiring-manager' }
+    addUser(newUser)
     return HttpResponse.json(newUser, { status: 200 })
   }),
 
@@ -187,19 +121,24 @@ export const handlers = [
     if (!foundUser) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
-    return HttpResponse.json(foundUser)
+    const { password, ...userWithoutPassword } = foundUser
+    return HttpResponse.json(userWithoutPassword)
   }),
 
   http.put<{ id: string }>('/users/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    if (!user || user.id !== parseInt(id)) {
+    if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json() as Partial<User>
-    const updatedUser = { ...user, ...updatedData }
-    users = users.map(u => u.id === parseInt(id) ? updatedUser : u)
-    return HttpResponse.json(updatedUser)
+    updateUser(parseInt(id), updatedData)
+    const updatedUser = users.find(u => u.id === parseInt(id))
+    if (!updatedUser) {
+      return HttpResponse.json({ message: 'User not found' }, { status: 404 })
+    }
+    const { password, ...userWithoutPassword } = updatedUser
+    return HttpResponse.json(userWithoutPassword)
   }),
 
   http.delete<{ id: string }>('/users/:id', ({ params, request }) => {
@@ -208,7 +147,7 @@ export const handlers = [
     if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    users = users.filter(u => u.id !== parseInt(id))
+    deleteUser(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
 
@@ -238,8 +177,26 @@ export const handlers = [
       userId: user.id,
       dateListed: new Date().toISOString()
     }
-    jobs.push(newJob)
+    addJob(newJob)
     return HttpResponse.json(newJob)
+  }),
+  
+  http.put<never, JobTransferRequest>('/api/job/transfer', async ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const { jobId, fromUserId, toUserId } = await request.json()
+    
+    const jobToTransfer = jobs.find(j => j.id === jobId)
+
+    if (!jobToTransfer) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
+    }
+
+    jobToTransfer.userId = Number(toUserId);
+
+    return HttpResponse.json(jobToTransfer)
   }),
 
   http.put<{ id: string }, JobRequest>('/api/job/:id', async ({ params, request }) => {
@@ -250,8 +207,8 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json()
-    const updatedJob = { ...job, ...updatedData }
-    jobs = jobs.map(j => j.id === parseInt(id) ? updatedJob : j)
+    updateJob(parseInt(id), updatedData)
+    const updatedJob = jobs.find(j => j.id === parseInt(id))
     return HttpResponse.json(updatedJob)
   }),
 
@@ -265,8 +222,8 @@ export const handlers = [
     if (!job) {
       return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
     }
-    const updatedJob = { ...job, userId: toUserId }
-    jobs = jobs.map(j => j.id === jobId ? updatedJob : j)
+    updateJob(jobId, { userId: toUserId })
+    const updatedJob = jobs.find(j => j.id === jobId)
     return HttpResponse.json(updatedJob)
   }),
 
@@ -277,22 +234,27 @@ export const handlers = [
     if (!user || user.role !== 'hiring-manager' || !job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    jobs = jobs.filter(j => j.id !== parseInt(id))
+    deleteJob(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
 
- 
-  http.get<{ page: string, items: string }>('/api/job', ({ params, request }) => {
+  http.get('/api/job', ({ request }) => {
     const user = authenticateUser(request)
     if (!user) {
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
-    const { page, items } = params
-    const pageSize = parseInt(items) || 20
-    const startIndex = (parseInt(page) - 1) * pageSize
-    const endIndex = startIndex + pageSize
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
     const paginatedJobs = jobs.slice(startIndex, endIndex)
-    return HttpResponse.json(paginatedJobs)
+    return HttpResponse.json({
+      total: jobs.length,
+      page,
+      items,
+      jobs: paginatedJobs
+    })
   }),
 
   // Applications
@@ -309,7 +271,7 @@ export const handlers = [
       dateApplied: new Date().toISOString(),
       applicationStatus: 'pending'
     }
-    applications.push(newApplication)
+    addApplication(newApplication)
     return HttpResponse.json(newApplication)
   }),
 
@@ -344,8 +306,8 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json()
-    const updatedApplication = { ...application, ...updatedData }
-    applications = applications.map(a => a.id === parseInt(id) ? updatedApplication : a)
+    updateApplication(parseInt(id), updatedData)
+    const updatedApplication = applications.find(a => a.id === parseInt(id))
     return HttpResponse.json(updatedApplication)
   }),
 
@@ -364,9 +326,22 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { applicationStatus } = await request.json()
-    const updatedApplication = { ...application, applicationStatus }
-    applications = applications.map(a => a.id === parseInt(id) ? updatedApplication : a)
+    updateApplication(parseInt(id), { applicationStatus })
+    const updatedApplication = applications.find(a => a.id === parseInt(id))
     return HttpResponse.json(updatedApplication)
+  }),
+
+  http.get('/api/application', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    const page = parseInt(new URL(request.url).searchParams.get('page') || '1')
+    const items = parseInt(new URL(request.url).searchParams.get('items') || '10')
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = applications.slice(startIndex, endIndex)
+    return HttpResponse.json(paginatedApplications)
   }),
 
   http.delete<{ id: string }>('/api/application/:id', ({ params, request }) => {
@@ -376,7 +351,215 @@ export const handlers = [
     if (!user || user.role !== 'applicant' || !application || application.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    applications = applications.filter(a => a.id !== parseInt(id))
+    deleteApplication(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
+
+  // Manager-specific routes
+  http.get('/api/job/manager', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const managerJobs = jobs.filter(job => job.userId === user.id)
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedJobs = managerJobs.slice(startIndex, endIndex)
+    return HttpResponse.json({
+      total: managerJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs.map(job => ({
+        ...job,
+        applicantCount: applications.filter(app => app.jobId === job.id).length
+      }))
+    })
+  }),
+
+  http.get<{ jobId: string }>('/api/application/job/:jobId', ({ params, request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const { jobId } = params
+    const job = jobs.find(j => j.id === parseInt(jobId) && j.userId === user.id)
+    if (!job) {
+      return HttpResponse.json({ message: 'Job not found or not owned by you' }, { status: 404 })
+    }
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const jobApplications = applications.filter(app => app.jobId === parseInt(jobId))
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = jobApplications.slice(startIndex, endIndex)
+    return HttpResponse.json({
+      total: jobApplications.length,
+      page,
+      items,
+      applications: paginatedApplications.map(app => ({
+        ...app,
+        applicantName: users.find(u => u.id === app.userId)?.fullName
+      }))
+    })
+  }),
+
+  http.get('/api/user/manager/:id', ({ params, request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const { id } = params
+    
+    // Type guard to ensure id is a string
+    if (typeof id !== 'string') {
+      return HttpResponse.json({ message: 'Invalid ID format' }, { status: 400 })
+    }
+    
+    const managerId = parseInt(id, 10)
+    
+    if (isNaN(managerId)) {
+      return HttpResponse.json({ message: 'Invalid ID format' }, { status: 400 })
+    }
+    
+    const manager = users.find(u => u.id === managerId && u.role === 'hiring-manager')
+    
+    if (!manager) {
+      return HttpResponse.json({ message: 'Manager not found' }, { status: 404 })
+    }
+    
+    return HttpResponse.json({
+      id: manager.id,
+      fullName: manager.fullName,
+      department: manager.department,
+      jobTitle: 'Hiring Manager', // Assuming all hiring managers have this title
+      publicContactInfo: manager.email // You might want to limit what information is public
+    })
+  }),
+
+  // Admin routes
+  http.get('/api/admin/users', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedUsers = users.slice(startIndex, endIndex)
+    return HttpResponse.json({
+      total: users.length,
+      page,
+      items,
+      users: paginatedUsers.map(({ password, ...user }) => user) // Exclude password from response
+    })
+  }),
+
+  http.get('/api/admin/jobs', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedJobs = jobs.slice(startIndex, endIndex)
+    return HttpResponse.json({
+      total: jobs.length,
+      page,
+      items,
+      jobs: paginatedJobs.map(job => ({
+        ...job,
+        applicantCount: applications.filter(app => app.jobId === job.id).length,
+        managerName: users.find(u => u.id === job.userId)?.fullName
+      }))
+    })
+  }),
+
+  http.get('/api/admin/applications', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const url = new URL(request.url)
+    const page = safeParseInt(url.searchParams.get('page'), 1)
+    const items = safeParseInt(url.searchParams.get('items'), 20)
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = applications.slice(startIndex, endIndex)
+    return HttpResponse.json({
+      total: applications.length,
+      page,
+      items,
+      applications: paginatedApplications.map(app => ({
+        ...app,
+        applicantName: users.find(u => u.id === app.userId)?.fullName,
+        jobTitle: jobs.find(j => j.id === app.jobId)?.jobTitle
+      }))
+    })
+  }),
+
+  // Statistics routes
+  http.get('/api/stats/applicant', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'applicant') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const userApplications = applications.filter(app => app.userId === user.id)
+    return HttpResponse.json({
+      totalApplications: userApplications.length,
+      pendingApplications: userApplications.filter(app => app.applicationStatus === 'pending').length,
+      reviewedApplications: userApplications.filter(app => app.applicationStatus === 'reviewed').length,
+      acceptedApplications: userApplications.filter(app => app.applicationStatus === 'accepted').length,
+      rejectedApplications: userApplications.filter(app => app.applicationStatus === 'rejected').length
+    })
+  }),
+
+  http.get('/api/stats/manager', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const managerJobs = jobs.filter(job => job.userId === user.id)
+    const jobApplications = applications.filter(app => managerJobs.some(job => job.id === app.jobId))
+    return HttpResponse.json({
+      totalJobs: managerJobs.length,
+      openJobs: managerJobs.filter(job => job.listingStatus === 'open').length,
+      closedJobs: managerJobs.filter(job => job.listingStatus === 'closed').length,
+      totalApplications: jobApplications.length,
+      pendingApplications: jobApplications.filter(app => app.applicationStatus === 'pending').length,
+      reviewedApplications: jobApplications.filter(app => app.applicationStatus === 'reviewed').length,
+      acceptedApplications: jobApplications.filter(app => app.applicationStatus === 'accepted').length,
+      rejectedApplications: jobApplications.filter(app => app.applicationStatus === 'rejected').length
+    })
+  }),
+
+  http.get('/api/stats/admin', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    return HttpResponse.json({
+      totalUsers: users.length,
+      applicants: users.filter(u => u.role === 'applicant').length,
+      hiringManagers: users.filter(u => u.role === 'hiring-manager').length,
+      admins: users.filter(u => u.role === 'admin').length,
+      totalJobs: jobs.length,
+      openJobs: jobs.filter(job => job.listingStatus === 'open').length,
+      closedJobs: jobs.filter(job => job.listingStatus === 'closed').length,
+      totalApplications: applications.length,
+      pendingApplications: applications.filter(app => app.applicationStatus === 'pending').length,
+      reviewedApplications: applications.filter(app => app.applicationStatus === 'reviewed').length,
+      acceptedApplications: applications.filter(app => app.applicationStatus === 'accepted').length,
+      rejectedApplications: applications.filter(app => app.applicationStatus === 'rejected').length
+    })
+  })
 ]
