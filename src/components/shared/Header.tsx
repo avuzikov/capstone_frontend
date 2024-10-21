@@ -41,10 +41,11 @@ const Header = () => {
         ];
       case "admin":
         return [
-          { to: "/jobs", text: "Jobs" },
           { to: "/admin/dashboard", text: "Dashboard" },
+          { to: "/admin/jobs", text: "Jobs" },
+          { to: "/admin/users", text: "Users" },
           { to: "/admin/managers", text: "Managers" },
-          { to: "/admin/jobs", text: "Manage Jobs" },
+          { to: "/admin/tables", text: "Tables" },
         ];
       default:
         return [];
@@ -68,12 +69,11 @@ const Header = () => {
           <li key={item.to}>
             <Link
               to={item.to}
-              className={`${linkClasses} ${
-                firstSegment === item.to.split("/")[1] ||
+              className={`${linkClasses} ${firstSegment === item.to.split("/")[1] ||
                 (item.to === "/jobs" && location.pathname === "/")
-                  ? activeLinkClasses
-                  : inactiveLinkClasses
-              }`}
+                ? activeLinkClasses
+                : inactiveLinkClasses
+                }`}
             >
               {item.text}
             </Link>

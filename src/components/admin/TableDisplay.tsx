@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BackButton from "../shared/BackButton.tsx";
 import { useAuth } from "../../contexts/AuthContext.tsx";
+import { data } from "@remix-run/router";
 
 const TableDisplay = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const TableDisplay = () => {
           break;
       }
 
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -41,6 +43,8 @@ const TableDisplay = () => {
       });
 
       const data = await response.json();
+
+      console.log(data);
 
       if (name === "jobs") {
         const jobs = data.jobs || [];
@@ -59,6 +63,7 @@ const TableDisplay = () => {
       }, []);
       setAllKeys(keys);
 
+      console.log(keys);
 
       setLoading(false);
     } catch (error) {
@@ -69,6 +74,8 @@ const TableDisplay = () => {
   useEffect(() => {
     if (token) {
       fetchTableData();
+
+      console.log(data);
     }
   }, [token, fetchTableData]);
 
@@ -102,7 +109,7 @@ const TableDisplay = () => {
 
   const renderTable = (data: Record<string, any>[], title: string) => (
     <div className="overflow-x-auto w-full mb-4">
-      <h2 className="text-medium">{title}</h2>
+      <h2 className="text-normal  mb-1 pl-small">{title}</h2>
       <table className="table-auto w-full" style={{ emptyCells: "show" }}>
         <thead>
           <tr className="bg-gray-100">
@@ -144,9 +151,15 @@ const TableDisplay = () => {
       <h1 className="text-large">
         {name ? name.charAt(0).toUpperCase() + name.slice(1) : "Default Name"}
       </h1>
-      {renderTable(admins, "Admins")}
-      {renderTable(applicants, "Applicants")}
-      {renderTable(managers, "Hiring Managers")}
+      {name === "jobs" && renderTable(tableData, "")}
+      {name === "applications" && renderTable(tableData, "")}
+      {name === "users" && (
+        <>
+          {renderTable(admins, "Admins")}
+          {renderTable(applicants, "Applicants")}
+          {renderTable(managers, "Hiring Managers")}
+        </>
+      )}
     </div>
   );
 };
