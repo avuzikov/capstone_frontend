@@ -64,7 +64,7 @@ export const handlers = [
     const user = users.find(u => u.email === email && u.password === password)
     if (user) {
       return HttpResponse.json(
-        { message: 'Login successful', token: user.id.toString(), role: user.role },
+        { message: 'Login successful', token: user.id.toString(), role: user.role, id: user.id },
         {
           status: 200,
           headers: {
@@ -82,7 +82,7 @@ export const handlers = [
     const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'applicant' }
     addUser(newUser)
     return HttpResponse.json(
-      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role },
+      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role, id: newUser.id },
       {
         status: 200,
         headers: {
@@ -275,6 +275,16 @@ export const handlers = [
     return HttpResponse.json(newApplication)
   }),
 
+  //TODO: Set up for authorized users
+  http.get('/api/application', ({ request }) => 
+  {
+    const user = authenticateUser(request)
+    // if (!user) {
+    //   return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    // }
+    return HttpResponse.json(applications);
+  }),
+
   http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
@@ -282,9 +292,9 @@ export const handlers = [
     if (!application) {
       return HttpResponse.json({ message: 'Application not found' }, { status: 404 })
     }
-    if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
-    }
+    // if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
+    //   return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    // }
     return HttpResponse.json(application)
   }),
 

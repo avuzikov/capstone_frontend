@@ -15,7 +15,6 @@ const UserManagementPage = () => {
       <div className="flex justify-between">
         <h1 className="text-large">Users</h1>
       </div>
-
       <UserList />
     </div>
   );
