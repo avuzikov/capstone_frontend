@@ -7,14 +7,10 @@ const JobDetails = ({ job }: { job: JobDetailsType }) => {
   return (
     <div>
       <header className="my-5">
-        <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">
-          {job.listingTitle}
-        </h2>
+        <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">{job.listingTitle}</h2>
         <div className="flex justify-between">
-          <p className="font-light text-small text-adp-navy-light">
-            {format(job.dateListed)}
-          </p>
-          {job.listingStatus === "closed" && (
+          <p className="font-light text-small text-adp-navy-light">{format(job.dateListed)}</p>
+          {job.listingStatus === 'closed' && (
             <p className="font-light text-small text-adp-red-light">
               Closed: {format(job.dateListed)}
             </p>

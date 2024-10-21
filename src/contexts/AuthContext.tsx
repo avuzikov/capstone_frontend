@@ -12,38 +12,32 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("authToken")
-  );
-  const [role, setRole] = useState<string | null>(
-    localStorage.getItem("userRole")
-  );
-  const [id, setId] = useState<string | null>(localStorage.getItem("userId"));
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
+  const [role, setRole] = useState<string | null>(localStorage.getItem('userRole'));
+  const [id, setId] = useState<string | null>(localStorage.getItem('userId'));
 
   useEffect(() => {
     if (token) {
-      localStorage.setItem("authToken", token);
+      localStorage.setItem('authToken', token);
     } else {
-      localStorage.removeItem("authToken");
+      localStorage.removeItem('authToken');
     }
   }, [token]);
 
   useEffect(() => {
     if (role) {
-      localStorage.setItem("userRole", role);
+      localStorage.setItem('userRole', role);
     } else {
-      localStorage.removeItem("userRole");
+      localStorage.removeItem('userRole');
     }
   }, [role]);
 
   useEffect(() => {
     if (id) {
-      localStorage.setItem("userId", id);
+      localStorage.setItem('userId', id);
     } else {
-      localStorage.removeItem("userId");
+      localStorage.removeItem('userId');
     }
   }, [id]);
 
@@ -54,10 +48,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const login = async (email: string, password: string) => {
-    const response = await fetch("/users/login", {
-      method: "POST",
+    const response = await fetch('/users/login', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
     });
@@ -68,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setRole(data.role);
       setId(data.id);
     } else {
-      throw new Error("Login failed");
+      throw new Error('Login failed');
     }
   };
 
@@ -88,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

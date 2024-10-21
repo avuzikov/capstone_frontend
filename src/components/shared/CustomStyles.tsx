@@ -43,11 +43,10 @@ const CustomStyles = () => {
       {/* Button Styles */}
       <div className="mb-large flex flex-col gap-2">
         <h2 className="txt-large mb-medium border-b-2">Button Styles</h2>
-        <div className='flex gap-4'>
-
-        <button className="btn-primary mb-small">Primary Button</button>
-        <button className="btn-secondary mb-small">Secondary Button</button>
-        <button className="btn-destructive">Destructive Button</button>
+        <div className="flex gap-4">
+          <button className="btn-primary mb-small">Primary Button</button>
+          <button className="btn-secondary mb-small">Secondary Button</button>
+          <button className="btn-destructive">Destructive Button</button>
         </div>
       </div>
 

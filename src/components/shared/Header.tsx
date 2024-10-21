@@ -10,36 +10,36 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate('/');
   };
 
   const navItems = () => {
     if (!token) {
       return [
-        { to: "/jobs", text: "Jobs" },
-        { to: "/register", text: "Register" },
-        { to: "/login", text: "Login" },
+        { to: '/jobs', text: 'Jobs' },
+        { to: '/register', text: 'Register' },
+        { to: '/login', text: 'Login' },
       ];
     }
     switch (role) {
-      case "applicant":
+      case 'applicant':
         return [
-          { to: "/jobs", text: "Jobs" },
-          { to: "/applications", text: "Applications" },
-          { to: "/profile", text: "Profile" },
+          { to: '/jobs', text: 'Jobs' },
+          { to: '/applications', text: 'Applications' },
+          { to: '/profile', text: 'Profile' },
         ];
-      case "hiring-manager":
+      case 'hiring-manager':
         return [
-          { to: "/jobs", text: "Jobs" },
-          { to: "/manager/console", text: "Console" },
+          { to: '/jobs', text: 'Jobs' },
+          { to: '/manager/console', text: 'Console' },
         ];
-      case "admin":
+      case 'admin':
         return [
-          { to: "/admin/dashboard", text: "Dashboard" },
-          { to: "/admin/jobs", text: "Jobs" },
-          { to: "/admin/users", text: "Users" },
-          { to: "/admin/managers", text: "Managers" },
-          { to: "/admin/tables", text: "Tables" },
+          { to: '/admin/dashboard', text: 'Dashboard' },
+          { to: '/admin/jobs', text: 'Jobs' },
+          { to: '/admin/users', text: 'Users' },
+          { to: '/admin/managers', text: 'Managers' },
+          { to: '/admin/tables', text: 'Tables' },
         ];
       default:
         return [];
@@ -52,14 +52,14 @@ const Header = () => {
 
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
-      <NavLink to={"/"}>
+      <NavLink to={'/'}>
         <div className="flex items-center gap-3">
           <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
           <h1 className="hidden md:block text-large">Talent Site</h1>
         </div>
       </NavLink>
       <ul className="flex gap-1 items-center">
-        {navItems().map((item) => (
+        {navItems().map(item => (
           <li key={item.to}>
             <NavLink
               to={item.to}
@@ -74,10 +74,7 @@ const Header = () => {
         ))}
         {token && (
           <li>
-            <button
-              onClick={handleLogout}
-              className={`${linkClasses} ${inactiveLinkClasses}`}
-            >
+            <button onClick={handleLogout} className={`${linkClasses} ${inactiveLinkClasses}`}>
               Logout
             </button>
           </li>

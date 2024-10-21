@@ -12,30 +12,30 @@ const ManagerList: React.FC = () => {
 
   const fetchManagers = useCallback(async () => {
     if (!token) {
-      setError("No authentication token available");
+      setError('No authentication token available');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch("/users", {
-        method: "GET",
+      const response = await fetch('/users', {
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error('Failed to fetch users');
       }
 
       const data: User[] = await response.json();
-      const managers = data.filter((user) => user.role === "hiring-manager");
+      const managers = data.filter(user => user.role === 'hiring-manager');
 
       setManagers(managers);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
@@ -55,12 +55,8 @@ const ManagerList: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {managers.map((manager) => (
-        <ManagerCard
-          key={manager.id}
-          manager={manager}
-          link={`/admin/manager/${manager.id}`}
-        />
+      {managers.map(manager => (
+        <ManagerCard key={manager.id} manager={manager} link={`/admin/manager/${manager.id}`} />
       ))}
     </div>
   );

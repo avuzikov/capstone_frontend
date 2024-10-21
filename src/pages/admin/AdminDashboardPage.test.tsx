@@ -12,6 +12,3 @@ test('renders AdminDashboardPage', () => {
   const linkElement = screen.getByText(/Admin Dashboard/i);
   expect(linkElement).toBeInTheDocument();
 });
-
-
-

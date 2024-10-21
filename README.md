@@ -29,74 +29,88 @@ This project is a full-stack hiring platform with a React + TypeScript frontend.
 ## Project Structure
 ```plaintext
 frontend-service/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
 ├── src/
 │   ├── components/
-│   │   ├── shared/
-│   │   │   ├── Header.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── LoadingSpinner.tsx
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardCard.tsx
+│   │   │   ├── AdminJobList.tsx
+│   │   │   ├── JobCard.tsx
+│   │   │   ├── JobTransferCard.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   ├── ManagerForm.tsx
+│   │   │   ├── ManagerList.tsx
+│   │   │   ├── TableCard.tsx
+│   │   │   ├── TableDisplay.tsx
+│   │   │   ├── TableList.tsx
+│   │   │   ├── UserCard.tsx
+│   │   │   ├── UserForm.tsx
+│   │   │   └── UserList.tsx
 │   │   ├── applicant/
-│   │   │   ├── JobList.tsx
-│   │   │   ├── JobSearchForm.tsx
-│   │   │   ├── JobDetails.tsx
+│   │   │   ├── ApplicationForm.tsx
 │   │   │   ├── ApplyButton.tsx
-│   │   │   ├── RegistrationForm.tsx
-│   │   │   ├── LoginForm.tsx
-│   │   │   ├── ApplicationList.tsx
-│   │   │   ├── ApplicationStatusFilter.tsx
-│   │   │   ├── ProfileForm.tsx
-│   │   │   └── ApplicationForm.tsx
-│   │   ├── hiringManager/
-│   │   │   ├── ManagerStats.tsx
+│   │   │   ├── JobDetails.tsx
+│   │   │   ├── JobList.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   └── RegisterForm.tsx
+│   │   ├── manager/
 │   │   │   ├── ActiveJobsList.tsx
-│   │   │   ├── JobForm.tsx
 │   │   │   ├── ApplicantList.tsx
+│   │   │   ├── ApplicantSortOptions.tsx
 │   │   │   ├── ApplicantStatusUpdate.tsx
-│   │   │   └── ApplicantSortOptions.tsx
-│   │   └── admin/
-│   │       ├── AdminStats.tsx
-│   │       ├── QuickActions.tsx
-│   │       ├── ManagerList.tsx
-│   │       ├── ManagerForm.tsx
-│   │       └── JobTransferForm.tsx
+│   │   │   ├── JobForm.tsx
+│   │   │   └── types.ts
+│   │   └── shared/
+│   │       ├── BackButton.tsx
+│   │       ├── CustomStyles.tsx
+│   │       ├── Footer.tsx
+│   │       ├── Header.tsx
+│   │       ├── Input.tsx
+│   │       └── LoadingSpinner.tsx
 │   ├── contexts/
 │   │   ├── AuthContext.tsx
-│   │   └── JobContext.tsx
+│   │   └── JobApi.tsx
+│   ├── hooks/
+│   │   └── useFetch.tsx
+│   ├── mocks/
+│   │   ├── browser.ts
+│   │   ├── handlers.ts
+│   │   ├── mockData.ts
+│   │   └── server.ts
 │   ├── pages/
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardPage.tsx
+│   │   │   ├── AdminJobManagementPage.tsx
+│   │   │   ├── DataTableManagementPage.tsx
+│   │   │   ├── ManagerManagementPage.tsx
+│   │   │   └── UserManagementPage.tsx
 │   │   ├── applicant/
-│   │   │   ├── JobListingPage.tsx
 │   │   │   ├── JobDetailsPage.tsx
-│   │   │   ├── RegisterPage.tsx
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── ApplicationsPage.tsx
-│   │   │   └── ProfilePage.tsx
-│   │   ├── hiringManager/
-│   │   │   ├── ManagerDashboard.tsx
-│   │   │   ├── ManageJobsPage.tsx
-│   │   │   └── JobApplicantsPage.tsx
-│   │   └── admin/
-│   │       ├── AdminDashboard.tsx
-│   │       ├── ManageManagersPage.tsx
-│   │       └── ManageAllJobsPage.tsx
-│   ├── services/
-│   │   ├── api.ts
-│   │   ├── auth.ts
-│   │   └── job.ts
+│   │   │   ├── ProfilePage.tsx
+│   │   │   └── RegisterPage.tsx
+│   │   ├── manager/
+│   │   │   ├── JobManagementPage.tsx
+│   │   │   └── ManagerDashboardPage.tsx
+│   │   ├── JobPage.tsx
+│   │   └── LoginPage.tsx
 │   ├── types/
-│   │   ├── User.ts
 │   │   ├── Job.ts
-│   │   └── Application.ts
+│   │   ├── types.ts
+│   │   └── User.ts
 │   ├── utils/
 │   │   ├── formatDate.ts
 │   │   └── validateInput.ts
 │   ├── App.tsx
-│   └── index.tsx
-├── public/
-│   ├── index.html
-│   └── favicon.ico
+│   ├── index.css
+│   ├── index.js
+│   ├── reportWebVitals.js
+│   └── setupTests.ts
 ├── Dockerfile
 ├── package.json
 ├── tailwind.config.js
+├── tsconfig.json
 └── README.md
 ```
 

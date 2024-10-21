@@ -23,13 +23,11 @@ const ManagerCard = ({ link, manager }: ManagerCardProps) => {
               </>
             )}
             {manager.department && (
-                <>
-                    <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
-                    <p className="text-gray-500">{manager.department}</p>
-                </>
-                )       
-            }
-
+              <>
+                <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
+                <p className="text-gray-500">{manager.department}</p>
+              </>
+            )}
           </div>
         </div>
 

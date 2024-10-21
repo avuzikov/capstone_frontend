@@ -47,7 +47,7 @@ function App() {
           <Routes>
             {/* Redirect from root to /jobs */}
             <Route path="/" element={<Navigate to="/jobs" replace />} />
-            
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/jobs" element={<JobPage />} />
@@ -59,35 +59,24 @@ function App() {
               element={
                 <ProtectedRoute
                   element={<ProfilePage />}
-                  allowedRoles={["applicant", "hiring-manager", "admin"]}
+                  allowedRoles={['applicant', 'hiring-manager', 'admin']}
                 />
               }
             />
             <Route
               path="/apply/:jobId"
               element={
-                <ProtectedRoute
-                  element={<ApplicationForm />}
-                  allowedRoles={["applicant"]}
-                />
+                <ProtectedRoute element={<ApplicationForm />} allowedRoles={['applicant']} />
               }
             />
             <Route
               path="/admin/dashboard"
-              element={
-                <ProtectedRoute
-                  element={<AdminDashboardPage />}
-                  allowedRoles={["admin"]}
-                />
-              }
+              element={<ProtectedRoute element={<AdminDashboardPage />} allowedRoles={['admin']} />}
             />
             <Route
               path="/admin/jobs"
               element={
-                <ProtectedRoute
-                  element={<AdminJobManagementPage />}
-                  allowedRoles={["admin"]}
-                />
+                <ProtectedRoute element={<AdminJobManagementPage />} allowedRoles={['admin']} />
               }
             />
             <Route
@@ -95,53 +84,36 @@ function App() {
               element={
                 <ProtectedRoute
                   element={<ManagerForm isEditing={false} />}
-                  allowedRoles={["admin"]}
+                  allowedRoles={['admin']}
                 />
               }
             />
             <Route
               path="/admin/newUser"
               element={
-                <ProtectedRoute
-                  element={<UserForm isEditing={false} />}
-                  allowedRoles={["admin"]}
-                />
+                <ProtectedRoute element={<UserForm isEditing={false} />} allowedRoles={['admin']} />
               }
             />
             <Route
               path="/admin/users"
-              element={
-                <ProtectedRoute
-                  element={<UserManagementPage />}
-                  allowedRoles={["admin"]}
-                />
-              }
+              element={<ProtectedRoute element={<UserManagementPage />} allowedRoles={['admin']} />}
             />
             <Route
               path="/admin/managers"
               element={
-                <ProtectedRoute
-                  element={<ManagerManagementPage />}
-                  allowedRoles={["admin"]}
-                />
+                <ProtectedRoute element={<ManagerManagementPage />} allowedRoles={['admin']} />
               }
             />
             <Route
               path="/admin/tables"
               element={
-                <ProtectedRoute
-                  element={<DataTableManagementPage />}
-                  allowedRoles={["admin"]}
-                />
+                <ProtectedRoute element={<DataTableManagementPage />} allowedRoles={['admin']} />
               }
             />
             <Route
               path="/admin/user/:id"
               element={
-                <ProtectedRoute
-                  element={<UserForm isEditing={true} />}
-                  allowedRoles={["admin"]}
-                />
+                <ProtectedRoute element={<UserForm isEditing={true} />} allowedRoles={['admin']} />
               }
             />
             <Route
@@ -149,40 +121,31 @@ function App() {
               element={
                 <ProtectedRoute
                   element={<ManagerForm isEditing={true} />}
-                  allowedRoles={["admin"]}
+                  allowedRoles={['admin']}
                 />
               }
             />
             <Route
               path="/admin/tables/:name"
-              element={
-                <ProtectedRoute
-                  element={<TableDisplay />}
-                  allowedRoles={["admin"]}
-                />
-              }
+              element={<ProtectedRoute element={<TableDisplay />} allowedRoles={['admin']} />}
             />
             <Route
               path="/manager/console"
               element={
-              <ProtectedRoute
-                element={<ManagerDashboardPage />}
-                allowedRoles={["hiring-manager"]}
-              />
+                <ProtectedRoute
+                  element={<ManagerDashboardPage />}
+                  allowedRoles={['hiring-manager']}
+                />
               }
             />
             <Route
               path="/manager/:jobId"
               element={
-              <ProtectedRoute
-                element={<JobManagementPage />}
-                allowedRoles={["hiring-manager"]}
-              />
+                <ProtectedRoute element={<JobManagementPage />} allowedRoles={['hiring-manager']} />
               }
             />
 
             <Route path="*" element={<Navigate to="/jobs" replace />} />
-
           </Routes>
         </main>
         <Footer />

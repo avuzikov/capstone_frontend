@@ -17,26 +17,25 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   const [managers, setManagers] = useState<User[]>([]);
 
   const { token } = useAuth();
-  const [selectedManagerId, setSelectedManagerId] = useState<string>("");
+  const [selectedManagerId, setSelectedManagerId] = useState<string>('');
 
-  
   const fetchManagers = useCallback(async () => {
     try {
-      const response = await fetch("/users", {
-        method: "GET",
+      const response = await fetch('/users', {
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error('Failed to fetch users');
       }
 
       const data: User[] = await response.json();
 
-      const managers = data.filter((user) => user.role === "hiring-manager");
+      const managers = data.filter(user => user.role === 'hiring-manager');
 
       managers.sort((a, b) => a.fullName.localeCompare(b.fullName));
 
@@ -44,7 +43,9 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
       if (managers.length > 0 && !selectedManagerId) {
         setSelectedManagerId(String(managers[0].id));
-        const firstAvailableManager = managers.find(manager => manager.id.toString() !== currentManagerId);
+        const firstAvailableManager = managers.find(
+          manager => manager.id.toString() !== currentManagerId
+        );
         if (firstAvailableManager) {
           setSelectedManagerId(String(firstAvailableManager.id));
         }
@@ -57,10 +58,10 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   const transferJobs = async () => {
     try {
       for (const job of jobs) {
-        const response = await fetch("/api/job/transfer", {
-          method: "PUT",
+        const response = await fetch('/api/job/transfer', {
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
@@ -71,16 +72,15 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
         });
 
         if (!response.ok) {
-          console.error("Failed to transfer job", job.id);
+          console.error('Failed to transfer job', job.id);
         }
 
         handleShouldFetchJobs();
       }
     } catch (error) {
-      console.error("Failed to transfer jobs:", error);
+      console.error('Failed to transfer jobs:', error);
     }
   };
-
 
   useEffect(() => {
     if (token) {
@@ -89,10 +89,9 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   }, [token, fetchManagers]);
 
   return (
-      <div className="flex flex-col w-full items-center justify-center">
-        <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
+    <div className="flex flex-col w-full items-center justify-center">
+      <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
       <div className=" card-bordered mt-1 w-full lg:w-1/2">
-
         <div className="flex flex-col p-medium lg:p-large ">
           <p className="pl-small mb-1">Manager</p>
 
@@ -101,20 +100,20 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
             id="manager"
             className="input-filled w-full md:w-auto"
             value={selectedManagerId}
-            onChange={(e) => setSelectedManagerId(e.target.value)}
+            onChange={e => setSelectedManagerId(e.target.value)}
           >
             {managers
-              .filter((manager) => manager.id.toString() !== currentManagerId)
-              .map((manager) => (
+              .filter(manager => manager.id.toString() !== currentManagerId)
+              .map(manager => (
                 <option key={manager.id} value={manager.id}>
                   {manager.fullName}
                 </option>
               ))}
           </select>
 
-        <button className="btn-primary mt-6 w-full" onClick={transferJobs}>
-          Transfer Jobs
-        </button>
+          <button className="btn-primary mt-6 w-full" onClick={transferJobs}>
+            Transfer Jobs
+          </button>
         </div>
       </div>
     </div>

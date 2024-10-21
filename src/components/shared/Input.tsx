@@ -7,16 +7,14 @@ interface InputProps {
   type?: string;
   isTextArea?: boolean;
   value: string;
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   error?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   name,
   placeholder,
-  type = "text",
+  type = 'text',
   isTextArea = false,
   value,
   onChange,

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 interface ApplicantCardProps {
   link: string;
-  name: String;
+  name: string;
 }
 
 const TableCard = ({ link, name }: ApplicantCardProps) => {

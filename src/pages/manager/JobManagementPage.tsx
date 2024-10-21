@@ -12,91 +12,92 @@ type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
 type FilterStatus = ApplicationStatus | 'all';
 
 const JobManagementPage: React.FC = () => {
-    const { jobId } = useParams<{ jobId: string }>();
-    const [job, setJob] = useState<Job | undefined>(jobs.find(j => j.id === parseInt(jobId || '')));
-    const [applicants, setApplicants] = useState<(Application & { user: User })[]>([]);
-    const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
-    const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
-    const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { jobId } = useParams<{ jobId: string }>();
+  const [job, setJob] = useState<Job | undefined>(jobs.find(j => j.id === parseInt(jobId || '')));
+  const [applicants, setApplicants] = useState<(Application & { user: User })[]>([]);
+  const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
-    useEffect(() => {
-        const foundJob = jobs.find(j => j.id === parseInt(jobId || '0'));
-        if (foundJob) {
-            setJob(foundJob);
-            const jobApplicants = applications
-                .filter(app => app.jobId === foundJob.id)
-                .map(app => ({
-                    ...app,
-                    user: users.find(u => u.id === app.userId) as User
-                }));
-            setApplicants(jobApplicants);
-        }
-    }, [jobId]);
-
-    if (!job) {
-        return <div>Job not found</div>;
+  useEffect(() => {
+    const foundJob = jobs.find(j => j.id === parseInt(jobId || '0'));
+    if (foundJob) {
+      setJob(foundJob);
+      const jobApplicants = applications
+        .filter(app => app.jobId === foundJob.id)
+        .map(app => ({
+          ...app,
+          user: users.find(u => u.id === app.userId) as User,
+        }));
+      setApplicants(jobApplicants);
     }
+  }, [jobId]);
 
-    const handleUpdateJob = (updatedJobData: Partial<Job>) => {
-        const updatedJob = { ...job, ...updatedJobData };
-        updateJob(job.id, updatedJob);
-        setJob(updatedJob);
-        setIsEditing(false);
-    };
+  if (!job) {
+    return <div>Job not found</div>;
+  }
 
-    const handleStatusChange = (applicantId: number, newStatus: ApplicationStatus) => {
-        setApplicants(prevApplicants =>
-            prevApplicants.map(app =>
-                app.id === applicantId 
-                    ? { ...app, applicationStatus: newStatus } 
-                    : app
-            )
-        );
-        updateApplication(applicantId, { applicationStatus: newStatus });
-    };
+  const handleUpdateJob = (updatedJobData: Partial<Job>) => {
+    const updatedJob = { ...job, ...updatedJobData };
+    updateJob(job.id, updatedJob);
+    setJob(updatedJob);
+    setIsEditing(false);
+  };
 
-    const sortedAndFilteredApplicants = applicants
-        .filter(app => filterStatus === 'all' || app.applicationStatus === filterStatus)
-        .sort((a, b) => {
-            if (sortBy === 'date') {
-                return new Date(b.dateApplied).getTime() - new Date(a.dateApplied).getTime();
-            } else {
-                return a.applicationStatus.localeCompare(b.applicationStatus);
-            }
-        });
-
-    return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Job Management</h1>
-            {isEditing ? (
-                <JobForm initialJob={job} onSubmit={handleUpdateJob} />
-            ) : (
-                <div className="mb-6">
-                    <h2 className="text-2xl font-semibold">{job.listingTitle}</h2>
-                    <p><strong>Department:</strong> {job.department}</p>
-                    <p><strong>Status:</strong> {job.listingStatus}</p>
-                    <p><strong>Job Description:</strong> {job.jobDescription}</p>
-                    <button
-                        onClick={() => setIsEditing(true)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-                    >
-                        Edit Job
-                    </button>
-                </div>
-            )}
-            <h2 className="text-2xl font-semibold mb-4">Applicants</h2>
-            <ApplicantSortOptions
-                sortBy={sortBy}
-                filterStatus={filterStatus}
-                onSortChange={setSortBy}
-                onFilterChange={(status) => setFilterStatus(status as FilterStatus)}
-            />
-            <ApplicantList
-                applicants={sortedAndFilteredApplicants}
-                onStatusChange={handleStatusChange}
-            />
-        </div>
+  const handleStatusChange = (applicantId: number, newStatus: ApplicationStatus) => {
+    setApplicants(prevApplicants =>
+      prevApplicants.map(app =>
+        app.id === applicantId ? { ...app, applicationStatus: newStatus } : app
+      )
     );
+    updateApplication(applicantId, { applicationStatus: newStatus });
+  };
+
+  const sortedAndFilteredApplicants = applicants
+    .filter(app => filterStatus === 'all' || app.applicationStatus === filterStatus)
+    .sort((a, b) => {
+      if (sortBy === 'date') {
+        return new Date(b.dateApplied).getTime() - new Date(a.dateApplied).getTime();
+      } else {
+        return a.applicationStatus.localeCompare(b.applicationStatus);
+      }
+    });
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Job Management</h1>
+      {isEditing ? (
+        <JobForm initialJob={job} onSubmit={handleUpdateJob} />
+      ) : (
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold">{job.listingTitle}</h2>
+          <p>
+            <strong>Department:</strong> {job.department}
+          </p>
+          <p>
+            <strong>Status:</strong> {job.listingStatus}
+          </p>
+          <p>
+            <strong>Job Description:</strong> {job.jobDescription}
+          </p>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+          >
+            Edit Job
+          </button>
+        </div>
+      )}
+      <h2 className="text-2xl font-semibold mb-4">Applicants</h2>
+      <ApplicantSortOptions
+        sortBy={sortBy}
+        filterStatus={filterStatus}
+        onSortChange={setSortBy}
+        onFilterChange={status => setFilterStatus(status as FilterStatus)}
+      />
+      <ApplicantList applicants={sortedAndFilteredApplicants} onStatusChange={handleStatusChange} />
+    </div>
+  );
 };
 
 export default JobManagementPage;

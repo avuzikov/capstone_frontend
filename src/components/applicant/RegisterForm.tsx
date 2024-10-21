@@ -2,13 +2,13 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Input from "../shared/Input";
-import { isNotEmpty, isValidEmail } from "../../utils/validateInput";
-import useFetch from "../../hooks/useFetch";
-import { register } from "../../services/api";
-import { UserRegistration } from "../../types/User";
-import LoadingSpinner from "../shared/LoadingSpinner";
-import { useAuth } from "../../contexts/AuthContext";
+import Input from '../shared/Input';
+import { isNotEmpty, isValidEmail } from '../../utils/validateInput';
+import useFetch from '../../hooks/useFetch';
+import { register } from '../../services/api';
+import { UserRegistration } from '../../types/User';
+import LoadingSpinner from '../shared/LoadingSpinner';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface RegisterFormType {
   firstName: string;
@@ -28,52 +28,43 @@ const RegisterForm = () => {
   const navigate = useNavigate();
 
   const [data, setData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   } as RegisterFormType);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
-  const {
-    data: responseData,
-    isPending,
-    error,
-    fetchDispatch,
-  } = useFetch(register);
+  const { data: responseData, isPending, error, fetchDispatch } = useFetch(register);
   const { setData: setAuth } = useAuth();
 
-  const checkErrors = (
-    field: Field,
-    value: string,
-    wasError?: boolean
-  ): boolean => {
-    if (field === "email") {
-      setErrors((currentErrors) => ({
+  const checkErrors = (field: Field, value: string, wasError?: boolean): boolean => {
+    if (field === 'email') {
+      setErrors(currentErrors => ({
         ...currentErrors,
-        [field]: isValidEmail(value) ? undefined : "Enter valid email address",
+        [field]: isValidEmail(value) ? undefined : 'Enter valid email address',
       }));
       return wasError || !isValidEmail(value);
     }
 
-    if (field === "confirmPassword") {
-      setErrors((currentErrors) => ({
+    if (field === 'confirmPassword') {
+      setErrors(currentErrors => ({
         ...currentErrors,
-        [field]: value === data.password ? undefined : "Password must match",
+        [field]: value === data.password ? undefined : 'Password must match',
       }));
       return wasError || !(value === data.password);
     }
 
-    setErrors((currentErrors) => ({
+    setErrors(currentErrors => ({
       ...currentErrors,
-      [field]: isNotEmpty(value) ? undefined : "Field cannot be empty",
+      [field]: isNotEmpty(value) ? undefined : 'Field cannot be empty',
     }));
     return wasError || !isNotEmpty(value);
   };
 
   const foundErrors = () => {
     let error = false;
-    for (let key in data) {
+    for (const key in data) {
       const field = key as Field;
       error = checkErrors(field, data[field], error);
     }
@@ -90,7 +81,7 @@ const RegisterForm = () => {
     const body: UserRegistration = {
       email: data.email,
       password: data.password,
-      name: data.firstName + " " + data.lastName,
+      name: data.firstName + ' ' + data.lastName,
     };
 
     await fetchDispatch(body);
@@ -100,20 +91,18 @@ const RegisterForm = () => {
     field: Field,
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setData((currentData) => ({ ...currentData, [field]: event.target.value }));
+    setData(currentData => ({ ...currentData, [field]: event.target.value }));
     checkErrors(field, event.target.value);
   };
 
   if (responseData) {
     setAuth(responseData.token, responseData.role, responseData.id);
-    navigate("/profile");
+    navigate('/profile');
   }
 
   return (
     <div className="p-large rounded-lg w-[28rem]">
-      <h2 className="text-xl text-adp-navy text-center m-medium">
-        Register a new user
-      </h2>
+      <h2 className="text-xl text-adp-navy text-center m-medium">Register a new user</h2>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <div className="flex gap-4 justify-items-stretch">
           <div className="flex-grow">
@@ -121,7 +110,7 @@ const RegisterForm = () => {
               name="First Name"
               placeholder="First Name"
               value={data.firstName}
-              onChange={(event) => handleChange("firstName", event)}
+              onChange={event => handleChange('firstName', event)}
               error={errors.firstName}
             />
           </div>
@@ -130,7 +119,7 @@ const RegisterForm = () => {
               name="Last Name"
               placeholder="Last Name"
               value={data.lastName}
-              onChange={(event) => handleChange("lastName", event)}
+              onChange={event => handleChange('lastName', event)}
               error={errors.lastName}
             />
           </div>
@@ -140,7 +129,7 @@ const RegisterForm = () => {
           placeholder="example@example.com"
           type="email"
           value={data.email}
-          onChange={(event) => handleChange("email", event)}
+          onChange={event => handleChange('email', event)}
           error={errors.email}
         />
         <Input
@@ -148,7 +137,7 @@ const RegisterForm = () => {
           placeholder="Password"
           type="password"
           value={data.password}
-          onChange={(event) => handleChange("password", event)}
+          onChange={event => handleChange('password', event)}
           error={errors.password}
         />
         <Input
@@ -156,7 +145,7 @@ const RegisterForm = () => {
           placeholder="Confirm password"
           type="password"
           value={data.confirmPassword}
-          onChange={(event) => handleChange("confirmPassword", event)}
+          onChange={event => handleChange('confirmPassword', event)}
           error={errors.confirmPassword}
         />
         {error && (
