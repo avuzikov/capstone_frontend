@@ -1,6 +1,6 @@
-import { UserRegistration } from "../types/User";
+import { UserRegistration } from '../types/User';
 
-const BASE_URL = "";
+const BASE_URL = '';
 
 type GetJobDetailsType = {
   id: string | undefined;
@@ -14,9 +14,9 @@ type GetUserDetailsType = {
 
 export const register = async (user: UserRegistration) => {
   const response = await fetch(`${BASE_URL}/users/registration`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(user),
   });
@@ -24,7 +24,7 @@ export const register = async (user: UserRegistration) => {
   const responseData = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseData.message || "Failed to register new user");
+    throw new Error(responseData.message || 'Failed to register new user');
   }
 
   return responseData;
@@ -32,7 +32,7 @@ export const register = async (user: UserRegistration) => {
 
 export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
   const response = await fetch(`${BASE_URL}/api/job/${id}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -41,7 +41,7 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
   const responseData = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseData.message || "Failed to fetch job details");
+    throw new Error(responseData.message || 'Failed to fetch job details');
   }
 
   return responseData;
@@ -49,7 +49,7 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
 
 export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
   const response = await fetch(`${BASE_URL}/api/user/manager/${id}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -58,7 +58,7 @@ export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
   const responseData = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseData.message || "Failed to fetch user details");
+    throw new Error(responseData.message || 'Failed to fetch user details');
   }
 
   return responseData;

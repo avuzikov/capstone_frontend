@@ -1,21 +1,21 @@
-import React, { ReactNode, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { ReactNode, useEffect } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
-import { useAuth } from "../../contexts/AuthContext";
-import useFetch from "../../hooks/useFetch";
-import { getJobDetails } from "../../services/api";
-import LoadingSpinner from "../../components/shared/LoadingSpinner";
-import { JobDetailsType } from "../../types/Job";
-import JobDetails from "../../components/applicant/JobDetails";
-import ManagerCard from "../../components/applicant/ManagerCard";
-import ApplyButton from "../../components/applicant/ApplyButton";
+import { useAuth } from '../../contexts/AuthContext';
+import useFetch from '../../hooks/useFetch';
+import { getJobDetails } from '../../services/api';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import { JobDetailsType } from '../../types/Job';
+import JobDetails from '../../components/applicant/JobDetails';
+import ManagerCard from '../../components/applicant/ManagerCard';
+import ApplyButton from '../../components/applicant/ApplyButton';
 
 const JobDetailsPage = () => {
   const { id } = useParams();
   const { token, role } = useAuth();
   const { data, isPending, error, fetchDispatch } = useFetch(getJobDetails);
 
-  const isAuthenticatedApplicant = token && role === "applicant";
+  const isAuthenticatedApplicant = token && role === 'applicant';
 
   useEffect(() => {
     fetchDispatch({ id, token });
@@ -46,9 +46,7 @@ const JobDetailsPage = () => {
           />
         </svg>
 
-        <p className="txt-danger txt-small">
-          {error.message || "Failed to fetch job data!"}
-        </p>
+        <p className="txt-danger txt-small">{error.message || 'Failed to fetch job data!'}</p>
       </div>
     );
   }

@@ -1,6 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { User } from "../../types/types";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { User } from '../../types/types';
 
 interface UserCardProps {
   link: string;

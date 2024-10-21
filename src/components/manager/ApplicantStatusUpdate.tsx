@@ -8,11 +8,14 @@ interface ApplicantStatusUpdateProps {
   onStatusChange: (newStatus: ApplicationStatus) => void;
 }
 
-const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({ currentStatus, onStatusChange }) => {
+const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
+  currentStatus,
+  onStatusChange,
+}) => {
   return (
     <select
       value={currentStatus}
-      onChange={(e) => onStatusChange(e.target.value as ApplicationStatus)}
+      onChange={e => onStatusChange(e.target.value as ApplicationStatus)}
       className="border border-gray-300 rounded-md shadow-sm p-2"
     >
       <option value="pending">Pending</option>

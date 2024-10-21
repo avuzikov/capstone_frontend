@@ -1,4 +1,4 @@
-export {}
+export {};
 // import React from 'react';
 // import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 // import JobTransferCard from './JobTransferCard';
@@ -49,7 +49,7 @@ export {}
 //   test('transfers jobs', async () => {
 //     //const mockJobs = [{ id: 1 }, { id: 2 }];
 //     const mockJobs: Job[] = [
-//         { 
+//         {
 //             id: 1,
 //             userId: 1,
 //             department: 'department',
@@ -60,7 +60,7 @@ export {}
 //             listingStatus: 'open',
 //             experienceLevel: 'experience-level',
 //         },
-//         { 
+//         {
 //             id: 2,
 //             userId: 2,
 //             department: 'department',
@@ -77,7 +77,6 @@ export {}
 //         { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
 //         { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
 //     ];
-
 
 //     mockFetch.mockResolvedValueOnce({
 //         ok: true,

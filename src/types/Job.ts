@@ -3,7 +3,7 @@ export interface JobDetailsType {
   userId: number;
   listingTitle: string;
   department: string;
-  listingStatus: "open" | "closed";
+  listingStatus: 'open' | 'closed';
   dateListed: string;
   dateClosed: string;
   jobTitle: string;
