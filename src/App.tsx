@@ -12,6 +12,7 @@ import ManagerManagementPage from "./pages/admin/ManagerManagementPage.tsx";
 import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
 import TableDisplay from "./components/admin/TableDisplay.tsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
+import JobPage from "./pages/JobPage.tsx";
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -41,6 +42,7 @@ function App() {
             <Route path="/" element={<p>Dummy Data</p>} />
             <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/jobs" element={<JobPage />} />
             <Route
               path="/admin/dashboard"
               element={
