@@ -1,8 +1,10 @@
 // src\components\admin\ManagerList.tsx
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import ManagerCard from './ManagerCard';
-import { User } from '../../types/types'; // Adjust the import path as necessary
+import { User } from '../../types/types';
+import apiClient from '../../services/api/apiClient';
 
 const ManagerList: React.FC = () => {
   const [managers, setManagers] = useState<User[]>([]);
@@ -18,21 +20,8 @@ const ManagerList: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/users', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data: User[] = await response.json();
+      const data = await apiClient.fetchUsers(token);
       const managers = data.filter(user => user.role === 'hiring-manager');
-
       setManagers(managers);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');

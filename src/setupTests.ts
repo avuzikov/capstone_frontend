@@ -1,6 +1,6 @@
 // src\setupTests.ts
 import '@testing-library/jest-dom';
-import { server } from './mocks/server';
+import { server } from './services/mocks/server';
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

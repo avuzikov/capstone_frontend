@@ -1,8 +1,9 @@
 // src\components\applicant\ManagerCard.tsx
+
 import React, { useEffect, ReactNode } from 'react';
 import useFetch from '../../hooks/useFetch';
 
-import { getUserDetails } from '../../services/api';
+import { getUserDetails } from '../../services/api/api';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../shared/LoadingSpinner';
 

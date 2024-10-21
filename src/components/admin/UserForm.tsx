@@ -1,4 +1,4 @@
-// src/components/admin/UserForm.tsx
+// src\components\admin\UserForm.tsx
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -6,7 +6,7 @@ import Input from '../shared/Input';
 import BackButton from '../shared/BackButton';
 import { User } from '../../types/types';
 import { useAuth } from '../../contexts/AuthContext';
-import { fetchUsers, createUser, updateUser, deleteUser } from '../../utils/apiUtils';
+import apiClient from '../../services/api/apiClient';
 import {
   validateForm,
   validateEmail,
@@ -40,8 +40,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
     const fetchUserData = async () => {
       if (isEditing && token) {
         try {
-          const users = await fetchUsers(token);
-          const user = users.find(u => u.id.toString() === (userId || id));
+          const user = await apiClient.fetchManager(userId || id || '', token);
           if (user) {
             setFormData(user);
           }
@@ -57,7 +56,6 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({ ...prevData, [name]: value }));
-    // Clear the error when the user starts typing
     setFormErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
   };
 
@@ -80,15 +78,14 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
     e.preventDefault();
     if (validateUserForm()) {
       try {
-        if (isEditing) {
-          await updateUser(userId || id || '', formData, token);
-        } else {
-          await createUser(formData, token);
+        if (isEditing && token) {
+          await apiClient.updateUser(userId || id || '', formData, token);
+        } else if (token) {
+          await apiClient.createUser(formData, token);
         }
         navigate(-1);
       } catch (error) {
         console.error('Failed to save user:', error);
-        // You might want to set a general error message here
       }
     }
   };
@@ -97,15 +94,13 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
     const userIdToDelete = userId || id;
     if (userIdToDelete && token) {
       try {
-        await deleteUser(userIdToDelete, token);
+        await apiClient.deleteUser(userIdToDelete, token);
         navigate(-1);
       } catch (error) {
         console.error('Failed to delete user:', error);
-        // You might want to set a general error message here
       }
     } else {
       console.error('No user ID available for deletion');
-      // You might want to set an error message or handle this case
     }
   };
 

@@ -1,8 +1,8 @@
 // src\pages\LoginPage.tsx
 import React, { useState } from 'react';
-import Input from '../components/shared/Input';
+import Input from '../../components/shared/Input';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');

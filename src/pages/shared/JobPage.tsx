@@ -1,11 +1,11 @@
 // src/pages/JobPage.tsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import JobList from '../components/applicant/JobList';
-import { useAuth } from '../contexts/AuthContext';
-import { fetchJobs } from '../utils/apiUtils';
-import LoadingSpinner from '../components/shared/LoadingSpinner';
-import { debounce } from '../utils/generalUtils';
+import JobList from '../../components/applicant/JobList';
+import { useAuth } from '../../contexts/AuthContext';
+import { fetchJobs } from '../../utils/apiUtils';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import { debounce } from '../../utils/generalUtils';
 
 const JobPage: React.FC = () => {
   const { token } = useAuth();

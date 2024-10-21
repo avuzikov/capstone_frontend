@@ -1,11 +1,12 @@
 // src\components\applicant\RegisterForm.tsx
+
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Input from '../shared/Input';
 import { isNotEmpty, isValidEmail } from '../../utils/validateInput';
 import useFetch from '../../hooks/useFetch';
-import { register } from '../../services/api';
+import { register } from '../../services/api/api';
 import { UserRegistration } from '../../types/User';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';

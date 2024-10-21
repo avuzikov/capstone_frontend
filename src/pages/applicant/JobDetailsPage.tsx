@@ -4,7 +4,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
 import useFetch from '../../hooks/useFetch';
-import { getJobDetails } from '../../services/api';
+import { getJobDetails } from '../../services/api/api';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import { JobDetailsType } from '../../types/Job';
 import JobDetails from '../../components/applicant/JobDetails';

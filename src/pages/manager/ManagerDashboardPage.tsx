@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import ActiveJobsList from '../../components/manager/ActiveJobsList';
 import JobForm from '../../components/manager/JobForm';
-import { addJob } from '../../mocks/mockData';
+import { addJob } from '../../services/mocks/mockData';
 
 const ManagerDashboardPage: React.FC = () => {
   const [showJobForm, setShowJobForm] = useState<boolean>(false);

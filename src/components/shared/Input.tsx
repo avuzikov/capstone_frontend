@@ -1,47 +1,53 @@
 // src\components\shared\Input.tsx
+
 import React from 'react';
 
-interface InputProps {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   name: string;
-  placeholder: string;
-  type?: string;
+  label?: string;
   isTextArea?: boolean;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   error?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   name,
+  label,
   placeholder,
   type = 'text',
   isTextArea = false,
   value,
   onChange,
   error,
+  className = '',
+  ...props
 }) => {
+  const inputClassName = `input-bordered ${className} ${error ? 'border-adp-red' : ''}`;
+
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={name} className="txt-small pl-2.5">
-        {name.charAt(0).toUpperCase() + name.slice(1)}
+      <label htmlFor={name} className="text-small pl-2.5">
+        {label || name.charAt(0).toUpperCase() + name.slice(1)}
       </label>
       {isTextArea ? (
         <textarea
-          name={name}
           id={name}
+          name={name}
           placeholder={placeholder}
-          className="input-bordered"
+          className={inputClassName}
           value={value}
           onChange={onChange}
+          {...props}
         />
       ) : (
         <input
-          name={name} // Changed to 'name'
+          id={name}
+          name={name}
           type={type}
           placeholder={placeholder}
-          className="input-bordered"
+          className={inputClassName}
           value={value}
           onChange={onChange}
+          {...props}
         />
       )}
       {error && (
@@ -58,8 +64,7 @@ const Input: React.FC<InputProps> = ({
               clipRule="evenodd"
             />
           </svg>
-
-          <p className="txt-danger txt-small">{error}</p>
+          <p className="text-danger text-small">{error}</p>
         </div>
       )}
     </div>

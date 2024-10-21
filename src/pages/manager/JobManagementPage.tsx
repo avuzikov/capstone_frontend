@@ -5,7 +5,13 @@ import JobForm from '../../components/manager/JobForm';
 import ApplicantList from '../../components/manager/ApplicantList';
 import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate';
 import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions';
-import { jobs, applications, users, updateJob, updateApplication } from '../../mocks/mockData';
+import {
+  jobs,
+  applications,
+  users,
+  updateJob,
+  updateApplication,
+} from '../../services/mocks/mockData';
 import { Job, Application, User } from '../../types/types';
 
 type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';

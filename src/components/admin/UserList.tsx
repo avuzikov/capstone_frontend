@@ -1,9 +1,11 @@
 // src\components\admin\UserList.tsx
+
 import React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import UserCard from './UserCard';
 import { User } from '../../types/types';
 import { useAuth } from '../../contexts/AuthContext';
+import apiClient from '../../services/api/apiClient';
 
 const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -20,21 +22,8 @@ const UserList: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/users', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data: User[] = await response.json();
+      const data = await apiClient.fetchUsers(token);
       const applicants = data.filter(user => user.role === 'applicant');
-
       setUsers(applicants);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');

@@ -1,7 +1,9 @@
 // src\components\applicant\ApplicationForm.tsx
+
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import apiClient from '../../services/api/apiClient';
 
 interface ApplicationRequest {
   jobId: number;
@@ -28,22 +30,11 @@ const ApplicationForm: React.FC = () => {
     console.log(applicationData);
 
     try {
-      const response = await fetch('/api/application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(applicationData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create application');
+      if (!token) {
+        throw new Error('No authentication token available');
       }
-
-      const newApplication = await response.json();
+      const newApplication = await apiClient.createApplication(applicationData, token);
       console.log('Application created successfully:', newApplication);
-
       navigate('/jobs');
     } catch (error) {
       console.error('Error creating application:', error);

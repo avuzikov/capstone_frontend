@@ -1,7 +1,9 @@
 // src\components\admin\JobCard.tsx
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { Job, User } from '../../types/types';
 import { useAuth } from '../../contexts/AuthContext';
+import apiClient from '../../services/api/apiClient';
 
 const JobCard = ({ job }: { job: Job }) => {
   const { token } = useAuth();
@@ -11,28 +13,13 @@ const JobCard = ({ job }: { job: Job }) => {
 
   const fetchManagers = useCallback(async () => {
     try {
-      const response = await fetch('/users', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-
-      const data: User[] = await response.json();
-
+      if (!token) return;
+      const data = await apiClient.fetchUsers(token);
       const managers = data.filter(user => user.role === 'hiring-manager');
-
       managers.sort((a, b) => a.fullName.localeCompare(b.fullName));
-
       setManagers(managers);
 
       if (managers.length > 0 && !selectedManagerId) {
-        setSelectedManagerId(String(managers[0].id));
         const firstAvailableManager = managers.find(
           manager => manager.id.toString() !== currentManagerId
         );
@@ -53,36 +40,21 @@ const JobCard = ({ job }: { job: Job }) => {
 
   const transferJob = async () => {
     try {
-      const response = await fetch('/api/job/transfer', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          jobId: job.id,
-          fromUserId: currentManagerId,
-          toUserId: selectedManagerId,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Failed to transfer job', job.id);
-      }
+      if (!token) return;
+      await apiClient.updateJob(job.id.toString(), { userId: parseInt(selectedManagerId) }, token);
     } catch (error) {
-      console.error('Failed to transfer jobs:', error);
+      console.error('Failed to transfer job:', error);
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedManagerId(e.target.value);
-
     transferJob();
   };
 
   return (
     <div className="card-bordered">
-      <div className="flex justify-between  items-center">
+      <div className="flex justify-between items-center">
         <h2 className="text-medium">{job.jobTitle}</h2>
       </div>
       <p className="text-small mb-2">Department: {job.department}</p>

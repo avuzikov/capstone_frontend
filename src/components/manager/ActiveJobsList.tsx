@@ -1,6 +1,7 @@
 // src\components\manager\ActiveJobsList.tsx
+
 import React, { useState, useEffect } from 'react';
-import { jobs } from '../../mocks/mockData';
+import { jobs } from '../../services/mocks/mockData';
 
 const ActiveJobsList: React.FC = () => {
   const [currentJobs, setCurrentJobs] = useState(jobs);
