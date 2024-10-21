@@ -1,26 +1,12 @@
 import React from 'react';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate.tsx';
+import { User, Application } from './types';
 
-interface User {
-    id: number;
-    fullName: string;
-    email: string;
-    role: string;
-}
-
-interface Application {
-    id: number;
-    userId: number;
-    jobId: number;
-    dateApplied: string;
-    applicationStatus: string;
-    coverLetter: string;
-    customResume: string;
-}
+type ApplicationStatus = Application['applicationStatus'];
 
 interface ApplicantListProps {
   applicants: (Application & { user: User })[];
-  onStatusChange: (applicantId: number, newStatus: string) => void;
+  onStatusChange: (applicantId: number, newStatus: ApplicationStatus) => void;
 }
 
 const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, onStatusChange }) => {

@@ -1,6 +1,7 @@
 import React from 'react';
+import { Application } from './types';
 
-type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+type ApplicationStatus = Application['applicationStatus'];
 
 interface ApplicantStatusUpdateProps {
   currentStatus: ApplicationStatus;
