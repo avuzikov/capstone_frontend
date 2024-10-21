@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 import { User, Job, Application } from './types'
-import * as db from './db.ts'
+import { users, jobs, applications, addUser, updateUser, deleteUser, addJob, updateJob, deleteJob, addApplication, updateApplication, deleteApplication } from './mockData.ts'
 
 // Define interfaces for request bodies
 interface LoginRequest {
@@ -46,7 +46,7 @@ const authenticateUser = (request: Request): User | null => {
   if (!token) {
     return null
   }
-  const user = db.getUserById(parseInt(token))
+  const user = users.find(user => user.id === parseInt(token))
   return user || null
 }
 
@@ -61,10 +61,10 @@ export const handlers = [
   // Authentication
   http.post<never, LoginRequest>('/users/login', async ({ request }) => {
     const { email, password } = await request.json()
-    const user = db.getUsers().find(u => u.email === email && u.password === password)
+    const user = users.find(u => u.email === email && u.password === password)
     if (user) {
       return HttpResponse.json(
-        { message: 'Login successful', token: user.id.toString(), role: user.role },
+        { message: 'Login successful', token: user.id.toString(), role: user.role, id: user.id },
         {
           status: 200,
           headers: {
@@ -79,10 +79,10 @@ export const handlers = [
   // Users
   http.post<never, RegistrationRequest>('/users/registration', async ({ request }) => {
     const { email, password, name } = await request.json()
-    const newUser: User = { id: db.getNextUserId(), fullName: name, email, password, role: 'applicant' }
-    db.addUser(newUser)
+    const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'applicant' }
+    addUser(newUser)
     return HttpResponse.json(
-      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role },
+      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role, id: newUser.id },
       {
         status: 200,
         headers: {
@@ -92,14 +92,22 @@ export const handlers = [
     )
   }),
 
+  http.get('/users', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    return HttpResponse.json(users)
+  }),
+
   http.post<never, RegistrationRequest>('/users/registration/admin', async ({ request }) => {
     const user = authenticateUser(request)
     if (!user || user.role !== 'admin') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { email, password, name } = await request.json()
-    const newUser: User = { id: db.getNextUserId(), fullName: name, email, password, role: 'hiring-manager' }
-    db.addUser(newUser)
+    const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'hiring-manager' }
+    addUser(newUser)
     return HttpResponse.json(newUser, { status: 200 })
   }),
 
@@ -109,7 +117,7 @@ export const handlers = [
     if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    const foundUser = db.getUserById(parseInt(id))
+    const foundUser = users.find(u => u.id === parseInt(id))
     if (!foundUser) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
@@ -120,12 +128,12 @@ export const handlers = [
   http.put<{ id: string }>('/users/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    if (!user || user.id !== parseInt(id)) {
+    if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json() as Partial<User>
-    db.updateUser(parseInt(id), updatedData)
-    const updatedUser = db.getUserById(parseInt(id))
+    updateUser(parseInt(id), updatedData)
+    const updatedUser = users.find(u => u.id === parseInt(id))
     if (!updatedUser) {
       return HttpResponse.json({ message: 'User not found' }, { status: 404 })
     }
@@ -139,7 +147,7 @@ export const handlers = [
     if (!user || (user.id !== parseInt(id) && user.role !== 'admin')) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    db.deleteUser(parseInt(id))
+    deleteUser(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
 
@@ -150,7 +158,7 @@ export const handlers = [
       return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
     const { id } = params
-    const job = db.getJobById(parseInt(id))
+    const job = jobs.find(j => j.id === parseInt(id))
     if (!job) {
       return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
     }
@@ -164,25 +172,43 @@ export const handlers = [
     }
     const jobData = await request.json()
     const newJob: Job = { 
-      id: db.getNextJobId(), 
+      id: jobs.length + 1, 
       ...jobData, 
       userId: user.id,
       dateListed: new Date().toISOString()
     }
-    db.addJob(newJob)
+    addJob(newJob)
     return HttpResponse.json(newJob)
+  }),
+  
+  http.put<never, JobTransferRequest>('/api/job/transfer', async ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user || user.role !== 'admin') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
+    const { jobId, fromUserId, toUserId } = await request.json()
+    
+    const jobToTransfer = jobs.find(j => j.id === jobId)
+
+    if (!jobToTransfer) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
+    }
+
+    jobToTransfer.userId = Number(toUserId);
+
+    return HttpResponse.json(jobToTransfer)
   }),
 
   http.put<{ id: string }, JobRequest>('/api/job/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    const job = db.getJobById(parseInt(id))
+    const job = jobs.find(j => j.id === parseInt(id))
     if (!user || user.role !== 'hiring-manager' || !job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json()
-    db.updateJob(parseInt(id), updatedData)
-    const updatedJob = db.getJobById(parseInt(id))
+    updateJob(parseInt(id), updatedData)
+    const updatedJob = jobs.find(j => j.id === parseInt(id))
     return HttpResponse.json(updatedJob)
   }),
 
@@ -192,23 +218,23 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { jobId, fromUserId, toUserId } = await request.json()
-    const job = db.getJobById(jobId)
-    if (!job || job.userId !== fromUserId) {
+    const job = jobs.find(j => j.id === jobId && j.userId === fromUserId)
+    if (!job) {
       return HttpResponse.json({ message: 'Job not found' }, { status: 404 })
     }
-    db.updateJob(jobId, { userId: toUserId })
-    const updatedJob = db.getJobById(jobId)
+    updateJob(jobId, { userId: toUserId })
+    const updatedJob = jobs.find(j => j.id === jobId)
     return HttpResponse.json(updatedJob)
   }),
 
   http.delete<{ id: string }>('/api/job/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    const job = db.getJobById(parseInt(id))
+    const job = jobs.find(j => j.id === parseInt(id))
     if (!user || user.role !== 'hiring-manager' || !job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    db.deleteJob(parseInt(id))
+    deleteJob(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
 
@@ -220,12 +246,11 @@ export const handlers = [
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const allJobs = db.getJobs()
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
-    const paginatedJobs = allJobs.slice(startIndex, endIndex)
+    const paginatedJobs = jobs.slice(startIndex, endIndex)
     return HttpResponse.json({
-      total: allJobs.length,
+      total: jobs.length,
       page,
       items,
       jobs: paginatedJobs
@@ -240,20 +265,20 @@ export const handlers = [
     }
     const applicationData = await request.json()
     const newApplication: Application = { 
-      id: db.getNextApplicationId(), 
+      id: applications.length + 1, 
       ...applicationData, 
       userId: user.id,
       dateApplied: new Date().toISOString(),
       applicationStatus: 'pending'
     }
-    db.addApplication(newApplication)
+    addApplication(newApplication)
     return HttpResponse.json(newApplication)
   }),
 
   http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    const application = db.getApplicationById(parseInt(id))
+    const application = applications.find(a => a.id === parseInt(id))
     if (!application) {
       return HttpResponse.json({ message: 'Application not found' }, { status: 404 })
     }
@@ -266,13 +291,13 @@ export const handlers = [
   http.put<{ id: string }, Partial<ApplicationRequest>>('/api/application/:id', async ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    const application = db.getApplicationById(parseInt(id))
+    const application = applications.find(a => a.id === parseInt(id))
     if (!user || user.role !== 'applicant' || !application || application.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const updatedData = await request.json()
-    db.updateApplication(parseInt(id), updatedData)
-    const updatedApplication = db.getApplicationById(parseInt(id))
+    updateApplication(parseInt(id), updatedData)
+    const updatedApplication = applications.find(a => a.id === parseInt(id))
     return HttpResponse.json(updatedApplication)
   }),
 
@@ -282,28 +307,41 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { id } = params
-    const application = db.getApplicationById(parseInt(id))
+    const application = applications.find(a => a.id === parseInt(id))
     if (!application) {
       return HttpResponse.json({ message: 'Application not found' }, { status: 404 })
     }
-    const job = db.getJobById(application.jobId)
+    const job = jobs.find(j => j.id === application.jobId)
     if (!job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { applicationStatus } = await request.json()
-    db.updateApplication(parseInt(id), { applicationStatus })
-    const updatedApplication = db.getApplicationById(parseInt(id))
+    updateApplication(parseInt(id), { applicationStatus })
+    const updatedApplication = applications.find(a => a.id === parseInt(id))
     return HttpResponse.json(updatedApplication)
+  }),
+
+  http.get('/api/application', ({ request }) => {
+    const user = authenticateUser(request)
+    if (!user) {
+      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+    const page = parseInt(new URL(request.url).searchParams.get('page') || '1')
+    const items = parseInt(new URL(request.url).searchParams.get('items') || '10')
+    const startIndex = (page - 1) * items
+    const endIndex = startIndex + items
+    const paginatedApplications = applications.slice(startIndex, endIndex)
+    return HttpResponse.json(paginatedApplications)
   }),
 
   http.delete<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
-    const application = db.getApplicationById(parseInt(id))
+    const application = applications.find(a => a.id === parseInt(id))
     if (!user || user.role !== 'applicant' || !application || application.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    db.deleteApplication(parseInt(id))
+    deleteApplication(parseInt(id))
     return HttpResponse.json(null, { status: 204 })
   }),
 
@@ -316,7 +354,7 @@ export const handlers = [
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const managerJobs = db.getJobsCreatedByUser(user.id)
+    const managerJobs = jobs.filter(job => job.userId === user.id)
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
     const paginatedJobs = managerJobs.slice(startIndex, endIndex)
@@ -326,7 +364,7 @@ export const handlers = [
       items,
       jobs: paginatedJobs.map(job => ({
         ...job,
-        applicantCount: db.getApplicationsByJobId(job.id).length
+        applicantCount: applications.filter(app => app.jobId === job.id).length
       }))
     })
   }),
@@ -337,14 +375,14 @@ export const handlers = [
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
     const { jobId } = params
-    const job = db.getJobById(parseInt(jobId))
-    if (!job || job.userId !== user.id) {
+    const job = jobs.find(j => j.id === parseInt(jobId) && j.userId === user.id)
+    if (!job) {
       return HttpResponse.json({ message: 'Job not found or not owned by you' }, { status: 404 })
     }
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const jobApplications = db.getApplicationsByJobId(parseInt(jobId))
+    const jobApplications = applications.filter(app => app.jobId === parseInt(jobId))
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
     const paginatedApplications = jobApplications.slice(startIndex, endIndex)
@@ -354,7 +392,7 @@ export const handlers = [
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: db.getUserById(app.userId)?.fullName
+        applicantName: users.find(u => u.id === app.userId)?.fullName
       }))
     })
   }),
@@ -367,6 +405,7 @@ export const handlers = [
     
     const { id } = params
     
+    // Type guard to ensure id is a string
     if (typeof id !== 'string') {
       return HttpResponse.json({ message: 'Invalid ID format' }, { status: 400 })
     }
@@ -377,9 +416,9 @@ export const handlers = [
       return HttpResponse.json({ message: 'Invalid ID format' }, { status: 400 })
     }
     
-    const manager = db.getUserById(managerId)
+    const manager = users.find(u => u.id === managerId && u.role === 'hiring-manager')
     
-    if (!manager || manager.role !== 'hiring-manager') {
+    if (!manager) {
       return HttpResponse.json({ message: 'Manager not found' }, { status: 404 })
     }
     
@@ -387,8 +426,8 @@ export const handlers = [
       id: manager.id,
       fullName: manager.fullName,
       department: manager.department,
-      jobTitle: 'Hiring Manager',
-      publicContactInfo: manager.email
+      jobTitle: 'Hiring Manager', // Assuming all hiring managers have this title
+      publicContactInfo: manager.email // You might want to limit what information is public
     })
   }),
 
@@ -401,15 +440,14 @@ export const handlers = [
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const allUsers = db.getUsers()
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
-    const paginatedUsers = allUsers.slice(startIndex, endIndex)
+    const paginatedUsers = users.slice(startIndex, endIndex)
     return HttpResponse.json({
-      total: allUsers.length,
+      total: users.length,
       page,
       items,
-      users: paginatedUsers.map(({ password, ...user }) => user)
+      users: paginatedUsers.map(({ password, ...user }) => user) // Exclude password from response
     })
   }),
 
@@ -421,18 +459,17 @@ export const handlers = [
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const allJobs = db.getJobs()
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
-    const paginatedJobs = allJobs.slice(startIndex, endIndex)
+    const paginatedJobs = jobs.slice(startIndex, endIndex)
     return HttpResponse.json({
-      total: allJobs.length,
+      total: jobs.length,
       page,
       items,
       jobs: paginatedJobs.map(job => ({
         ...job,
-        applicantCount: db.getApplicationsByJobId(job.id).length,
-        managerName: db.getUserById(job.userId)?.fullName
+        applicantCount: applications.filter(app => app.jobId === job.id).length,
+        managerName: users.find(u => u.id === job.userId)?.fullName
       }))
     })
   }),
@@ -445,18 +482,17 @@ export const handlers = [
     const url = new URL(request.url)
     const page = safeParseInt(url.searchParams.get('page'), 1)
     const items = safeParseInt(url.searchParams.get('items'), 20)
-    const allApplications = db.getApplications()
     const startIndex = (page - 1) * items
     const endIndex = startIndex + items
-    const paginatedApplications = allApplications.slice(startIndex, endIndex)
+    const paginatedApplications = applications.slice(startIndex, endIndex)
     return HttpResponse.json({
-      total: allApplications.length,
+      total: applications.length,
       page,
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: db.getUserById(app.userId)?.fullName,
-        jobTitle: db.getJobById(app.jobId)?.jobTitle
+        applicantName: users.find(u => u.id === app.userId)?.fullName,
+        jobTitle: jobs.find(j => j.id === app.jobId)?.jobTitle
       }))
     })
   }),
@@ -467,7 +503,7 @@ export const handlers = [
     if (!user || user.role !== 'applicant') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    const userApplications = db.getApplicationsByUserId(user.id)
+    const userApplications = applications.filter(app => app.userId === user.id)
     return HttpResponse.json({
       totalApplications: userApplications.length,
       pendingApplications: userApplications.filter(app => app.applicationStatus === 'pending').length,
@@ -482,8 +518,8 @@ export const handlers = [
     if (!user || user.role !== 'hiring-manager') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    const managerJobs = db.getJobsCreatedByUser(user.id)
-    const jobApplications = managerJobs.flatMap(job => db.getApplicationsByJobId(job.id))
+    const managerJobs = jobs.filter(job => job.userId === user.id)
+    const jobApplications = applications.filter(app => managerJobs.some(job => job.id === app.jobId))
     return HttpResponse.json({
       totalJobs: managerJobs.length,
       openJobs: managerJobs.filter(job => job.listingStatus === 'open').length,
@@ -501,22 +537,19 @@ export const handlers = [
     if (!user || user.role !== 'admin') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
     }
-    const allUsers = db.getUsers()
-    const allJobs = db.getJobs()
-    const allApplications = db.getApplications()
     return HttpResponse.json({
-      totalUsers: allUsers.length,
-      applicants: allUsers.filter(u => u.role === 'applicant').length,
-      hiringManagers: allUsers.filter(u => u.role === 'hiring-manager').length,
-      admins: allUsers.filter(u => u.role === 'admin').length,
-      totalJobs: allJobs.length,
-      openJobs: allJobs.filter(job => job.listingStatus === 'open').length,
-      closedJobs: allJobs.filter(job => job.listingStatus === 'closed').length,
-      totalApplications: allApplications.length,
-      pendingApplications: allApplications.filter(app => app.applicationStatus === 'pending').length,
-      reviewedApplications: allApplications.filter(app => app.applicationStatus === 'reviewed').length,
-      acceptedApplications: allApplications.filter(app => app.applicationStatus === 'accepted').length,
-      rejectedApplications: allApplications.filter(app => app.applicationStatus === 'rejected').length
+      totalUsers: users.length,
+      applicants: users.filter(u => u.role === 'applicant').length,
+      hiringManagers: users.filter(u => u.role === 'hiring-manager').length,
+      admins: users.filter(u => u.role === 'admin').length,
+      totalJobs: jobs.length,
+      openJobs: jobs.filter(job => job.listingStatus === 'open').length,
+      closedJobs: jobs.filter(job => job.listingStatus === 'closed').length,
+      totalApplications: applications.length,
+      pendingApplications: applications.filter(app => app.applicationStatus === 'pending').length,
+      reviewedApplications: applications.filter(app => app.applicationStatus === 'reviewed').length,
+      acceptedApplications: applications.filter(app => app.applicationStatus === 'accepted').length,
+      rejectedApplications: applications.filter(app => app.applicationStatus === 'rejected').length
     })
   })
 ]
