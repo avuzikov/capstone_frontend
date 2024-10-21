@@ -13,6 +13,8 @@ import DataTableManagementPage from "./pages/admin/DataTableManagementPage.tsx";
 import TableDisplay from "./components/admin/TableDisplay.tsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.tsx";
 import ProfilePage from "./pages/applicant/ProfilePage.tsx";
+import ManagerDashboardPage from "./pages/manager/ManagerDashboardPage.tsx";
+import JobManagementPage from "./pages/manager/JobManagementPage.tsx";
 import JobDetailsPage from "./pages/applicant/JobDetailsPage.tsx";
 import JobPage from "./pages/JobPage.tsx";
 import ApplicationForm from "./components/applicant/ApplicationForm.tsx";
@@ -149,9 +151,27 @@ function App() {
                 />
               }
             />
+            <Route
+              path="/manager/console"
+              element={
+              <ProtectedRoute
+                element={<ManagerDashboardPage />}
+                allowedRoles={["hiring-manager"]}
+              />
+              }
+            />
+            <Route
+              path="/manager/:jobId"
+              element={
+              <ProtectedRoute
+                element={<JobManagementPage />}
+                allowedRoles={["hiring-manager"]}
+              />
+              }
+            />
 
-            {/* Catch-all route for non-existent routes */}
             <Route path="*" element={<Navigate to="/jobs" replace />} />
+
           </Routes>
         </main>
         <Footer />
