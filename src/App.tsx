@@ -18,7 +18,7 @@ import JobManagementPage from "./pages/manager/JobManagementPage.tsx";
 import JobDetailsPage from "./pages/applicant/JobDetailsPage.tsx";
 import JobPage from "./pages/JobPage.tsx";
 import ApplicationForm from "./components/applicant/ApplicationForm.tsx";
-import JobManagementPage from "./pages/admin/JobManagementPage.tsx";
+import AdminJobManagementPage from "./pages/admin/AdminJobManagementPage.tsx";
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -84,7 +84,7 @@ function App() {
               path="/admin/jobs"
               element={
                 <ProtectedRoute
-                  element={<JobManagementPage />}
+                  element={<AdminJobManagementPage />}
                   allowedRoles={["admin"]}
                 />
               }

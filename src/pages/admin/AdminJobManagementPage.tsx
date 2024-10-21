@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import AdminJobList from "../../components/admin/AdminJobList.tsx";
 import BackButton from "../../components/shared/BackButton.tsx";
 
-const JobManagementPage = () => {
+const AdminJobManagementPage = () => {
     return (
         <div className="flex flex-col gap-3 p-large">
             <div className="flex justify-between items-center">
@@ -17,4 +17,4 @@ const JobManagementPage = () => {
     );
 };
 
-export default JobManagementPage;
+export default AdminJobManagementPage;
