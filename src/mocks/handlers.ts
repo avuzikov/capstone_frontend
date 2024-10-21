@@ -82,7 +82,7 @@ export const handlers = [
     const newUser: User = { id: users.length + 1, fullName: name, email, password, role: 'applicant' }
     addUser(newUser)
     return HttpResponse.json(
-      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role },
+      { message: 'User registered successfully', token: newUser.id.toString(), role: newUser.role, id: newUser.id },
       {
         status: 200,
         headers: {
