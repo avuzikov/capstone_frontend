@@ -8,6 +8,7 @@ interface Application {
   applicationStatus: string;
   coverLetter: string;
   customResume: string;
+  jobTitle?:string;
 }
 
 interface ApplicationListProps {
@@ -15,6 +16,7 @@ interface ApplicationListProps {
 }
 
 const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
+
   if (applications.length === 0) {
     return <p>No applications found.</p>;
   }
@@ -26,6 +28,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
           <h3 className="text-lg font-bold">Application ID: {application.id}</h3>
           <p>User ID: {application.userId}</p>
           <p>Job ID: {application.jobId}</p>
+          <p>Job Title: {application.jobTitle}</p>
           <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
           <p>Status: {application.applicationStatus}</p>
           <p>Cover Letter: {application.coverLetter}</p>
