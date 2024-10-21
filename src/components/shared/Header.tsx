@@ -1,8 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 const Header = () => {
   const location = useLocation();
+  const { role } = useAuth();
 
   const getFirstSegment = (pathname: string) => {
     const segments = pathname.split("/").filter(Boolean);
@@ -24,11 +26,10 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/jobs"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "jobs" || location.pathname === "/"
-                ? "bg-adp-white shadow-md text-adp-red rounded-md"
-                : ""
-            }`}
+            className={`hover:underline px-small py-small ${firstSegment === "jobs" || location.pathname === "/"
+              ? "bg-adp-white shadow-md text-adp-red rounded-md"
+              : ""
+              }`}
           >
             Jobs
           </Link>
@@ -36,11 +37,10 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/applications"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "applications"
+            className={`hover:underline px-small py-small ${firstSegment === "applications"
               ? "bg-adp-white shadow-md text-adp-red rounded-md"
               : ""
-            }`}
+              }`}
           >
             Applications
           </Link>
@@ -48,27 +48,27 @@ const Header = () => {
         <li className="cursor-pointer p-small">
           <Link
             to="/profile"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "profile"
+            className={`hover:underline px-small py-small ${firstSegment === "profile"
               ? "bg-adp-white shadow-md text-adp-red rounded-md"
               : ""
-            }`}
+              }`}
           >
             Profile
           </Link>
         </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/admin/dashboard"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "admin"
-              ? "bg-adp-white shadow-md text-adp-red rounded-md"
-              : ""
-            }`}
-          >
-            Admin
-          </Link>
-        </li>
+        {role === "admin" && (
+          <li className="cursor-pointer p-small">
+            <Link
+              to="/admin/dashboard"
+              className={`hover:underline px-small py-small ${firstSegment === "admin"
+                ? "bg-adp-white shadow-md text-adp-red rounded-md"
+                : ""
+                }`}
+            >
+              Admin
+            </Link>
+          </li>
+        )}
       </ul>
     </nav>
   );
