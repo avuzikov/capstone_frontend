@@ -1,6 +1,16 @@
-import { UserLogin, UserRegistration } from "../types/User";
+import { UserRegistration } from "../types/User";
 
 const BASE_URL = "";
+
+type GetJobDetailsType = {
+  id: string | undefined;
+  token: string | null;
+};
+
+type GetUserDetailsType = {
+  id: string | undefined;
+  token: string | null;
+};
 
 export const register = async (user: UserRegistration) => {
   const response = await fetch(`${BASE_URL}/users/registration`, {
@@ -20,8 +30,8 @@ export const register = async (user: UserRegistration) => {
   return responseData;
 };
 
-export const getJobDetails = async (id: string, token: string) => {
-  const response = await fetch(`${BASE_URL}/jobs/${id}`, {
+export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
+  const response = await fetch(`${BASE_URL}/api/job/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -31,7 +41,24 @@ export const getJobDetails = async (id: string, token: string) => {
   const responseData = await response.json();
 
   if (!response.ok) {
-    throw new Error(responseData.message || "Failed to register new user");
+    throw new Error(responseData.message || "Failed to fetch job details");
+  }
+
+  return responseData;
+};
+
+export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
+  const response = await fetch(`${BASE_URL}/api/user/manager/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseData.message || "Failed to fetch user details");
   }
 
   return responseData;
