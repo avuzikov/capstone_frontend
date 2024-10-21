@@ -18,6 +18,7 @@ import JobManagementPage from "./pages/manager/JobManagementPage.tsx";
 import JobDetailsPage from "./pages/applicant/JobDetailsPage.tsx";
 import JobPage from "./pages/JobPage.tsx";
 import ApplicationForm from "./components/applicant/ApplicationForm.tsx";
+import ApplicationDetailsPage from "./pages/applicant/ApplicationDetailsPage.tsx";
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -45,12 +46,15 @@ function App() {
           <Routes>
             {/* Redirect from root to /jobs */}
             <Route path="/" element={<Navigate to="/jobs" replace />} />
-            
+
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/jobs" element={<JobPage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
-
+            <Route
+              path="/applications/:id"
+              element={<ApplicationDetailsPage />}
+            />
             {/* Protected routes */}
             <Route
               path="/profile"
@@ -154,24 +158,23 @@ function App() {
             <Route
               path="/manager/console"
               element={
-              <ProtectedRoute
-                element={<ManagerDashboardPage />}
-                allowedRoles={["hiring-manager"]}
-              />
+                <ProtectedRoute
+                  element={<ManagerDashboardPage />}
+                  allowedRoles={["hiring-manager"]}
+                />
               }
             />
             <Route
               path="/manager/:jobId"
               element={
-              <ProtectedRoute
-                element={<JobManagementPage />}
-                allowedRoles={["hiring-manager"]}
-              />
+                <ProtectedRoute
+                  element={<JobManagementPage />}
+                  allowedRoles={["hiring-manager"]}
+                />
               }
             />
 
             <Route path="*" element={<Navigate to="/jobs" replace />} />
-
           </Routes>
         </main>
         <Footer />
