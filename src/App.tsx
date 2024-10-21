@@ -16,6 +16,7 @@ import ProfilePage from "./pages/applicant/ProfilePage.tsx";
 import JobDetailsPage from "./pages/applicant/JobDetailsPage.tsx";
 import JobPage from "./pages/JobPage.tsx";
 import ApplicationForm from "./components/applicant/ApplicationForm.tsx";
+import ApplicationsPage from "./pages/ApplicationsPage.tsx";
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -46,6 +47,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
+            <Route path="/applications" element={<ApplicationsPage/>}></Route>
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/jobs" element={<JobPage />} />
       <Route path="/apply/:jobId" element={<ApplicationForm />} />
