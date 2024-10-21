@@ -59,6 +59,7 @@ const TableDisplay = () => {
       }, []);
       setAllKeys(keys);
 
+
       setLoading(false);
     } catch (error) {
       console.error("Failed to fetch table data:", error);
