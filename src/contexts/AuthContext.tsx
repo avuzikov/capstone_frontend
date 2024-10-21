@@ -6,7 +6,7 @@ interface AuthContextType {
   role: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  setData: (token: string, role: string) => void;
+  setData: (token: string, role: string, id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -46,9 +46,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [id]);
 
-  const setData = (token: string, role: string) => {
+  const setData = (token: string, role: string, id: string) => {
     setToken(token);
     setRole(role);
+    setId(id);
   };
 
   const login = async (email: string, password: string) => {

@@ -104,7 +104,7 @@ const RegisterForm = () => {
   };
 
   if (responseData) {
-    setAuth(responseData.token, responseData.role);
+    setAuth(responseData.token, responseData.role, responseData.id);
     navigate("/profile");
   }
 
