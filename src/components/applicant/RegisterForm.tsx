@@ -1,7 +1,13 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Input from "../shared/Input.tsx";
 import { isNotEmpty, isValidEmail } from "../../utils/validateInput.ts";
+import useFetch from "../../hooks/useFetch.tsx";
+import { register } from "../../services/api.ts";
+import { UserRegistration } from "../../types/User.ts";
+import LoadingSpinner from "../shared/LoadingSpinner.tsx";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 interface RegisterFormType {
   firstName: string;
@@ -18,6 +24,8 @@ type RegisterFormErrors = {
 type Field = keyof RegisterFormType;
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -26,6 +34,13 @@ const RegisterForm = () => {
     confirmPassword: "",
   } as RegisterFormType);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
+  const {
+    data: responseData,
+    isPending,
+    error,
+    fetchDispatch,
+  } = useFetch(register);
+  const { setData: setAuth } = useAuth();
 
   const checkErrors = (
     field: Field,
@@ -64,21 +79,20 @@ const RegisterForm = () => {
     return error;
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (foundErrors()) {
       return;
     }
 
-    const body = {
+    const body: UserRegistration = {
       email: data.email,
       password: data.password,
       name: data.firstName + " " + data.lastName,
     };
 
-    // TODO: add API calls
-    console.log(body);
+    await fetchDispatch(body);
   };
 
   const handleChange = (
@@ -88,6 +102,11 @@ const RegisterForm = () => {
     setData((currentData) => ({ ...currentData, [field]: event.target.value }));
     checkErrors(field, event.target.value);
   };
+
+  if (responseData) {
+    setAuth(responseData.token, responseData.role);
+    navigate("/profile");
+  }
 
   return (
     <div className="p-large rounded-lg w-[28rem]">
@@ -139,10 +158,31 @@ const RegisterForm = () => {
           onChange={(event) => handleChange("confirmPassword", event)}
           error={errors.confirmPassword}
         />
+        {error && (
+          <div className="input-error mt-1 flex gap-2 items-center text-small">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                clipRule="evenodd"
+              />
+            </svg>
+
+            <p className="txt-danger txt-small">{error.message}</p>
+          </div>
+        )}
         <div className="flex justify-end">
-          <button className="mt-4 btn-primary" type="submit">
-            Register
-          </button>
+          {isPending && <LoadingSpinner size="large" />}
+          {!isPending && (
+            <button className="mt-4 btn-primary" type="submit">
+              Register
+            </button>
+          )}
         </div>
       </form>
     </div>

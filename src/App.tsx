@@ -33,7 +33,6 @@ const ProtectedRoute: React.FC<{
 
 function App() {
   return (
-
     <AuthProvider>
       <div className="flex flex-col justify-between min-h-screen">
         <Header />
@@ -42,7 +41,7 @@ function App() {
             <Route path="/" element={<p>Dummy Data</p>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/profile" element={< ProfilePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route
               path="/admin/dashboard"
               element={
