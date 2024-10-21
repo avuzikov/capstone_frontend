@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Job {
     id: string;                      
@@ -20,14 +21,18 @@ interface JobListProps {
 }
 
 const JobList: React.FC<JobListProps> = ({ jobs, token, userId }) => {
+
+    const navigate = useNavigate();
+
   if (jobs.length === 0) {
     return <p>No jobs found</p>;
   }
 
-  const hangleApply = (id) =>{
+  const hangleApply = (id:string) =>{
     console.log(id)
     console.log(token)
     console.log(userId)
+    navigate(`/apply/${id}`)
   }
 
   return (
