@@ -1,8 +1,11 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext.tsx";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { token, logout, role } = useAuth();
 
   const getFirstSegment = (pathname: string) => {
     const segments = pathname.split("/").filter(Boolean);
@@ -10,6 +13,47 @@ const Header = () => {
   };
 
   const firstSegment = getFirstSegment(location.pathname);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const navItems = () => {
+    if (!token) {
+      return [
+        { to: "/jobs", text: "Jobs" },
+        { to: "/register", text: "Register" },
+        { to: "/login", text: "Login" },
+      ];
+    }
+    switch (role) {
+      case "applicant":
+        return [
+          { to: "/jobs", text: "Jobs" },
+          { to: "/applications", text: "Applications" },
+          { to: "/profile", text: "Profile" },
+        ];
+      case "hiring-manager":
+        return [
+          { to: "/jobs", text: "Jobs" },
+          { to: "/manager/console", text: "Console" },
+        ];
+      case "admin":
+        return [
+          { to: "/jobs", text: "Jobs" },
+          { to: "/admin/dashboard", text: "Dashboard" },
+          { to: "/admin/managers", text: "Managers" },
+          { to: "/admin/jobs", text: "Manage Jobs" },
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const linkClasses = `px-small py-small transition-colors duration-300 rounded-md`;
+  const inactiveLinkClasses = `text-adp-white hover:bg-adp-white hover:text-adp-red`;
+  const activeLinkClasses = `bg-adp-white text-adp-red shadow-md`;
 
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
@@ -19,56 +63,32 @@ const Header = () => {
           <h1 className="hidden md:block text-large">Talent Site</h1>
         </div>
       </Link>
-
-      <ul className="flex gap-1">
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/jobs"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "jobs" || location.pathname === "/"
-                ? "bg-adp-white shadow-md text-adp-red rounded-md"
-                : ""
-            }`}
-          >
-            Jobs
-          </Link>
-        </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/applications"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "applications"
-              ? "bg-adp-white shadow-md text-adp-red rounded-md"
-              : ""
-            }`}
-          >
-            Applications
-          </Link>
-        </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/profile"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "profile"
-              ? "bg-adp-white shadow-md text-adp-red rounded-md"
-              : ""
-            }`}
-          >
-            Profile
-          </Link>
-        </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/admin/dashboard"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "admin"
-              ? "bg-adp-white shadow-md text-adp-red rounded-md"
-              : ""
-            }`}
-          >
-            Admin
-          </Link>
-        </li>
+      <ul className="flex gap-1 items-center">
+        {navItems().map((item) => (
+          <li key={item.to}>
+            <Link
+              to={item.to}
+              className={`${linkClasses} ${
+                firstSegment === item.to.split("/")[1] ||
+                (item.to === "/jobs" && location.pathname === "/")
+                  ? activeLinkClasses
+                  : inactiveLinkClasses
+              }`}
+            >
+              {item.text}
+            </Link>
+          </li>
+        ))}
+        {token && (
+          <li>
+            <button
+              onClick={handleLogout}
+              className={`${linkClasses} ${inactiveLinkClasses}`}
+            >
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
     </nav>
   );

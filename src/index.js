@@ -4,6 +4,9 @@ import './index.css';
 import App from './App.tsx';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { worker } from './mocks/browser.ts';
+
+
 
 async function startMockServiceWorker() {
   if (process.env.NODE_ENV === 'development') {
@@ -27,3 +30,10 @@ startMockServiceWorker().then(() => {
 
   reportWebVitals();
 }).catch(console.error);
+
+// At the end of the file
+if (process.env.NODE_ENV === 'development') {
+  worker.start({
+    onUnhandledRequest: 'bypass',
+  }).catch(console.error);
+}

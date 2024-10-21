@@ -275,6 +275,16 @@ export const handlers = [
     return HttpResponse.json(newApplication)
   }),
 
+  //TODO: Set up for authorized users
+  http.get('/api/application', ({ request }) => 
+  {
+    const user = authenticateUser(request)
+    // if (!user) {
+    //   return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    // }
+    return HttpResponse.json(applications);
+  }),
+
   http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request)
     const { id } = params
@@ -282,9 +292,9 @@ export const handlers = [
     if (!application) {
       return HttpResponse.json({ message: 'Application not found' }, { status: 404 })
     }
-    if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
-    }
+    // if (!user || (user.role === 'applicant' && application.userId !== user.id)) {
+    //   return HttpResponse.json({ message: 'Forbidden' }, { status: 403 })
+    // }
     return HttpResponse.json(application)
   }),
 
