@@ -1,6 +1,11 @@
-import { UserLogin, UserRegistration } from "../types/User";
+import { UserRegistration } from "../types/User";
 
 const BASE_URL = "";
+
+type GetJobDetailsType = {
+  id: string | undefined;
+  token: string | null;
+};
 
 export const register = async (user: UserRegistration) => {
   const response = await fetch(`${BASE_URL}/users/registration`, {
@@ -20,8 +25,8 @@ export const register = async (user: UserRegistration) => {
   return responseData;
 };
 
-export const getJobDetails = async (id: string, token: string) => {
-  const response = await fetch(`${BASE_URL}/jobs/${id}`, {
+export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
+  const response = await fetch(`${BASE_URL}/api/job/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
