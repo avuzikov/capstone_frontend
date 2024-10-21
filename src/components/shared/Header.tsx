@@ -1,9 +1,8 @@
 import React from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Header = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { token, logout, role } = useAuth();
 
@@ -33,13 +32,7 @@ const Header = () => {
           { to: '/manager/console', text: 'Console' },
         ];
       case 'admin':
-        return [
-          { to: '/admin/dashboard', text: 'Dashboard' },
-          { to: '/admin/jobs', text: 'Jobs' },
-          { to: '/admin/users', text: 'Users' },
-          { to: '/admin/managers', text: 'Managers' },
-          { to: '/admin/tables', text: 'Tables' },
-        ];
+        return [{ to: '/admin', text: 'Dashboard' }];
       default:
         return [];
     }
@@ -57,7 +50,7 @@ const Header = () => {
           <h1 className="hidden md:block text-large">Talent Site</h1>
         </div>
       </NavLink>
-      <ul className="flex gap-1 items-center">
+      <ul className="flex gap-3 items-center">
         {navItems().map(item => (
           <li key={item.to}>
             <NavLink
@@ -73,9 +66,12 @@ const Header = () => {
         ))}
         {token && (
           <li>
-            <button onClick={handleLogout} className={`${linkClasses} ${inactiveLinkClasses}`}>
+            <a
+              onClick={handleLogout}
+              className={`${linkClasses} ${inactiveLinkClasses} active:shadow-md cursor-pointer`}
+            >
               Logout
-            </button>
+            </a>
           </li>
         )}
       </ul>

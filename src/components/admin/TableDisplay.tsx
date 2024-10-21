@@ -91,9 +91,9 @@ const TableDisplay = () => {
         navigate(`/admin/manager/${row.id}`);
       }
     } else if (name === 'jobs') {
-      navigate('/jobs');
+      navigate(`/jobs/${row.id}`);
     } else if (name === 'applications') {
-      navigate('/applications');
+      navigate(`/applications/${row.id}`);
     }
   };
 
