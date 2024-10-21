@@ -43,7 +43,7 @@ const ApplicationsPage: React.FC = () => {
             setLoading(true);
             try {
             const data = await fecthApplications(page, itemsPerPage, token);
-            const filteredApplications = data.filter((application: Application) => application.userId.toString() === id);
+            const filteredApplications = data.filter((application: Application) => application.userId === parseInt(id!, 10));
             const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
             setApplications(filteredApplications2); 
             } catch (error) {
