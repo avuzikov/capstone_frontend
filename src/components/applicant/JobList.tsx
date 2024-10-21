@@ -42,10 +42,7 @@ const JobList: React.FC<JobListProps> = ({ jobs, token, userId }) => {
           <h3 className="text-lg font-bold text-large">{job.listingTitle}</h3>
             <p>Department: {job.department}</p>
             <p>Title: {job.jobTitle}</p>
-            <p>Experience: {job.experienceLevel}</p>
             <p>Posted date: {new Date(job.dateListed).toLocaleDateString()}</p>
-            <p>Description: {job.jobDescription}</p>
-            <p>Additional information: {job.additionalInformation}</p>
             <button className="btn-destructive mt-small" onClick={() => hangleApply(job.id)}>Apply</button>
         </li>
       ))}
