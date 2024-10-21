@@ -6,6 +6,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { token, logout } = useAuth();
+  const { role } = useAuth();
 
   const getFirstSegment = (pathname: string) => {
     const segments = pathname.split("/").filter(Boolean);
@@ -65,18 +66,20 @@ const Header = () => {
             Profile
           </Link>
         </li>
-        <li className="cursor-pointer p-small">
-          <Link
-            to="/admin/dashboard"
-            className={`hover:underline px-small py-small ${
-              firstSegment === "admin"
-                ? "bg-adp-white shadow-md text-adp-red rounded-md"
-                : ""
-            }`}
-          >
-            Admin
-          </Link>
-        </li>
+        {role === "admin" && (
+          <li className="cursor-pointer p-small">
+            <Link
+              to="/admin/dashboard"
+              className={`hover:underline px-small py-small ${
+                firstSegment === "admin"
+                  ? "bg-adp-white shadow-md text-adp-red rounded-md"
+                  : ""
+              }`}
+            >
+              Admin
+            </Link>
+          </li>
+        )}
 
         {token && (
           <li className="cursor-pointer p-small">
