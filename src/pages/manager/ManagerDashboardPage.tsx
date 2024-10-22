@@ -1,3 +1,4 @@
+// src/pages/manager/ManagerDashboardPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import JobForm from '../../components/manager/JobForm';
@@ -23,7 +24,6 @@ const ManagerDashboardPage: React.FC = () => {
   const [stats, setStats] = useState<ManagerStats | null>(null);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(false);
 
-  // Fetch manager statistics
   const fetchManagerStats = async () => {
     try {
       const response = await fetch('/api/stats/manager', {
@@ -50,32 +50,45 @@ const ManagerDashboardPage: React.FC = () => {
       setIsLoading(false);
     };
 
-    fetchData();
-  }, [shouldRefresh]);
+    if (token) {
+      fetchData();
+    }
+  }, [token, shouldRefresh]);
 
   const handleCreateJob = async (jobData: Partial<Job>) => {
-    setError(null);
-    try {
-      const response = await fetch('/api/job', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(jobData),
-      });
+    const response = await fetch('/api/job', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(jobData),
+    });
 
-      if (!response.ok) {
-        throw new Error('Failed to create job');
-      }
-
-      const newJob: Job = await response.json();
-      setShowJobForm(false);
-      setShouldRefresh(prev => !prev); // Trigger refresh of job list and stats
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create job');
+    if (!response.ok) {
+      throw new Error('Failed to create job');
     }
+
+    const newJob = await response.json();
+    setShowJobForm(false);
+    setShouldRefresh(prev => !prev); // This will trigger a refresh of the job list
+    return newJob;
   };
+  const StatCard: React.FC<{
+    title: string;
+    items: { label: string; value: number; color: string }[];
+  }> = ({ title, items }) => (
+    <div className="bg-white p-6 rounded-lg shadow">
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <div className="space-y-2">
+        {items.map(item => (
+          <p key={item.label} className={item.color}>
+            {item.label}: {item.value}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -95,42 +108,45 @@ const ManagerDashboardPage: React.FC = () => {
         </div>
       )}
 
-      {/* Statistics Dashboard */}
       {!isLoading && stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Jobs Overview</h3>
-            <div className="space-y-2">
-              <p className="text-gray-600">Total Jobs: {stats.totalJobs}</p>
-              <p className="text-green-600">Open Jobs: {stats.openJobs}</p>
-              <p className="text-gray-600">Closed Jobs: {stats.closedJobs}</p>
-            </div>
-          </div>
+          <StatCard
+            title="Jobs Overview"
+            items={[
+              { label: 'Total Jobs', value: stats.totalJobs, color: 'text-gray-600' },
+              { label: 'Open Jobs', value: stats.openJobs, color: 'text-green-600' },
+              { label: 'Closed Jobs', value: stats.closedJobs, color: 'text-gray-600' },
+            ]}
+          />
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Applications</h3>
-            <div className="space-y-2">
-              <p className="text-gray-600">Total: {stats.totalApplications}</p>
-              <p className="text-yellow-600">Pending: {stats.pendingApplications}</p>
-              <p className="text-blue-600">Reviewed: {stats.reviewedApplications}</p>
-            </div>
-          </div>
+          <StatCard
+            title="Applications"
+            items={[
+              { label: 'Total', value: stats.totalApplications, color: 'text-gray-600' },
+              { label: 'Pending', value: stats.pendingApplications, color: 'text-yellow-600' },
+              { label: 'Reviewed', value: stats.reviewedApplications, color: 'text-blue-600' },
+            ]}
+          />
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Decisions</h3>
-            <div className="space-y-2">
-              <p className="text-green-600">Accepted: {stats.acceptedApplications}</p>
-              <p className="text-red-600">Rejected: {stats.rejectedApplications}</p>
-            </div>
-          </div>
+          <StatCard
+            title="Decisions"
+            items={[
+              { label: 'Accepted', value: stats.acceptedApplications, color: 'text-green-600' },
+              { label: 'Rejected', value: stats.rejectedApplications, color: 'text-red-600' },
+            ]}
+          />
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Action Items</h3>
-            <div className="space-y-2">
-              <p className="text-yellow-600">Pending Reviews: {stats.pendingApplications}</p>
-              <p className="text-blue-600">Open Positions: {stats.openJobs}</p>
-            </div>
-          </div>
+          <StatCard
+            title="Action Items"
+            items={[
+              {
+                label: 'Pending Reviews',
+                value: stats.pendingApplications,
+                color: 'text-yellow-600',
+              },
+              { label: 'Open Positions', value: stats.openJobs, color: 'text-blue-600' },
+            ]}
+          />
         </div>
       )}
 

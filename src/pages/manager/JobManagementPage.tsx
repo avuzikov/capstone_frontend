@@ -1,3 +1,4 @@
+// src/pages/manager/JobManagementPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,8 +20,9 @@ const JobManagementPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
   const [filterStatus, setFilterStatus] = useState<Application['applicationStatus'] | 'all'>('all');
 
-  // Fetch job details
   const fetchJobDetails = async () => {
+    if (!jobId || !token) return;
+
     setIsLoading(true);
     setError(null);
 
@@ -41,9 +43,10 @@ const JobManagementPage: React.FC = () => {
       const jobData: Job = await response.json();
       setJob(jobData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while fetching job details');
-      if (err instanceof Error && err.message === 'Job not found') {
-        // Redirect to manager console if job not found
+      const error =
+        err instanceof Error ? err.message : 'An error occurred while fetching job details';
+      setError(error);
+      if (error === 'Job not found') {
         navigate('/manager/console');
       }
     } finally {
@@ -52,37 +55,39 @@ const JobManagementPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchJobDetails();
-  }, [jobId]);
-
-  // Update job details
-  const handleUpdateJob = async (updatedJobData: Partial<Job>) => {
-    setError(null);
-
-    try {
-      const response = await fetch(`/api/job/${jobId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedJobData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update job');
-      }
-
-      const updatedJob: Job = await response.json();
-      setJob(updatedJob);
-      setIsEditing(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update job');
+    if (token && jobId) {
+      fetchJobDetails();
     }
+  }, [token, jobId, isEditing]);
+
+  const handleUpdateJob = async (updatedJobData: Partial<Job>) => {
+    if (!jobId || !token) return;
+
+    const response = await fetch(`/api/job/${jobId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...updatedJobData,
+        id: jobId,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update job');
+    }
+
+    const updatedJob: Job = await response.json();
+    setJob(updatedJob);
+    setIsEditing(false);
+    await fetchJobDetails(); // Refresh the job data after update
   };
 
-  // Delete job
   const handleDeleteJob = async () => {
+    if (!jobId || !token) return;
+
     if (!window.confirm('Are you sure you want to delete this job listing?')) {
       return;
     }
@@ -99,7 +104,6 @@ const JobManagementPage: React.FC = () => {
         throw new Error('Failed to delete job');
       }
 
-      // Redirect to manager console after successful deletion
       navigate('/manager/console');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete job');

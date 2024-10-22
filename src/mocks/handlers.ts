@@ -250,12 +250,22 @@ export const handlers = [
     const user = authenticateUser(request);
     const { id } = params;
     const job = jobs.find(j => j.id === parseInt(id));
+
     if (!user || user.role !== 'hiring-manager' || !job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
-    const updatedData = await request.json();
-    updateJob(parseInt(id), updatedData);
-    const updatedJob = jobs.find(j => j.id === parseInt(id));
+
+    const updatedData: JobRequest = await request.json();
+
+    const updatedJob: Job = {
+      ...job,
+      ...updatedData,
+      id: job.id, // Preserve the original ID
+      userId: job.userId, // Preserve the user ID
+      dateListed: job.dateListed, // Preserve the original listing date
+    };
+
+    updateJob(parseInt(id), updatedJob);
     return HttpResponse.json(updatedJob);
   }),
 

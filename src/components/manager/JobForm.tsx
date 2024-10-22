@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import React, { useState, useCallback } from 'react';
 import { Job } from '../../types/types';
 
 interface JobFormProps {
   initialJob?: Partial<Job>;
-  onSubmit?: (job: Job) => void;
+  onSubmit: (formData: Partial<Job>) => Promise<void>;
   onCancel?: () => void;
 }
 
 const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => {
-  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,42 +21,29 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
     additionalInformation: initialJob?.additionalInformation || '',
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    []
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const url = initialJob?.id ? `/api/job/${initialJob.id}` : '/api/job';
-
-      const response = await fetch(url, {
-        method: initialJob?.id ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          dateListed: initialJob?.dateListed || new Date().toISOString(),
-        }),
+      await onSubmit({
+        ...formData,
+        dateListed: initialJob?.dateListed || new Date().toISOString(),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const jobData: Job = await response.json();
-      onSubmit?.(jobData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit job posting');
     } finally {
@@ -86,6 +71,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.listingTitle}
             onChange={handleChange}
             required
+            disabled={isLoading}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -101,6 +87,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.department}
             onChange={handleChange}
             required
+            disabled={isLoading}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -116,6 +103,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.jobTitle}
             onChange={handleChange}
             required
+            disabled={isLoading}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
@@ -131,6 +119,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.experienceLevel}
             onChange={handleChange}
             required
+            disabled={isLoading}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g., 5+ years, Entry Level, Senior"
           />
@@ -145,6 +134,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             name="listingStatus"
             value={formData.listingStatus}
             onChange={handleChange}
+            disabled={isLoading}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="open">Open</option>
@@ -162,6 +152,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.jobDescription}
             onChange={handleChange}
             required
+            disabled={isLoading}
             rows={4}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
@@ -179,6 +170,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             name="additionalInformation"
             value={formData.additionalInformation}
             onChange={handleChange}
+            disabled={isLoading}
             rows={3}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
@@ -190,7 +182,8 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+            disabled={isLoading}
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
           >
             Cancel
           </button>
