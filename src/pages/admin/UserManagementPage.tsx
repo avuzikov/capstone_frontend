@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import UserList from "../../components/admin/UserList.tsx";
-import BackButton from "../../components/shared/BackButton.tsx";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import UserList from '../../components/admin/UserList';
+import BackButton from '../../components/shared/BackButton';
 
 const UserManagementPage = () => {
   return (
