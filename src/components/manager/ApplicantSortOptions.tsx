@@ -13,13 +13,13 @@ const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
   sortBy,
   filterStatus,
   onSortChange,
-  onFilterChange
+  onFilterChange,
 }) => {
   return (
     <div className="mb-4 flex justify-between">
       <select
         value={sortBy}
-        onChange={(e) => onSortChange(e.target.value as 'date' | 'status')}
+        onChange={e => onSortChange(e.target.value as 'date' | 'status')}
         className="border border-gray-300 rounded-md shadow-sm p-2"
       >
         <option value="date">Sort by Date</option>
@@ -27,7 +27,7 @@ const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
       </select>
       <select
         value={filterStatus}
-        onChange={(e) => onFilterChange(e.target.value as ApplicationStatus)}
+        onChange={e => onFilterChange(e.target.value as ApplicationStatus)}
         className="border border-gray-300 rounded-md shadow-sm p-2"
       >
         <option value="all">All Statuses</option>

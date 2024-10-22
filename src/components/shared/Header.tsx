@@ -1,51 +1,38 @@
-import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Header = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const { token, logout, role } = useAuth();
 
-  const getFirstSegment = (pathname: string) => {
-    const segments = pathname.split("/").filter(Boolean);
-    return segments[0] || "";
-  };
-
-  const firstSegment = getFirstSegment(location.pathname);
-
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate('/');
   };
 
   const navItems = () => {
     if (!token) {
       return [
-        { to: "/jobs", text: "Jobs" },
-        { to: "/register", text: "Register" },
-        { to: "/login", text: "Login" },
+        { to: '/jobs', text: 'Jobs' },
+        { to: '/register', text: 'Register' },
+        { to: '/login', text: 'Login' },
       ];
     }
     switch (role) {
-      case "applicant":
+      case 'applicant':
         return [
-          { to: "/jobs", text: "Jobs" },
-          { to: "/applications", text: "Applications" },
-          { to: "/profile", text: "Profile" },
+          { to: '/jobs', text: 'Jobs' },
+          { to: '/applications', text: 'Applications' },
+          { to: '/profile', text: 'Profile' },
         ];
-      case "hiring-manager":
+      case 'hiring-manager':
         return [
-          { to: "/jobs", text: "Jobs" },
-          { to: "/manager/console", text: "Console" },
+          { to: '/jobs', text: 'Jobs' },
+          { to: '/manager/console', text: 'Console' },
         ];
-      case "admin":
-        return [
-          { to: "/jobs", text: "Jobs" },
-          { to: "/admin/dashboard", text: "Dashboard" },
-          { to: "/admin/managers", text: "Managers" },
-          { to: "/admin/jobs", text: "Manage Jobs" },
-        ];
+      case 'admin':
+        return [{ to: '/admin', text: 'Dashboard' }];
       default:
         return [];
     }
@@ -57,36 +44,34 @@ const Header = () => {
 
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
-      <Link to={"/"}>
+      <NavLink to={'/'}>
         <div className="flex items-center gap-3">
           <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
           <h1 className="hidden md:block text-large">Talent Site</h1>
         </div>
-      </Link>
-      <ul className="flex gap-1 items-center">
-        {navItems().map((item) => (
+      </NavLink>
+      <ul className="flex gap-3 items-center">
+        {navItems().map(item => (
           <li key={item.to}>
-            <Link
+            <NavLink
               to={item.to}
-              className={`${linkClasses} ${
-                firstSegment === item.to.split("/")[1] ||
-                (item.to === "/jobs" && location.pathname === "/")
-                  ? activeLinkClasses
-                  : inactiveLinkClasses
-              }`}
+              end
+              className={({ isActive }) =>
+                `${linkClasses} ${isActive ? activeLinkClasses : inactiveLinkClasses}`
+              }
             >
               {item.text}
-            </Link>
+            </NavLink>
           </li>
         ))}
         {token && (
           <li>
-            <button
+            <a
               onClick={handleLogout}
-              className={`${linkClasses} ${inactiveLinkClasses}`}
+              className={`${linkClasses} ${inactiveLinkClasses} active:shadow-md cursor-pointer`}
             >
               Logout
-            </button>
+            </a>
           </li>
         )}
       </ul>

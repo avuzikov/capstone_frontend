@@ -29,74 +29,88 @@ This project is a full-stack hiring platform with a React + TypeScript frontend.
 ## Project Structure
 ```plaintext
 frontend-service/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
 ├── src/
 │   ├── components/
-│   │   ├── shared/
-│   │   │   ├── Header.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── LoadingSpinner.tsx
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardCard.tsx
+│   │   │   ├── AdminJobList.tsx
+│   │   │   ├── JobCard.tsx
+│   │   │   ├── JobTransferCard.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   ├── ManagerForm.tsx
+│   │   │   ├── ManagerList.tsx
+│   │   │   ├── TableCard.tsx
+│   │   │   ├── TableDisplay.tsx
+│   │   │   ├── TableList.tsx
+│   │   │   ├── UserCard.tsx
+│   │   │   ├── UserForm.tsx
+│   │   │   └── UserList.tsx
 │   │   ├── applicant/
-│   │   │   ├── JobList.tsx
-│   │   │   ├── JobSearchForm.tsx
-│   │   │   ├── JobDetails.tsx
+│   │   │   ├── ApplicationForm.tsx
 │   │   │   ├── ApplyButton.tsx
-│   │   │   ├── RegistrationForm.tsx
-│   │   │   ├── LoginForm.tsx
-│   │   │   ├── ApplicationList.tsx
-│   │   │   ├── ApplicationStatusFilter.tsx
-│   │   │   ├── ProfileForm.tsx
-│   │   │   └── ApplicationForm.tsx
-│   │   ├── hiringManager/
-│   │   │   ├── ManagerStats.tsx
+│   │   │   ├── JobDetails.tsx
+│   │   │   ├── JobList.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   └── RegisterForm.tsx
+│   │   ├── manager/
 │   │   │   ├── ActiveJobsList.tsx
-│   │   │   ├── JobForm.tsx
 │   │   │   ├── ApplicantList.tsx
+│   │   │   ├── ApplicantSortOptions.tsx
 │   │   │   ├── ApplicantStatusUpdate.tsx
-│   │   │   └── ApplicantSortOptions.tsx
-│   │   └── admin/
-│   │       ├── AdminStats.tsx
-│   │       ├── QuickActions.tsx
-│   │       ├── ManagerList.tsx
-│   │       ├── ManagerForm.tsx
-│   │       └── JobTransferForm.tsx
+│   │   │   ├── JobForm.tsx
+│   │   │   └── types.ts
+│   │   └── shared/
+│   │       ├── BackButton.tsx
+│   │       ├── CustomStyles.tsx
+│   │       ├── Footer.tsx
+│   │       ├── Header.tsx
+│   │       ├── Input.tsx
+│   │       └── LoadingSpinner.tsx
 │   ├── contexts/
 │   │   ├── AuthContext.tsx
-│   │   └── JobContext.tsx
+│   │   └── JobApi.tsx
+│   ├── hooks/
+│   │   └── useFetch.tsx
+│   ├── mocks/
+│   │   ├── browser.ts
+│   │   ├── handlers.ts
+│   │   ├── mockData.ts
+│   │   └── server.ts
 │   ├── pages/
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardPage.tsx
+│   │   │   ├── AdminJobManagementPage.tsx
+│   │   │   ├── DataTableManagementPage.tsx
+│   │   │   ├── ManagerManagementPage.tsx
+│   │   │   └── UserManagementPage.tsx
 │   │   ├── applicant/
-│   │   │   ├── JobListingPage.tsx
 │   │   │   ├── JobDetailsPage.tsx
-│   │   │   ├── RegisterPage.tsx
-│   │   │   ├── LoginPage.tsx
-│   │   │   ├── ApplicationsPage.tsx
-│   │   │   └── ProfilePage.tsx
-│   │   ├── hiringManager/
-│   │   │   ├── ManagerDashboard.tsx
-│   │   │   ├── ManageJobsPage.tsx
-│   │   │   └── JobApplicantsPage.tsx
-│   │   └── admin/
-│   │       ├── AdminDashboard.tsx
-│   │       ├── ManageManagersPage.tsx
-│   │       └── ManageAllJobsPage.tsx
-│   ├── services/
-│   │   ├── api.ts
-│   │   ├── auth.ts
-│   │   └── job.ts
+│   │   │   ├── ProfilePage.tsx
+│   │   │   └── RegisterPage.tsx
+│   │   ├── manager/
+│   │   │   ├── JobManagementPage.tsx
+│   │   │   └── ManagerDashboardPage.tsx
+│   │   ├── JobPage.tsx
+│   │   └── LoginPage.tsx
 │   ├── types/
-│   │   ├── User.ts
 │   │   ├── Job.ts
-│   │   └── Application.ts
+│   │   ├── types.ts
+│   │   └── User.ts
 │   ├── utils/
 │   │   ├── formatDate.ts
 │   │   └── validateInput.ts
 │   ├── App.tsx
-│   └── index.tsx
-├── public/
-│   ├── index.html
-│   └── favicon.ico
+│   ├── index.css
+│   ├── index.js
+│   ├── reportWebVitals.js
+│   └── setupTests.ts
 ├── Dockerfile
 ├── package.json
 ├── tailwind.config.js
+├── tsconfig.json
 └── README.md
 ```
 
@@ -631,28 +645,33 @@ The frontend relies on the following backend API endpoints for functionality:
 
 ## Team Responsibilities
 
-The team will work in pairs, with each pair focusing on one type of user:
+The team will work individually, with each member focusing on specific tasks:
 
-1. Alexander & Lalitha (Hiring Manager):
-   - Hiring manager dashboard features
-   - Create and manage job postings
-   - Update applicant statuses
-   - Job listing page and job search functionality
-   - Job description page
+1. Alex:
+   - Providing documentation for the team
+   - Supporting the team in case of technical problems
+   - Reducing technical debt
+   - Creating and supporting the Mock API
 
-2. Matt & Abideet (Admin):
-   - Admin dashboard features
-   - Create and manage hiring managers
-   - User management
-   - Authentication and authorization logic
-   - Project architecture and setup
+2. Lalitha:
+   - Implementation of manager pages:
+     - Manager console (/manager/console)
+     - Job management page (/manager/{jobid})
 
-3. Piotr & Sergio (Applicant):
-   - User applications page
-   - Apply button logic
-   - Registration and login forms for applicants
-   - Applicant profile management
-   - Job search and filtering features
+3. Matt:
+   - Implementation of admin pages
+   - Design of pages across the application
+
+4. Abideet:
+   - Implementation of admin pages
+
+5. Piotr:
+   - Implementation of the registration page (/register)
+   - Implementation of the job detail page (/jobs/:id)
+
+6. Sergio:
+   - Implementation of the login page (/login)
+   - Implementation of the job listing page (/jobs)
 
 Shared Responsibilities:
 - All pairs will contribute to:

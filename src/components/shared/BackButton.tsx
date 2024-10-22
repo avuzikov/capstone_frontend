@@ -9,7 +9,10 @@ const BackButton = () => {
   };
 
   return (
-    <button onClick={handleBack} className="btn-secondary w-10 text-center flex items-center stroke-adp-navy hover:stroke-adp-white">
+    <button
+      onClick={handleBack}
+      className="btn-secondary w-10 text-center flex items-center stroke-adp-navy hover:stroke-adp-white"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -17,13 +20,8 @@ const BackButton = () => {
         strokeWidth={3}
         className="size-4 "
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.75 19.5 8.25 12l7.5-7.5"
-        />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
       </svg>
-      
     </button>
   );
 };

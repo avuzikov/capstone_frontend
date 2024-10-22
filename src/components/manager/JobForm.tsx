@@ -25,7 +25,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
     additionalInformation: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setJob(prevJob => ({ ...prevJob, [name]: value }));
   };
@@ -41,7 +43,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="listingTitle" className="block text-sm font-medium text-gray-700">Listing Title</label>
+        <label htmlFor="listingTitle" className="block text-sm font-medium text-gray-700">
+          Listing Title
+        </label>
         <input
           type="text"
           name="listingTitle"
@@ -53,7 +57,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         />
       </div>
       <div>
-        <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
+        <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+          Department
+        </label>
         <input
           type="text"
           name="department"
@@ -65,7 +71,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         />
       </div>
       <div>
-        <label htmlFor="listingStatus" className="block text-sm font-medium text-gray-700">Listing Status</label>
+        <label htmlFor="listingStatus" className="block text-sm font-medium text-gray-700">
+          Listing Status
+        </label>
         <select
           name="listingStatus"
           id="listingStatus"
@@ -78,7 +86,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         </select>
       </div>
       <div>
-        <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">Job Title</label>
+        <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">
+          Job Title
+        </label>
         <input
           type="text"
           name="jobTitle"
@@ -90,7 +100,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         />
       </div>
       <div>
-        <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">Job Description</label>
+        <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">
+          Job Description
+        </label>
         <textarea
           name="jobDescription"
           id="jobDescription"
@@ -102,7 +114,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         ></textarea>
       </div>
       <div>
-        <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">Experience Level</label>
+        <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">
+          Experience Level
+        </label>
         <input
           type="text"
           name="experienceLevel"
@@ -114,7 +128,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         />
       </div>
       <div>
-        <label htmlFor="additionalInformation" className="block text-sm font-medium text-gray-700">Additional Information</label>
+        <label htmlFor="additionalInformation" className="block text-sm font-medium text-gray-700">
+          Additional Information
+        </label>
         <textarea
           name="additionalInformation"
           id="additionalInformation"
@@ -124,7 +140,10 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
         ></textarea>
       </div>
-      <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
         {initialJob ? 'Update Job' : 'Create Job'}
       </button>
     </form>

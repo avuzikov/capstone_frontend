@@ -6,8 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { worker } from './mocks/browser.ts';
 
-
-
 async function startMockServiceWorker() {
   if (process.env.NODE_ENV === 'development') {
     const { worker } = await import('./mocks/browser.ts');
@@ -18,22 +16,26 @@ async function startMockServiceWorker() {
   return Promise.resolve();
 }
 
-startMockServiceWorker().then(() => {
-  const root = ReactDOM.createRoot(document.getElementById('root'));
-  root.render(
-    <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </React.StrictMode>
-  );
+startMockServiceWorker()
+  .then(() => {
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(
+      <React.StrictMode>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </React.StrictMode>
+    );
 
-  reportWebVitals();
-}).catch(console.error);
+    reportWebVitals();
+  })
+  .catch(console.error);
 
 // At the end of the file
 if (process.env.NODE_ENV === 'development') {
-  worker.start({
-    onUnhandledRequest: 'bypass',
-  }).catch(console.error);
+  worker
+    .start({
+      onUnhandledRequest: 'bypass',
+    })
+    .catch(console.error);
 }

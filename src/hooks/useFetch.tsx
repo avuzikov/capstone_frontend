@@ -1,9 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
-const useFetch = <T,>(
-  fetchFn: (data: T) => Promise<any>,
-  initialValue?: any
-) => {
+const useFetch = <T,>(fetchFn: (data: T) => Promise<any>, initialValue?: any) => {
   const [data, setData] = useState(initialValue);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<null | { message: string }>(null);
@@ -17,7 +14,7 @@ const useFetch = <T,>(
         const response = await fetchFn(data);
         setData(response);
       } catch (error: any) {
-        setError({ message: error.message || "Failed to fetch data" });
+        setError({ message: error.message || 'Failed to fetch data' });
       } finally {
         setIsPending(false);
       }
