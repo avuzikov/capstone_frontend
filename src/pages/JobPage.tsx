@@ -12,6 +12,7 @@ const JobPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState('');
+  const [noMoreJobs, setNoMoreJobs] = useState(false);
 
   React.useEffect(() => {
     const loadJobs = async () => {
@@ -19,6 +20,12 @@ const JobPage: React.FC = () => {
       try {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
         setJobs(data.jobs);
+        const nJobs = data.jobs.length;
+        if (nJobs < 3) {
+          setNoMoreJobs(true);
+        } else {
+          setNoMoreJobs(false);
+        }
       } catch (error) {
         console.error('Error fetching jobs:', error);
       } finally {
@@ -44,13 +51,15 @@ const JobPage: React.FC = () => {
           </button>
 
           <span className="text-medium">Page {page}</span>
-          <button
-            className="btn-primary m-small text-normal"
-            onClick={() => setPage(prev => prev + 1)}
-          >
-            {' '}
-            Next
-          </button>
+          {!noMoreJobs && (
+            <button
+              className="btn-primary m-small text-normal"
+              onClick={() => setPage(prev => prev + 1)}
+            >
+              {' '}
+              Next
+            </button>
+          )}
         </div>
       </div>
     </div>

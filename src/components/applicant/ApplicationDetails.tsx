@@ -29,7 +29,7 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
   } = useFetch(updateApplication);
 
   useEffect(() => {
-    const jobId: Number = application.jobId;
+    const jobId: number = application.jobId;
     jobFetchDispatch({ id: jobId.toString(), token });
   }, [application, token, jobFetchDispatch]);
 
@@ -49,7 +49,7 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
 
   const handleUpdate = async (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const applicationId: Number = application.id;
+    const applicationId: number = application.id;
 
     await updateDispatch({
       id: applicationId.toString(),

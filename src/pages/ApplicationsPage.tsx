@@ -33,6 +33,7 @@ const ApplicationsPage: React.FC = () => {
   const { id } = useAuth();
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [noMoreApplications, setNoMoreApplications] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +46,13 @@ const ApplicationsPage: React.FC = () => {
           (application: Application) => application.userId === parseInt(id!, 10)
         );
         const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
+        const nApplications = filteredApplications.length;
+        if (nApplications < 3) {
+          setNoMoreApplications(true);
+        } else {
+          setNoMoreApplications(false);
+        }
+        console.log(nApplications);
         setApplications(filteredApplications2);
       } catch (error) {
         console.error('Error fetching applications:', error);
@@ -121,13 +129,15 @@ const ApplicationsPage: React.FC = () => {
           </button>
 
           <span className="text-medium">Page {page}</span>
-          <button
-            className="btn-primary m-small text-normal"
-            onClick={() => setPage(prev => prev + 1)}
-          >
-            {' '}
-            Next
-          </button>
+          {!noMoreApplications && (
+            <button
+              className="btn-primary m-small text-normal"
+              onClick={() => setPage(prev => prev + 1)}
+            >
+              {' '}
+              Next
+            </button>
+          )}
         </div>
       </div>
     </div>
