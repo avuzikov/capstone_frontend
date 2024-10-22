@@ -1,21 +1,15 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 
-import { ApplicationDetailsType } from "../../types/Application";
-import { format } from "../../utils/formatDate.ts";
-import Input from "../shared/Input.tsx";
-import useFetch from "../../hooks/useFetch.tsx";
-import { getJobDetails, updateApplication } from "../../services/api.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
-import LoadingSpinner from "../shared/LoadingSpinner.tsx";
-import { error } from "console";
-import { applications } from "../../mocks/mockData.ts";
+import { ApplicationDetailsType } from '../../types/Application';
+import { format } from '../../utils/formatDate';
+import Input from '../shared/Input';
+import useFetch from '../../hooks/useFetch';
+import { getJobDetails, updateApplication } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
+import LoadingSpinner from '../shared/LoadingSpinner';
 
-const ApplicationDetails = ({
-  application,
-}: {
-  application: ApplicationDetailsType;
-}) => {
+const ApplicationDetails = ({ application }: { application: ApplicationDetailsType }) => {
   const navigate = useNavigate();
   const { token } = useAuth();
   const [coverLetter, setCoverLetter] = useState(application.coverLetter);
@@ -45,15 +39,11 @@ const ApplicationDetails = ({
     }
   }, [updateData]);
 
-  const handleCoverLetterChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleCoverLetterChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setCoverLetter(event.currentTarget.value);
   };
 
-  const handleResumeChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleResumeChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setResume(event.currentTarget.value);
   };
 
@@ -95,17 +85,13 @@ const ApplicationDetails = ({
             />
           </svg>
 
-          <p className="txt-danger txt-small">
-            {jobError?.message || "Failed to fetch job data!"}
-          </p>
+          <p className="txt-danger txt-small">{jobError?.message || 'Failed to fetch job data!'}</p>
         </div>
       )}
       {jobData && (
         <>
           <header className="my-5">
-            <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">
-              JOB TITLE
-            </h2>
+            <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">JOB TITLE</h2>
             <div className="flex justify-between mx-5">
               <p className="font-light text-small text-adp-navy-light">
                 Applied at: {format(application.dateApplied)}
@@ -158,8 +144,7 @@ const ApplicationDetails = ({
                   </svg>
 
                   <p className="txt-danger txt-small">
-                    {updateError?.message ||
-                      "Failed to fetch application data!"}
+                    {updateError?.message || 'Failed to fetch application data!'}
                   </p>
                 </div>
               )}

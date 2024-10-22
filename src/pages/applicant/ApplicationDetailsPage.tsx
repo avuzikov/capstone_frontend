@@ -1,19 +1,17 @@
-import React, { useEffect, ReactNode } from "react";
-import { useParams } from "react-router";
+import React, { useEffect, ReactNode } from 'react';
+import { useParams } from 'react-router';
 
-import useFetch from "../../hooks/useFetch.tsx";
-import { useAuth } from "../../contexts/AuthContext.tsx";
-import { getApplicationDetails } from "../../services/api.ts";
-import LoadingSpinner from "../../components/shared/LoadingSpinner.tsx";
-import { ApplicationDetailsType } from "../../types/Application.ts";
-import ApplicationDetails from "../../components/applicant/ApplicationDetails.tsx";
+import useFetch from '../../hooks/useFetch';
+import { useAuth } from '../../contexts/AuthContext';
+import { getApplicationDetails } from '../../services/api';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
+import { ApplicationDetailsType } from '../../types/Application';
+import ApplicationDetails from '../../components/applicant/ApplicationDetails';
 
 const ApplicationDetailsPage = () => {
   const { id } = useParams();
   const { token } = useAuth();
-  const { data, isPending, error, fetchDispatch } = useFetch(
-    getApplicationDetails
-  );
+  const { data, isPending, error, fetchDispatch } = useFetch(getApplicationDetails);
 
   useEffect(() => {
     fetchDispatch({ id, token });
@@ -45,7 +43,7 @@ const ApplicationDetailsPage = () => {
         </svg>
 
         <p className="txt-danger txt-small">
-          {error?.message || "Failed to fetch application data!"}
+          {error?.message || 'Failed to fetch application data!'}
         </p>
       </div>
     );
