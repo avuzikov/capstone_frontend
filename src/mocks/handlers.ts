@@ -209,10 +209,6 @@ export const handlers = [
 
   // Jobs
   http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
-    const user = authenticateUser(request);
-    if (!user) {
-      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
     const { id } = params;
     const job = jobs.find(j => j.id === parseInt(id));
     if (!job) {
@@ -457,12 +453,7 @@ export const handlers = [
     });
   }),
 
-  http.get('/api/user/manager/:id', ({ params, request }) => {
-    const user = authenticateUser(request);
-    if (!user) {
-      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
+  http.get('/user/manager/:id', ({ params, request }) => {
     const { id } = params;
 
     // Type guard to ensure id is a string
