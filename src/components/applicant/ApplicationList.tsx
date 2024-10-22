@@ -25,10 +25,7 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
     <ul className="list-none">
       {applications.map((application) => (
         <li key={application.id} className="border-b py-2">
-          <h3 className="text-lg font-bold">Application ID: {application.id}</h3>
-          <p>User ID: {application.userId}</p>
-          <p>Job ID: {application.jobId}</p>
-          <p>Job Title: {application.jobTitle}</p>
+          <h3 className="text-lg font-bold text-large">{application.jobTitle}</h3>
           <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
           <p>Status: {application.applicationStatus}</p>
           <p>Cover Letter: {application.coverLetter}</p>
