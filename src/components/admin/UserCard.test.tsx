@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import UserCard from "./UserCard";
-import { User } from "../../mocks/types";
+import { User } from "../../types/types";
 
 const mockUser: User = {
   id: 1,

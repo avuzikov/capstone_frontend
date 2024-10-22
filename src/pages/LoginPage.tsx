@@ -26,9 +26,9 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-adp-gray">
-      <div className="card-filled p-large rounded-lg shadow-lg w-96">
-        <h1 className="text-xl text-adp-navy text-center mb-large">Log In to the portal</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-medium">
+      <div className="card-filled p-large rounded-lg flex flex-col shadow-lg w-96">
+        <h1 className="text-xl text-adp-navy text-center mb-4">Log In to the portal</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input
             name="Email"
             placeholder="Introduce your email"
