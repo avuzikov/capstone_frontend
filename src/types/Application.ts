@@ -5,7 +5,7 @@ export interface ApplicationDetailsType {
   dateApplied: string;
   customResume: string;
   coverLetter: string;
-  applicationStatus: "pending" | "reviewed" | "rejected" | "accepted";
+  applicationStatus: 'pending' | 'reviewed' | 'rejected' | 'accepted';
 }
 
 export interface UpdateApplicationType {

@@ -16,6 +16,7 @@ After reviewing both the backend and frontend README.md files, I have identified
 ### 2. Authentication Endpoints
 
 - **Login Endpoint:**
+
   - **Backend:** Expects `email` and `password` in the request body.
   - **Frontend:** Currently uses `username` instead of `email`.
   - **Action:** Update the frontend to use `email` in both the login and registration forms.
@@ -82,6 +83,7 @@ To fully support the frontend functionality, the following additional backend en
 ### 1. User Management Endpoints (Admin Functionality)
 
 - **GET `/users`**
+
   - **Purpose:** Allows the admin to retrieve a list of all users.
   - **Required For:** Admin Dashboard (`/admin/dashboard`), User Management.
   - **Note:** Should be restricted to admin users via authorization.
@@ -93,15 +95,18 @@ To fully support the frontend functionality, the following additional backend en
 ### 2. Hiring Manager Management Endpoints
 
 - **POST `/hiring-managers`**
+
   - **Purpose:** Create a new hiring manager.
   - **Required For:** Admin functionality to add new hiring managers.
   - **Details:** Accepts hiring manager details like `email`, `password`, `fullName`, `department`.
 
 - **GET `/hiring-managers`**
+
   - **Purpose:** Retrieve all hiring managers.
   - **Required For:** Admin Dashboard to display and manage hiring managers.
 
 - **PUT `/hiring-managers/{id}`**
+
   - **Purpose:** Update hiring manager details.
   - **Required For:** Admin functionality to edit hiring manager information.
 
@@ -171,37 +176,46 @@ To fully support the frontend functionality, the following additional backend en
 ## Questions and Clarifications for Backend Team
 
 1. **User Registration Fields:**
+
    - Is `name` expected to be a full name, or should we send `firstName` and `lastName` separately?
    - Can users specify their `role` during registration, or is it assigned automatically?
 
 2. **User Profile Details:**
+
    - Can we include additional fields like `yearsOfExperience`, `skills`, and `motivationLetter` in the user profile?
    - Is the `resume` field meant to be a text field, a file upload, or a structured object?
 
 3. **File Uploads:**
+
    - Will the backend support file uploads for resumes and cover letters?
    - What are the accepted file formats and size limitations?
 
 4. **Job Listing Enhancements:**
+
    - Can the backend provide a `GET /jobs` endpoint to retrieve all jobs with filtering options?
    - Is it possible to include fields like `requirements`, `benefits`, and `location` in the job details?
 
 5. **Application Submission:**
+
    - In the `POST /application` endpoint, which fields are required, and which are auto-generated?
    - Can the backend auto-assign `id`, `userId`, and `dateApplied`?
 
 6. **Application Management:**
+
    - Can we implement filtering and sorting in the `GET /job/{id}/applications` endpoint?
    - Is there an endpoint to retrieve all applications for the authenticated user (applicant)?
 
 7. **Hiring Manager Management:**
+
    - Will the backend provide endpoints to manage hiring managers as separate entities?
    - How should roles be managed and assigned in the system?
 
 8. **Partial Updates:**
+
    - Does the backend support partial updates in PUT requests, or do we need to send the entire object?
 
 9. **Consistency in Endpoint Naming:**
+
    - For consistency and clarity, can the backend endpoints use plural nouns (e.g., `/jobs`, `/applications`)?
 
 10. **Error Handling:**
@@ -214,10 +228,12 @@ To fully support the frontend functionality, the following additional backend en
 ### For Frontend Team:
 
 - **Update API Calls:**
+
   - Adjust endpoint URLs to match the backend's paths and naming conventions.
   - Use `email` instead of `username` in authentication requests.
 
 - **Adjust Data Models:**
+
   - Align frontend data models with the backend's fields.
   - Map or rename fields as necessary.
 
@@ -227,13 +243,16 @@ To fully support the frontend functionality, the following additional backend en
 ### For Backend Team:
 
 - **Provide Additional Endpoints:**
+
   - Implement the required endpoints for user management, hiring manager management, job listings, applications, and statistics.
 
 - **Enhance Existing Endpoints:**
+
   - Support filtering and sorting where necessary.
   - Allow for partial updates in PUT requests.
 
 - **Clarify Data Models:**
+
   - Provide detailed documentation on expected request and response fields.
   - Clarify the usage and format of fields like `resume`, `modelResume`, and `modelCoverLetter`.
 
@@ -249,10 +268,12 @@ By making the suggested adjustments and collaborating on the outlined action ite
 **Next Steps:**
 
 1. **Frontend Team:**
+
    - Begin updating the API calls and data models based on the adjustments outlined.
    - Prepare any additional questions or requirements to discuss with the backend team.
 
 2. **Backend Team:**
+
    - Review the requested endpoints and enhancements.
    - Provide feedback or timelines for the implementation of the additional features.
    - Clarify any open questions to ensure alignment.
