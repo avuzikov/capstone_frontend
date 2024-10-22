@@ -1,85 +1,151 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 
 interface JobFormProps {
   initialJob?: Partial<Job>;
-  onSubmit: (jobData: Partial<Job>) => void;
-  handleShouldUpdateJobs?: () => void;
+  onSubmit?: (job: Job) => void;
+  onCancel?: () => void;
 }
 
-const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpdateJobs }) => {
-  const [job, setJob] = useState<Partial<Job>>({
-    listingTitle: initialJob?.listingTitle || '',
+const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => {
+  const { token } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<Partial<Job>>({
     department: initialJob?.department || '',
-    listingStatus: initialJob?.listingStatus || 'open',
+    listingTitle: initialJob?.listingTitle || '',
     jobTitle: initialJob?.jobTitle || '',
     jobDescription: initialJob?.jobDescription || '',
+    listingStatus: initialJob?.listingStatus || 'open',
     experienceLevel: initialJob?.experienceLevel || '',
     additionalInformation: initialJob?.additionalInformation || '',
-    dateListed: initialJob?.dateListed || new Date().toISOString(),
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setJob(prevJob => ({
-      ...prevJob,
-      [name]: name === 'listingStatus' ? value.toLowerCase() : value,
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(job);
-    if (handleShouldUpdateJobs) {
-      handleShouldUpdateJobs();
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const url = initialJob?.id ? `/api/job/${initialJob.id}` : '/api/job';
+
+      const response = await fetch(url, {
+        method: initialJob?.id ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...formData,
+          dateListed: initialJob?.dateListed || new Date().toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const jobData: Job = await response.json();
+      onSubmit?.(jobData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit job posting');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card-bordered mt-2">
-      <div className="p-medium md:p-large flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+          <p className="text-red-700">{error}</p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6">
         <div>
-          <label htmlFor="listingTitle" className="block text-small pl-2.5">
-            Listing Title
+          <label htmlFor="listingTitle" className="block text-sm font-medium text-gray-700">
+            Listing Title *
           </label>
           <input
             type="text"
-            name="listingTitle"
             id="listingTitle"
-            value={job.listingTitle || ''}
+            name="listingTitle"
+            value={formData.listingTitle}
             onChange={handleChange}
             required
-            className="input-bordered w-full"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label htmlFor="department" className="block text-small pl-2.5">
-            Department
+          <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+            Department *
           </label>
           <input
             type="text"
-            name="department"
             id="department"
-            value={job.department || ''}
+            name="department"
+            value={formData.department}
             onChange={handleChange}
             required
-            className="input-bordered w-full"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label htmlFor="listingStatus" className="block text-small pl-2.5">
+          <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">
+            Job Title *
+          </label>
+          <input
+            type="text"
+            id="jobTitle"
+            name="jobTitle"
+            value={formData.jobTitle}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="experienceLevel" className="block text-sm font-medium text-gray-700">
+            Experience Level *
+          </label>
+          <input
+            type="text"
+            id="experienceLevel"
+            name="experienceLevel"
+            value={formData.experienceLevel}
+            onChange={handleChange}
+            required
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="e.g., 5+ years, Entry Level, Senior"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="listingStatus" className="block text-sm font-medium text-gray-700">
             Listing Status
           </label>
           <select
-            name="listingStatus"
             id="listingStatus"
-            value={job.listingStatus || 'open'}
+            name="listingStatus"
+            value={formData.listingStatus}
             onChange={handleChange}
-            className="input-bordered w-full"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="open">Open</option>
             <option value="closed">Closed</option>
@@ -87,69 +153,55 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
         </div>
 
         <div>
-          <label htmlFor="jobTitle" className="block text-small pl-2.5">
-            Job Title
-          </label>
-          <input
-            type="text"
-            name="jobTitle"
-            id="jobTitle"
-            value={job.jobTitle || ''}
-            onChange={handleChange}
-            required
-            className="input-bordered w-full"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="jobDescription" className="block text-small pl-2.5">
-            Job Description
+          <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">
+            Job Description *
           </label>
           <textarea
-            name="jobDescription"
             id="jobDescription"
-            value={job.jobDescription || ''}
+            name="jobDescription"
+            value={formData.jobDescription}
             onChange={handleChange}
             required
             rows={4}
-            className="input-bordered w-full"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label htmlFor="experienceLevel" className="block text-small pl-2.5">
-            Experience Level
-          </label>
-          <input
-            type="text"
-            name="experienceLevel"
-            id="experienceLevel"
-            value={job.experienceLevel || ''}
-            onChange={handleChange}
-            required
-            className="input-bordered w-full"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="additionalInformation" className="block text-small pl-2.5">
+          <label
+            htmlFor="additionalInformation"
+            className="block text-sm font-medium text-gray-700"
+          >
             Additional Information
           </label>
           <textarea
-            name="additionalInformation"
             id="additionalInformation"
-            value={job.additionalInformation || ''}
+            name="additionalInformation"
+            value={formData.additionalInformation}
             onChange={handleChange}
-            rows={4}
-            className="input-bordered w-full"
+            rows={3}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
+      </div>
 
-        <div className="flex justify-end mt-4">
-          <button type="submit" className="btn-primary">
-            {initialJob ? 'Update Job' : 'Create Job'}
+      <div className="flex justify-end space-x-4 pt-4">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Cancel
           </button>
-        </div>
+        )}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isLoading ? 'Submitting...' : initialJob?.id ? 'Update Job' : 'Create Job'}
+        </button>
       </div>
     </form>
   );
