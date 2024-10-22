@@ -66,8 +66,9 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
+    <div className='card-bordered'>
     <div className="mt-6">
-      <h2 className="text-xl font-semibold mb-4">Active Job Listings</h2>
+      <h2 className="text-xl font-semibold mb-4 ml-3">Active Job Listings</h2>
       {jobs.length === 0 ? (
         <p className="text-center text-gray-600">No jobs found</p>
       ) : (
@@ -113,11 +114,14 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
               ))}
             </tbody>
           </table>
+        </>
+      )}
+    </div>
           <div className="mt-4 flex justify-between">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l disabled:opacity-50"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:opacity-50"
             >
               Previous
             </button>
@@ -126,14 +130,12 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                 setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
               }
               disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r disabled:opacity-50"
+              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:opacity-50"
             >
               Next
             </button>
           </div>
-        </>
-      )}
-    </div>
+          </div>
   );
 };
 
