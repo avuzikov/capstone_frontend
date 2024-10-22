@@ -50,33 +50,36 @@ const ApplicationForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-medium">
-      <div className="mb-medium">
-        <label className="block text-medium">
+    <div className='m-large flex flex-col gap-2 justify-center items-center'>
+      <h1 className='text-medium w-full lg:w-1/2'>New Application</h1>
+    <form onSubmit={handleSubmit} className="p-medium card-bordered  flex flex-col gap-4 w-full lg:w-1/2">
+      <div className="mb-medium ">
+        <label className="block text-small">
           Cover Letter:
           <textarea
             className="input-bordered w-full p-small mt-small"
             value={coverLetter}
             onChange={e => setCoverLetter(e.target.value)}
             required
-          />
+            />
         </label>
       </div>
       <div className="mb-medium">
-        <label className="block text-medium">
+        <label className="block text-small">
           Custom Resume:
           <textarea
             className="input-bordered w-full p-small mt-small"
             value={customResume}
             onChange={e => setCustomResume(e.target.value)}
             required
-          />
+            />
         </label>
       </div>
       <button type="submit" className="btn-primary">
         Submit Application
       </button>
     </form>
+            </div>
   );
 };
 
