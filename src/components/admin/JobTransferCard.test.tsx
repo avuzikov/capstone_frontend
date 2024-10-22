@@ -1,98 +1,102 @@
-export {};
-// import React from 'react';
-// import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// import JobTransferCard from './JobTransferCard';
-// import { useAuth } from '../../contexts/AuthContext';
-// import { Job } from '../../mocks/types';
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import JobTransferCard from './JobTransferCard';
+import { useAuth } from '../../contexts/AuthContext';
+import { Job } from '../../types/types';
 
-// jest.mock('../../contexts/AuthContext');
 
-// describe('JobTransferCard', () => {
-//   const mockToken = 'mock-token';
-//   const mockFetch = jest.fn();
-// const mockHandleShouldFetchJobs = jest.fn();
-// const mockUseAuth = jest.fn();
+//TODO: Pass test
+jest.mock('../../contexts/AuthContext');
 
-// beforeEach(() => {
-//     mockUseAuth.mockReturnValue({ token: mockToken });
-//     global.fetch = mockFetch;
-// });
+describe('JobTransferCard', () => {
+  const mockToken = 'mock-token';
+  const mockFetch = jest.fn();
+  const mockHandleShouldFetchJobs = jest.fn();
+  const mockUseAuth = useAuth as jest.Mock;
 
-// afterEach(() => {
-//     jest.clearAllMocks();
-// });
+  beforeEach(() => {
+    mockUseAuth.mockReturnValue({ token: mockToken });
+    global.fetch = mockFetch;
+  });
 
-// test('renders correctly', () => {
-//     render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
-//     expect(screen.getByText('Transfer Jobs')).toBeInTheDocument();
-// });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-//   test('fetches and displays managers', async () => {
-//     const mockManagers = [
-//       { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-//       { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
-//     ];
+  test('renders correctly', () => {
+    render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
+    expect(screen.getByText('Transfer Jobs')).toBeInTheDocument();
+  });
 
-//     mockFetch.mockResolvedValueOnce({
-//       ok: true,
-//       json: async () => mockManagers,
-//     });
+  test('fetches and displays managers', async () => {
+    const mockManagers = [
+      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
+      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+    ];
 
-//     render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockManagers,
+    });
 
-//     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
 
-//     expect(screen.getByText('Manager One')).toBeInTheDocument();
-//     expect(screen.getByText('Manager Two')).toBeInTheDocument();
-//   });
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
 
-//   test('transfers jobs', async () => {
-//     //const mockJobs = [{ id: 1 }, { id: 2 }];
-//     const mockJobs: Job[] = [
-//         {
-//             id: 1,
-//             userId: 1,
-//             department: 'department',
-//             listingTitle: 'listing-title',
-//             dateListed: 'date-listed',
-//             jobTitle: 'job-title',
-//             jobDescription: 'job-description',
-//             listingStatus: 'open',
-//             experienceLevel: 'experience-level',
-//         },
-//         {
-//             id: 2,
-//             userId: 2,
-//             department: 'department',
-//             listingTitle: 'listing-title',
-//             dateListed: 'date-listed',
-//             jobTitle: 'job-title',
-//             jobDescription: 'job-description',
-//             listingStatus: 'open',
-//             experienceLevel: 'experience-level',
-//         },
-//     ];
+    expect(screen.getByText('Manager One')).toBeInTheDocument();
+    expect(screen.getByText('Manager Two')).toBeInTheDocument();
+  });
 
-//     const mockManagers = [
-//         { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-//         { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
-//     ];
 
-//     mockFetch.mockResolvedValueOnce({
-//         ok: true,
-//         json: async () => mockManagers,
-//     });
+  test.only('transfers jobs', async () => {
+    const mockJobs: Job[] = [
+      {
+        id: 1,
+        userId: 1,
+        department: 'department',
+        listingTitle: 'listing-title',
+        dateListed: 'date-listed',
+        jobTitle: 'job-title',
+        jobDescription: 'job-description',
+        listingStatus: 'open',
+        experienceLevel: 'experience-level',
+      },
+      {
+        id: 2,
+        userId: 2,
+        department: 'department',
+        listingTitle: 'listing-title',
+        dateListed: 'date-listed',
+        jobTitle: 'job-title',
+        jobDescription: 'job-description',
+        listingStatus: 'open',
+        experienceLevel: 'experience-level',
+      },
+    ];
 
-//     render(<JobTransferCard currentManagerId="1" jobs={mockJobs} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
 
-//     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    const mockManagers = [
+      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
+      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+    ];
 
-//     fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
-//     fireEvent.click(screen.getByText('Transfer Jobs'));
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockManagers,
+    });
 
-//     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
+    render(<JobTransferCard currentManagerId="1" jobs={mockJobs} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
 
-//     expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object));
-//     expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
-//   });
-// });
+
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Transfer Jobs' }));
+
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
+
+    expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object));
+    expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
+  });
+});
+

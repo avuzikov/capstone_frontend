@@ -168,7 +168,7 @@ const RegisterForm = () => {
         <div className="flex justify-end">
           {isPending && <LoadingSpinner size="large" />}
           {!isPending && (
-            <button className="mt-4 btn-primary" type="submit">
+            <button className="mt-4 w-full btn-primary" type="submit">
               Register
             </button>
           )}

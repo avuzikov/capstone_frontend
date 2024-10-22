@@ -13,5 +13,4 @@ const DataTableManagementPage = () => {
     </div>
   );
 };
-
 export default DataTableManagementPage;

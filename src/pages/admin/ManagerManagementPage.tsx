@@ -15,7 +15,6 @@ const ManagerManagementPage = () => {
       <div className="flex justify-between">
         <h1 className="text-large">Managers</h1>
       </div>
-
       <ManagerList />
     </div>
   );

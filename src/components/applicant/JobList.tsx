@@ -32,16 +32,19 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
   };
 
   return (
-    <ul className="list-none">
+    <ul className="list-none flex flex-col gap-2">
       {jobs.map(job => (
         <li
           key={job.id}
-          className="card-bordered my-1 cursor-pointer"
+          className="card-bordered  my-1 cursor-pointer"
           onClick={() => handleClick(job.id)}
         >
-          <h3 className="text-lg font-bold text-large">{job.listingTitle}</h3>
-          <p>Department: {job.department}</p>
-          <p>Posted date: {new Date(job.dateListed).toLocaleDateString()}</p>
+          <h3 className="t font-bold text-medium mb-1">{job.listingTitle}</h3>
+          <div className='flex items-center gap-2'>
+          <p className='text-small'>Department: {job.department}</p>
+          <div className='w-1 h-1 rounded-full bg-adp-navy'></div>
+          <p className='text-small'>Posted date: {new Date(job.dateListed).toLocaleDateString()}</p>
+          </div>
           {job.listingStatus === 'closed' && (
             <p className="text-adp-red-light">Recrutation closed</p>
           )}
