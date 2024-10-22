@@ -118,3 +118,4 @@ describe('TableDisplay Component', () => {
     expect(screen.queryByText('Hiring Managers')).not.toBeInTheDocument();
   });
 });
+

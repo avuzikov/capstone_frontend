@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import TableList from './TableList';
 import { useAuth } from '../../contexts/AuthContext';
-import { User } from '../../mocks/types';
 
 // Mock the useAuth hook
 jest.mock('../../contexts/AuthContext', () => ({
@@ -72,3 +71,4 @@ describe('TableList Component', () => {
     });
   });
 });
+

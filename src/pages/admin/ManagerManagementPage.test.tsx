@@ -14,3 +14,4 @@ test('renders ManagerManagementPage without error', () => {
     </AuthProvider>
   );
 });
+

@@ -4,6 +4,7 @@ import JobTransferCard from './JobTransferCard';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../mocks/types';
 
+
 //TODO: Pass test
 jest.mock('../../contexts/AuthContext');
 
@@ -46,6 +47,7 @@ describe('JobTransferCard', () => {
     expect(screen.getByText('Manager Two')).toBeInTheDocument();
   });
 
+
   test.only('transfers jobs', async () => {
     const mockJobs: Job[] = [
       {
@@ -72,6 +74,7 @@ describe('JobTransferCard', () => {
       },
     ];
 
+
     const mockManagers = [
       { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
       { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
@@ -84,6 +87,7 @@ describe('JobTransferCard', () => {
 
     render(<JobTransferCard currentManagerId="1" jobs={mockJobs} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
 
+
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
 
     fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
@@ -95,3 +99,4 @@ describe('JobTransferCard', () => {
     expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
   });
 });
+
