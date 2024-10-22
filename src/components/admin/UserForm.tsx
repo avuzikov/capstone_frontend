@@ -212,6 +212,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
 
 
       if (!userId) {
+        console.log("Navigating to previous page");
         navigate(-1);
       }
     }
