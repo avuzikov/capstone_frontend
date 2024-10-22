@@ -1,39 +1,42 @@
-import React from "react";
-import { useState, useEffect, useCallback } from "react";
-import UserCard from "./UserCard.tsx";
-import { User } from "../../mocks/types.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
+import React from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import UserCard from './UserCard';
+import { User } from '../../types/types';
+import { useAuth } from '../../contexts/AuthContext';
 
-const UserList = () => {
+const UserList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // use the auth context
   const { token } = useAuth();
 
   const fetchUsers = useCallback(async () => {
-    try {
-      console.log(token);
+    if (!token) {
+      setError('No authentication token available');
+      setLoading(false);
+      return;
+    }
 
-      const response = await fetch("/users", {
-        method: "GET",
+    try {
+      const response = await fetch('/users', {
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error('Failed to fetch users');
       }
 
       const data: User[] = await response.json();
-      const managers = data.filter((user) => user.role === "applicant");
+      const applicants = data.filter(user => user.role === 'applicant');
 
-      setUsers(managers);
+      setUsers(applicants);
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);
     }
@@ -41,7 +44,6 @@ const UserList = () => {
 
   useEffect(() => {
     if (token) {
-      console.log(token);
       fetchUsers();
     }
   }, [token, fetchUsers]);
@@ -56,7 +58,7 @@ const UserList = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {users.map((user) => (
+      {users.map(user => (
         <UserCard key={user.id} user={user} link={`/admin/user/${user.id}`} />
       ))}
     </div>

@@ -1,12 +1,12 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Job {
   id: string;
   userId: string;
   listingTitle: string;
   department: string;
-  listingStatus: "open" | "closed";
+  listingStatus: 'open' | 'closed';
   dateListed: string;
   jobTitle: string;
   jobDescription: string;
@@ -33,7 +33,7 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
 
   return (
     <ul className="list-none">
-      {jobs.map((job) => (
+      {jobs.map(job => (
         <li
           key={job.id}
           className="card-bordered my-1 cursor-pointer"
@@ -42,7 +42,7 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
           <h3 className="text-lg font-bold text-large">{job.listingTitle}</h3>
           <p>Department: {job.department}</p>
           <p>Posted date: {new Date(job.dateListed).toLocaleDateString()}</p>
-          {job.listingStatus === "closed" && (
+          {job.listingStatus === 'closed' && (
             <p className="text-adp-red-light">Recrutation closed</p>
           )}
         </li>

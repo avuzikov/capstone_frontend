@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import JobList from '../components/applicant/JobList.tsx';
-import { fetchJobs } from '../contexts/JobApi.tsx';
-import { useAuth } from '../contexts/AuthContext.tsx';
-import JobSearchForm from '../components/applicant/JobSearchForm.tsx';
+import JobList from '../components/applicant/JobList';
+import { fetchJobs } from '../contexts/JobApi';
+import { useAuth } from '../contexts/AuthContext';
+import JobSearchForm from '../components/applicant/JobSearchForm';
 
 const JobPage: React.FC = () => {
   const { token } = useAuth();
@@ -26,23 +26,19 @@ const JobPage: React.FC = () => {
       }
     };
     loadJobs();
-  }, [page, itemsPerPage, searchQuery, token]);
+  }, [page, itemsPerPage, searchQuery]);
 
   return (
     <div>
       <JobSearchForm query={searchQuery} setSearchQuery={setSearchQuery} />
-      <div className="container mx-auto p-2">
-        {loading ? (
-          <p>Loading jobs...</p>
-        ) : (
-          <JobList jobs={jobs} token={token} userId={id} />
-        )}
+      <div className="container mx-auto p-4">
+        {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
         <div className="flex justify-between items-center p-medium">
           <button
             className="btn-primary m-small text-normal"
             disabled={page === 1}
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
             Previous
           </button>
@@ -50,7 +46,7 @@ const JobPage: React.FC = () => {
           <span className="text-medium">Page {page}</span>
           <button
             className="btn-primary m-small text-normal"
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => setPage(prev => prev + 1)}
           >
             {' '}
             Next

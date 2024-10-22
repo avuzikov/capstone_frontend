@@ -1,5 +1,5 @@
 import React from 'react';
-import ApplicantStatusUpdate from './ApplicantStatusUpdate.tsx';
+import ApplicantStatusUpdate from './ApplicantStatusUpdate';
 import { User, Application } from './types';
 
 type ApplicationStatus = Application['applicationStatus'];
@@ -14,22 +14,32 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ applicants, onStatusChang
     <table className="min-w-full divide-y divide-gray-200">
       <thead className="bg-gray-50">
         <tr>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Applied</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Name
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Date Applied
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Status
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody className="bg-white divide-y divide-gray-200">
-        {applicants.map((applicant) => (
+        {applicants.map(applicant => (
           <tr key={applicant.id}>
             <td className="px-6 py-4 whitespace-nowrap">{applicant.user.fullName}</td>
-            <td className="px-6 py-4 whitespace-nowrap">{new Date(applicant.dateApplied).toLocaleDateString()}</td>
+            <td className="px-6 py-4 whitespace-nowrap">
+              {new Date(applicant.dateApplied).toLocaleDateString()}
+            </td>
             <td className="px-6 py-4 whitespace-nowrap">{applicant.applicationStatus}</td>
             <td className="px-6 py-4 whitespace-nowrap">
               <ApplicantStatusUpdate
                 currentStatus={applicant.applicationStatus}
-                onStatusChange={(newStatus) => onStatusChange(applicant.id, newStatus)}
+                onStatusChange={newStatus => onStatusChange(applicant.id, newStatus)}
               />
             </td>
           </tr>

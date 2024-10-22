@@ -1,9 +1,9 @@
-import React, { useEffect, ReactNode } from "react";
-import useFetch from "../../hooks/useFetch.tsx";
+import React, { useEffect, ReactNode } from 'react';
+import useFetch from '../../hooks/useFetch';
 
-import { getUserDetails } from "../../services/api.ts";
-import { useAuth } from "../../contexts/AuthContext.tsx";
-import LoadingSpinner from "../shared/LoadingSpinner.tsx";
+import { getUserDetails } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
+import LoadingSpinner from '../shared/LoadingSpinner';
 
 const ManagerCard = ({ id }: { id: string | undefined }) => {
   const { token } = useAuth();
@@ -40,9 +40,7 @@ const ManagerCard = ({ id }: { id: string | undefined }) => {
           />
         </svg>
 
-        <p className="txt-danger txt-small">
-          {error.message || "Failed to fetch job data!"}
-        </p>
+        <p className="txt-danger txt-small">{error.message || 'Failed to fetch job data!'}</p>
       </div>
     );
   }
@@ -58,9 +56,7 @@ const ManagerCard = ({ id }: { id: string | undefined }) => {
             <p className="text-adp-navy-dark text-medium">{data.fullName}</p>
             <p className="text-sm text-adp-navy-light">{data.department}</p>
           </div>
-          <p className="text-adp-navy-dark text-medium">
-            {data.publicContactInfo}
-          </p>
+          <p className="text-adp-navy-dark text-medium">{data.publicContactInfo}</p>
         </div>
       </>
     );
