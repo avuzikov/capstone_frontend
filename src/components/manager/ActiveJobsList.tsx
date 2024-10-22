@@ -43,7 +43,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  }, [fetchJobs, handleShouldUpdateJobs]);
 
   const handleManageJob = (jobId: number) => {
     navigate(`/manager/${jobId}`);

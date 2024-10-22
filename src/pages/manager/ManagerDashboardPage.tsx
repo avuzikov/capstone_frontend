@@ -23,6 +23,7 @@ const ManagerDashboardPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<ManagerStats | null>(null);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(false);
+  
 
   const fetchManagerStats = async () => {
     try {
@@ -54,6 +55,10 @@ const ManagerDashboardPage: React.FC = () => {
       fetchData();
     }
   }, [token, shouldRefresh]);
+
+  const handleShouldFetchJobs = () => {
+    setShouldRefresh(prev => !prev);
+  };
 
   const handleCreateJob = async (jobData: Partial<Job>) => {
     const response = await fetch('/api/job', {
@@ -160,7 +165,7 @@ const ManagerDashboardPage: React.FC = () => {
       )}
 
       <div className="bg-white rounded-lg shadow">
-        <ActiveJobsList handleShouldUpdateJobs={() => setShouldRefresh(prev => !prev)} />
+        <ActiveJobsList handleShouldUpdateJobs={handleShouldFetchJobs} />
       </div>
     </div>
   );
