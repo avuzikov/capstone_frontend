@@ -5,7 +5,7 @@ export interface JobDetailsType {
   department: string;
   listingStatus: 'open' | 'closed';
   dateListed: string;
-  dateClosed: string;
+  dateClosed?: string;
   jobTitle: string;
   jobDescription: string;
   experienceLevel: string;

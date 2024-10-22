@@ -11,10 +11,7 @@ const ApplyButton = ({ id }: { id: string | undefined }) => {
   };
 
   return (
-    <button
-      className="py-1.5 px-3 bg-adp-red text-adp-white border border-adp-red-light rounded-md shadow-sm hover:bg-adp-red-light transition-colors w-full mt-2 text-medium"
-      onClick={() => handleApply(id)}
-    >
+    <button className="btn-primary mt-3 w-full" onClick={() => handleApply(id)}>
       Apply now!
     </button>
   );

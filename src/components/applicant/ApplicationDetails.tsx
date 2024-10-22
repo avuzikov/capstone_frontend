@@ -91,20 +91,24 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
       {jobData && (
         <>
           <header className="my-5">
-            <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">JOB TITLE</h2>
-            <div className="flex justify-between mx-5">
+            <h2 className="text-medium font-extrabold ml-5 mb-2 text-stone-950">
+              {jobData.listingTitle}
+            </h2>
+            <div className="flex items-center gap-2 mx-5">
               <p className="font-light text-small text-adp-navy-light">
                 Applied at: {format(application.dateApplied)}
               </p>
+              <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
               <p className="font-light text-small mr-10 text-adp-navy-light">
-                Status: {application.applicationStatus}
+                Status:{' '}
+                {application.applicationStatus.charAt(0).toUpperCase() +
+                  application.applicationStatus.slice(1)}
               </p>
             </div>
           </header>
-          <hr />
-          <main className="flex-col my-5 mx-2 text-medium text-stone-950 h-full">
-            <form onSubmit={handleUpdate} className="flex-col space-y-2">
-              <div className="flex flex-col min-h-40">
+          <main className="flex-col my-3 mx-2 text-medium text-stone-950 h-full">
+            <form onSubmit={handleUpdate} className="flex-col flex gap-4">
+              <div className="flex flex-col text-small min-h-40">
                 <Input
                   name="Cover Letter"
                   placeholder="Enter cover letter here"
@@ -113,7 +117,7 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
                   isTextArea={true}
                 />
               </div>
-              <div className="flex flex-col min-h-40">
+              <div className="flex flex-col text-small min-h-40">
                 <Input
                   name="Resume"
                   placeholder="Enter resume here"
@@ -124,7 +128,7 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
               </div>
               {updateIsPending && <LoadingSpinner size="small" />}
               {!updateIsPending && (
-                <button type="submit" className="btn-destructive">
+                <button type="submit" className="btn-primary">
                   Update
                 </button>
               )}

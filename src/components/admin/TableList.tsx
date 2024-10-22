@@ -7,6 +7,8 @@ const tables = [
   { name: 'Applications', link: '/admin/tables/applications' },
 ];
 
+console.log('Rendering TableList with tables:', tables);
+
 const TableList = () => {
   return (
     <div className="flex flex-col gap-3">

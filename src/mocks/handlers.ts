@@ -212,6 +212,61 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
+  // Manager-specific routes
+  http.get('/api/job/manager', ({ request }) => {
+    const user = authenticateUser(request);
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
+    }
+    const url = new URL(request.url);
+    const page = safeParseInt(url.searchParams.get('page'), 1);
+    const items = safeParseInt(url.searchParams.get('items'), 20);
+    const managerJobs = jobs.filter(job => job.userId === user.id);
+    const startIndex = (page - 1) * items;
+    const endIndex = startIndex + items;
+    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
+    return HttpResponse.json({
+      total: managerJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs.map(job => ({
+        ...job,
+        applicantCount: applications.filter(app => app.jobId === job.id).length,
+      })),
+    });
+  }),
+
+  http.get('/api/job/search', ({ request }) => {
+    const url = new URL(request.url);
+    const page = safeParseInt(url.searchParams.get('page'), 1);
+    const items = safeParseInt(url.searchParams.get('items'), 20);
+    const searchQuery = url.searchParams.get('value') || '';
+    const filteredJobs = jobs.filter(
+      job =>
+        job.jobTitle.toLowerCase().includes(searchQuery) ||
+        job.listingTitle.toLowerCase().includes(searchQuery)
+    );
+    const startIndex = (page - 1) * items;
+    const endIndex = startIndex + items;
+    const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+    return HttpResponse.json({
+      total: filteredJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs,
+    });
+  }),
+
+  // Jobs
+  http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
+    const { id } = params;
+    const job = jobs.find(j => j.id === parseInt(id));
+    if (!job) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 });
+    }
+    return HttpResponse.json(job);
+  }),
+
   http.post<never, JobRequest>('/api/job', async ({ request }) => {
     const user = authenticateUser(request);
     if (!user || user.role !== 'hiring-manager') {
@@ -404,30 +459,6 @@ export const handlers = [
     }
     deleteApplication(parseInt(id));
     return HttpResponse.json(null, { status: 204 });
-  }),
-
-  // Manager-specific routes
-  http.get('/api/job/manager', ({ request }) => {
-    const user = authenticateUser(request);
-    if (!user || user.role !== 'hiring-manager') {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
-    }
-    const url = new URL(request.url);
-    const page = safeParseInt(url.searchParams.get('page'), 1);
-    const items = safeParseInt(url.searchParams.get('items'), 20);
-    const managerJobs = jobs.filter(job => job.userId === user.id);
-    const startIndex = (page - 1) * items;
-    const endIndex = startIndex + items;
-    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
-    return HttpResponse.json({
-      total: managerJobs.length,
-      page,
-      items,
-      jobs: paginatedJobs.map(job => ({
-        ...job,
-        applicantCount: applications.filter(app => app.jobId === job.id).length,
-      })),
-    });
   }),
 
   // Jobs
