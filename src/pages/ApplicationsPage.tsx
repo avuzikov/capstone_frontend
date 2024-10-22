@@ -129,15 +129,16 @@ const ApplicationsPage: React.FC = () => {
           </button>
 
           <span className="text-medium">Page {page}</span>
-          {!noMoreApplications && (
-            <button
-              className="btn-primary m-small text-normal"
-              onClick={() => setPage(prev => prev + 1)}
-            >
-              {' '}
-              Next
-            </button>
-          )}
+          <button
+            className={`btn-primary m-small text-normal ${
+              noMoreApplications ? 'btn-destructive cursor-not-allowed' : ''
+            }`}
+            onClick={() => setPage(prev => prev + 1)}
+            disabled={noMoreApplications}
+          >
+            {' '}
+            Next
+          </button>
         </div>
       </div>
     </div>

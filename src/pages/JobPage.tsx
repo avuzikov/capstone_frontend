@@ -51,15 +51,16 @@ const JobPage: React.FC = () => {
           </button>
 
           <span className="text-medium">Page {page}</span>
-          {!noMoreJobs && (
-            <button
-              className="btn-primary m-small text-normal"
-              onClick={() => setPage(prev => prev + 1)}
-            >
-              {' '}
-              Next
-            </button>
-          )}
+          <button
+            className={`btn-primary m-small text-normal ${
+              noMoreJobs ? 'btn-destructive cursor-not-allowed' : ''
+            }`}
+            onClick={() => setPage(prev => prev + 1)}
+            disabled={noMoreJobs}
+          >
+            {' '}
+            Next
+          </button>
         </div>
       </div>
     </div>
