@@ -117,6 +117,10 @@ Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```
 
         btn-destructive
 
+- Disabled Button
+
+        btn-disabled
+
 ### Input Styles
 
 - Bordered Input
