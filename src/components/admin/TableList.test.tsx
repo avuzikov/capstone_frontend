@@ -1,30 +1,74 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import TableList from './TableList';
-import TableCard from './TableCard';
+import { useAuth } from '../../contexts/AuthContext';
+import { User } from '../../mocks/types';
 
-jest.mock('./TableCard', () => {
-  return jest.fn(({ name }) => {
-    console.log(`Rendering TableCard with name: ${name}`);
-    return <div data-testid="table-card">{name}</div>;
-  });
+// Mock the useAuth hook
+jest.mock('../../contexts/AuthContext', () => ({
+  useAuth: jest.fn(),
+}));
+
+// Mock the TableCard component
+jest.mock('./TableCard.tsx', () => {
+  return ({ link, name }: { link: string; name: string }) => (
+    <div data-testid="table-card">
+      <a href={link}>{name}</a>
+    </div>
+  );
 });
 
 describe('TableList Component', () => {
-  test('renders the correct number of TableCard components', () => {
-    render(<TableList />);
+  const mockToken = 'mock-token';
+  const mockTables = [
+    { id: '1', name: 'Users', link: '/admin/tables/users' },
+    { id: '2', name: 'Jobs', link: '/admin/tables/jobs' },
+    { id: '3', name: 'Applications', link: '/admin/tables/jobs' },
+  ];
 
-    // Debugging: Log the HTML output of the rendered component
-    console.log(screen.debug());
-
-    const tableCards = screen.getAllByTestId('table-card');
-    console.log(`Found ${tableCards.length} TableCard components`);
-    expect(tableCards).toHaveLength(3);
+  beforeEach(() => {
+    (useAuth as jest.Mock).mockReturnValue({ token: mockToken });
+    global.fetch = jest.fn();
   });
 
-  test('matches snapshot', () => {
-    const { asFragment } = render(<TableList />);
-    expect(asFragment()).toMatchSnapshot();
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test('displays table cards on successful fetch', async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockTables,
+    });
+
+    render(<TableList />);
+
+    await waitFor(() => {
+      const tableCards = screen.getAllByTestId('table-card');
+      expect(tableCards).toHaveLength(mockTables.length);
+      mockTables.forEach((table) => {
+        expect(screen.getByText(table.name)).toBeInTheDocument();
+      });
+    });
+  });
+
+  test('h1 elements have correct text content', async () => {
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockTables,
+    });
+
+    render(<TableList />);
+
+    //TODO: Look over this test
+    await waitFor(() => {
+      mockTables.forEach((table) => {
+        const h1Element = screen.getByText(table.name);
+        console.log("H1:",h1Element.innerHTML);
+        console.log("TAG Name",h1Element);
+        expect(h1Element.innerHTML).toBe(table.name);
+      });
+    });
   });
 });
