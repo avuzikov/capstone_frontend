@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import JobTransferCard from './JobTransferCard';
 import { useAuth } from '../../contexts/AuthContext';
-import { Job } from '../../mocks/types';
+import { Job } from '../../types/types';
 
 
 //TODO: Pass test
