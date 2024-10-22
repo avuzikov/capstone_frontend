@@ -60,7 +60,7 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
 };
 
 export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
-  const response = await fetch(`${BASE_URL}/api/user/manager/${id}`, {
+  const response = await fetch(`${BASE_URL}/user/manager/${id}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
