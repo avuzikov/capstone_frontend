@@ -65,7 +65,9 @@ const JobDetailsPage = () => {
           <ManagerCard id={data?.userId} />
         </div>
 
-        {isAuthenticatedApplicant && <ApplyButton id={data?.id} />}
+        {isAuthenticatedApplicant && data?.listingStatus === 'open' && (
+          <ApplyButton id={data?.id} />
+        )}
         {!isAuthenticatedApplicant && (
           <Link
             to="/login"
