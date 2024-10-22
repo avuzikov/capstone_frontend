@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import JobList from '../components/applicant/JobList';
 import { fetchJobs } from '../contexts/JobApi';
 import { useAuth } from '../contexts/AuthContext';
+import JobSearchForm from '../components/applicant/JobSearchForm';
 
 const JobPage: React.FC = () => {
   const { token } = useAuth();
@@ -29,6 +30,7 @@ const JobPage: React.FC = () => {
 
   return (
     <div>
+      <JobSearchForm query={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container mx-auto p-4">
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 

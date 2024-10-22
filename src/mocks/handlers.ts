@@ -77,7 +77,12 @@ export const handlers = [
     const user = users.find(u => u.email === email && u.password === password);
     if (user) {
       return HttpResponse.json(
-        { message: 'Login successful', token: user.id.toString(), role: user.role, id: user.id },
+        {
+          message: 'Login successful',
+          token: user.id.toString(),
+          role: user.role,
+          id: user.id,
+        },
         {
           status: 200,
           headers: {

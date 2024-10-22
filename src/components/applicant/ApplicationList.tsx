@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 
 interface Application {
   id: number;
@@ -16,14 +17,24 @@ interface ApplicationListProps {
 }
 
 const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
+  const navigate = useNavigate();
+
   if (applications.length === 0) {
     return <p>No applications found.</p>;
   }
 
+  const handleClick = (id: number) => {
+    navigate(`/applications/${id}`);
+  };
+
   return (
     <ul className="list-none">
       {applications.map(application => (
-        <li key={application.id} className="border-b py-2">
+        <li
+          key={application.id}
+          className="card-bordered hover:cursor-pointer"
+          onClick={() => handleClick(application.id)}
+        >
           <h3 className="text-lg font-bold text-large">{application.jobTitle}</h3>
           <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
           <p>Status: {application.applicationStatus}</p>
