@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
 import useFetch from '../../hooks/useFetch';
@@ -65,7 +65,9 @@ const JobDetailsPage = () => {
           <ManagerCard id={data?.userId} />
         </div>
 
-        {isAuthenticatedApplicant && <ApplyButton id={data?.id} />}
+        {isAuthenticatedApplicant && data?.listingStatus === 'open' && (
+          <ApplyButton id={data?.id} />
+        )}
         {!isAuthenticatedApplicant && (
           <Link
             to="/login"

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { jobs } from '../../mocks/mockData';
 
-const ActiveJobsList: React.FC = () => {
+interface ActiveJobsListProps {
+  handleShouldUpdateJobs: () => void;
+}
+
+const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs }) => {
   const [currentJobs, setCurrentJobs] = useState(jobs);
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 5;
@@ -10,7 +14,7 @@ const ActiveJobsList: React.FC = () => {
     const indexOfLastJob = currentPage * jobsPerPage;
     const indexOfFirstJob = indexOfLastJob - jobsPerPage;
     setCurrentJobs(jobs.slice(indexOfFirstJob, indexOfLastJob));
-  }, [currentPage]);
+  }, [currentPage, handleShouldUpdateJobs]);
 
   return (
     <div className="mt-6">

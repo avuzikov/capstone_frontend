@@ -5,6 +5,11 @@ import { addJob } from '../../mocks/mockData';
 
 const ManagerDashboardPage: React.FC = () => {
   const [showJobForm, setShowJobForm] = useState<boolean>(false);
+  const [shouldUpdateJobs, setShouldUpdateJobs] = useState<boolean>(false);
+
+  const handleShouldUpdateJobs = () => {
+    setShouldUpdateJobs(true);
+  };
 
   const handleCreateJob = (jobData: any) => {
     addJob(jobData);
@@ -21,8 +26,10 @@ const ManagerDashboardPage: React.FC = () => {
       >
         {showJobForm ? 'Cancel' : 'Create New Job'}
       </button>
-      {showJobForm && <JobForm onSubmit={handleCreateJob} />}
-      <ActiveJobsList />
+      {showJobForm && (
+        <JobForm onSubmit={handleCreateJob} handleShouldUpdateJobs={handleShouldUpdateJobs} />
+      )}
+      <ActiveJobsList handleShouldUpdateJobs={handleShouldUpdateJobs} />
     </div>
   );
 };
