@@ -88,24 +88,23 @@ const JobCard = ({ job }: { job: Job }) => {
         </div>
         <p className="text-small mb-2">Department: {job.department}</p>
         <p className="text-small">{job.jobDescription}</p>
-
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex gap-2 items-center">
-            <p className="text-small">Manager:</p>
-            <select
-              className="input-filled"
-              value={selectedManagerId}
-              onChange={e => handleChange(e)}
-            >
-              {managers.map(manager => (
-                <option className="text-small" key={manager.id} value={manager.id}>
-                  {manager.fullName}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
       </Link>
+      <div className="flex justify-between items-center mt-2">
+        <div className="flex gap-2 items-center">
+          <p className="text-small">Manager:</p>
+          <select
+            className="input-filled"
+            value={selectedManagerId}
+            onChange={e => handleChange(e)}
+          >
+            {managers.map(manager => (
+              <option className="text-small" key={manager.id} value={manager.id}>
+                {manager.fullName}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   );
 };
