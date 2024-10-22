@@ -54,7 +54,7 @@ const ApplicationDetailsPage = () => {
   }
 
   return (
-    <main className="mx-auto w-2/3 m-4 p-4 bg-adp-gray rounded-lg border-adp-navy-light border min-h-[calc(100vh-64px-56px)]">
+    <main className="mx-auto w-full  lg:w-1/2 m-4 p-4 card-bordered min-h-[calc(100vh-64px-56px)]">
       {applicationData}
     </main>
   );

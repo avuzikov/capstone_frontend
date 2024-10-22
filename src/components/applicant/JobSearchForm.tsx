@@ -42,7 +42,7 @@ const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => 
             </svg>
           </div>
         </div>
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="btn-primary h-9">
           Search
         </button>
       </form>
