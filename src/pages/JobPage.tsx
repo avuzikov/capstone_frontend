@@ -12,6 +12,7 @@ const JobPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [searchQuery, setSearchQuery] = useState('');
+  const [noMoreJobs, setNoMoreJobs] = useState(false);
 
   const handleItemsPerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setItemsPerPage(parseInt(event.currentTarget.value));
@@ -23,6 +24,12 @@ const JobPage: React.FC = () => {
       try {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
         setJobs(data.jobs);
+        const nJobs = data.jobs.length;
+        if (nJobs < 3) {
+          setNoMoreJobs(true);
+        } else {
+          setNoMoreJobs(false);
+        }
       } catch (error) {
         console.error('Error fetching jobs:', error);
       } finally {
@@ -67,8 +74,11 @@ const JobPage: React.FC = () => {
 
           <span className="text-medium">Page {page}</span>
           <button
-            className="btn-primary m-small text-normal"
+            className={`btn-primary m-small text-normal ${
+              noMoreJobs ? 'btn-destructive cursor-not-allowed' : ''
+            }`}
             onClick={() => setPage(prev => prev + 1)}
+            disabled={noMoreJobs}
           >
             {' '}
             Next
