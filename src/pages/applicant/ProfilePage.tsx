@@ -32,11 +32,10 @@ const ProfilePage = () => {
       console.error('Failed to fetch user data:', error);
     }
   }, [id, token]);
- 
 
   const handleShowForm = () => {
     setShowForm(!showForm);
-  }
+  };
 
   useEffect(() => {
     if (token) {
@@ -54,7 +53,7 @@ const ProfilePage = () => {
               <div className="m-small">
                 {Object.entries(user).map(([key, value]) => {
                   if (key === 'id') {
-                    return null; 
+                    return null;
                   }
                   return (
                     <div className="mb-3" key={key}>
@@ -75,7 +74,13 @@ const ProfilePage = () => {
       </div>
 
       <div className="flex flex-col w-full gap-3">
-        {showForm && <UserForm isEditing={true} userId={user?.id?.toString()} handleShowForm={handleShowForm} />}
+        {showForm && (
+          <UserForm
+            isEditing={true}
+            userId={user?.id?.toString()}
+            handleShowForm={handleShowForm}
+          />
+        )}
       </div>
     </div>
   );
