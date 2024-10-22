@@ -1,3 +1,5 @@
+// src\pages\applicant\ApplicationDetailsPage.tsx
+
 import React, { useEffect, ReactNode } from 'react';
 import { useParams } from 'react-router';
 

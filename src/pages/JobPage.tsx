@@ -1,3 +1,5 @@
+// src\pages\JobPage.tsx
+
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import JobList from '../components/applicant/JobList';
 import { fetchJobs } from '../contexts/JobApi';

@@ -1,3 +1,5 @@
+// src\pages\ApplicationsPage.tsx
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { fecthApplications } from '../contexts/JobApi';

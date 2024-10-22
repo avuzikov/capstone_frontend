@@ -1,3 +1,5 @@
+// src\mocks\handlers.ts
+
 import { http, HttpResponse } from 'msw';
 import { User, Job, Application } from '../types/types';
 import {

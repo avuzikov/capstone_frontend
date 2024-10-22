@@ -1,3 +1,5 @@
+// src\components\applicant\ApplicationList.tsx
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 

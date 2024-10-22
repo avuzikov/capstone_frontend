@@ -1,3 +1,5 @@
+// src\components\admin\UserCard.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { User } from '../../types/types';

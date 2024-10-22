@@ -1,3 +1,5 @@
+// src\components\applicant\ApplicationDetails.test.tsx
+
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 
