@@ -104,9 +104,9 @@ const ApplicationsPage: React.FC = () => {
     return(
         <div>
             <div className="container mx-auto p-4">
+                
+            {loading ? <h1>Loading applications...</h1> : <ApplicationList applications={applications}/>}
             
-            <ApplicationList applications={applications}/>
-
             <div className="flex justify-between items-center p-medium">
             <button
                 className="btn-primary m-small text-normal"
