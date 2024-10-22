@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import JobList from '../components/applicant/JobList';
 import { fetchJobs } from '../contexts/JobApi';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,10 +10,14 @@ const JobPage: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [searchQuery, setSearchQuery] = useState('');
 
-  React.useEffect(() => {
+  const handleItemsPerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(parseInt(event.currentTarget.value));
+  };
+
+  useEffect(() => {
     const loadJobs = async () => {
       setLoading(true);
       try {
@@ -26,12 +30,30 @@ const JobPage: React.FC = () => {
       }
     };
     loadJobs();
-  }, [page, itemsPerPage, searchQuery]);
+  }, [page, itemsPerPage, searchQuery, token]);
 
   return (
     <div>
-      <JobSearchForm query={searchQuery} setSearchQuery={setSearchQuery} />
       <div className="container mx-auto p-4">
+        <div className="relative mb-4 mx-4">
+          <div className="absolute left-1/2 transfrom -translate-x-1/2">
+            <JobSearchForm setSearchQuery={setSearchQuery} />
+          </div>
+          <div className="flex justify-end h-16">
+            <select
+              onChange={handleItemsPerPageChange}
+              className="block mt-6 border rounded-md border-adp-navy-light"
+            >
+              <option value={1}>1</option>
+              <option value={3} selected={true}>
+                3
+              </option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+            </select>
+          </div>
+        </div>
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
         <div className="flex justify-between items-center p-medium">

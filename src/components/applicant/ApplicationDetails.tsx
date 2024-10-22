@@ -91,7 +91,9 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
       {jobData && (
         <>
           <header className="my-5">
-            <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">JOB TITLE</h2>
+            <h2 className="text-3xl font-extrabold ml-5 mb-2 text-stone-950">
+              {jobData.listingTitle}
+            </h2>
             <div className="flex justify-between mx-5">
               <p className="font-light text-small text-adp-navy-light">
                 Applied at: {format(application.dateApplied)}
