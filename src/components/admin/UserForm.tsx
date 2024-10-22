@@ -9,13 +9,14 @@ import { useAuth } from '../../contexts/AuthContext';
 interface UserFormProps {
   isEditing: boolean;
   userId?: string;
+  handleShowForm?: () => void;
 }
 
 export interface RegistrationData extends User {
   password: string;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
+const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
@@ -202,6 +203,10 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
       if (!userId) {
         navigate(-1);
       }
+
+      if (handleShowForm) {
+        handleShowForm();
+      }
     }
   };
 
@@ -210,7 +215,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
       {id && <BackButton />}
       <div className="flex flex-col justify-center items-center">
         {isEditing && !userId && <h1 className="text-large w-full lg:w-1/2">Edit User</h1>}
-        {isEditing && userId && <h1 className="text-large w-full lg:w-1/2">Profile</h1>}
+        {isEditing && userId && <h1 className="text-large w-full lg:w-1/2">Edit Profile</h1>}
         {!isEditing && !userId && <h1 className="text-large w-full lg:w-1/2">Add User</h1>}
 
         <form onSubmit={handleSubmit} className="card-bordered mt-2 w-full lg:w-1/2">
