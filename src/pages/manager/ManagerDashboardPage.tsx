@@ -9,7 +9,7 @@ const ManagerDashboardPage: React.FC = () => {
 
   const handleShouldUpdateJobs = () => {
     setShouldUpdateJobs(true);
-  }
+  };
 
   const handleCreateJob = (jobData: any) => {
     addJob(jobData);
@@ -26,7 +26,9 @@ const ManagerDashboardPage: React.FC = () => {
       >
         {showJobForm ? 'Cancel' : 'Create New Job'}
       </button>
-      {showJobForm && <JobForm onSubmit={handleCreateJob} handleShouldUpdateJobs={handleShouldUpdateJobs} />}
+      {showJobForm && (
+        <JobForm onSubmit={handleCreateJob} handleShouldUpdateJobs={handleShouldUpdateJobs} />
+      )}
       <ActiveJobsList handleShouldUpdateJobs={handleShouldUpdateJobs} />
     </div>
   );

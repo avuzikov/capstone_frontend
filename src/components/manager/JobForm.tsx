@@ -15,15 +15,17 @@ interface JobFormProps {
 }
 
 const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpdateJobs }) => {
-  const [job, setJob] = useState(initialJob || {
-    listingTitle: '',
-    department: '',
-    listingStatus: 'open',
-    jobTitle: '',
-    jobDescription: '',
-    experienceLevel: '',
-    additionalInformation: ''
-  });
+  const [job, setJob] = useState(
+    initialJob || {
+      listingTitle: '',
+      department: '',
+      listingStatus: 'open',
+      jobTitle: '',
+      jobDescription: '',
+      experienceLevel: '',
+      additionalInformation: '',
+    }
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
