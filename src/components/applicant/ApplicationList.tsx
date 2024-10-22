@@ -36,12 +36,10 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
           onClick={() => handleClick(application.id)}
         >
           <h3 className="text-medium font-bold mb-2">{application.jobTitle}</h3>
-          <div className='text-small flex gap-2 items-center'>
-
-          <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
-          <div className='w-1 h-1 rounded-full bg-adp-navy'></div>
-          <p>Status: {application.applicationStatus}</p>
-
+          <div className="text-small flex gap-2 items-center">
+            <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
+            <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
+            <p>Status: {application.applicationStatus}</p>
           </div>
         </li>
       ))}

@@ -11,10 +11,7 @@ const ApplyButton = ({ id }: { id: string | undefined }) => {
   };
 
   return (
-    <button
-      className="btn-primary mt-3 w-full"
-      onClick={() => handleApply(id)}
-    >
+    <button className="btn-primary mt-3 w-full" onClick={() => handleApply(id)}>
       Apply now!
     </button>
   );

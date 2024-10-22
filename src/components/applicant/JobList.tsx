@@ -40,10 +40,12 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
           onClick={() => handleClick(job.id)}
         >
           <h3 className="t font-bold text-medium mb-1">{job.listingTitle}</h3>
-          <div className='flex items-center gap-2'>
-          <p className='text-small'>Department: {job.department}</p>
-          <div className='w-1 h-1 rounded-full bg-adp-navy'></div>
-          <p className='text-small'>Posted date: {new Date(job.dateListed).toLocaleDateString()}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-small">Department: {job.department}</p>
+            <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
+            <p className="text-small">
+              Posted date: {new Date(job.dateListed).toLocaleDateString()}
+            </p>
           </div>
           {job.listingStatus === 'closed' && (
             <p className="text-adp-red-light">Recrutation closed</p>

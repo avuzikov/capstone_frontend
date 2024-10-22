@@ -103,9 +103,7 @@ describe('TableDisplay Component', () => {
   });
 
   test('displays error message on fetch failure', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.reject(new Error('Failed to fetch'))
-    ) as jest.Mock;
+    global.fetch = jest.fn(() => Promise.reject(new Error('Failed to fetch'))) as jest.Mock;
 
     render(
       <Router>
@@ -118,4 +116,3 @@ describe('TableDisplay Component', () => {
     expect(screen.queryByText('Hiring Managers')).not.toBeInTheDocument();
   });
 });
-

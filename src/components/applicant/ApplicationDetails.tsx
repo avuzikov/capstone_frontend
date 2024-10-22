@@ -100,7 +100,9 @@ const ApplicationDetails = ({ application }: { application: ApplicationDetailsTy
               </p>
               <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
               <p className="font-light text-small mr-10 text-adp-navy-light">
-                Status: {application.applicationStatus.charAt(0).toUpperCase() + application.applicationStatus.slice(1)}
+                Status:{' '}
+                {application.applicationStatus.charAt(0).toUpperCase() +
+                  application.applicationStatus.slice(1)}
               </p>
             </div>
           </header>

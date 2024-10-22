@@ -42,9 +42,15 @@ describe('UserForm Component', () => {
   test('handles form submission for creating a user', async () => {
     render(<UserForm isEditing={false} />);
 
-    fireEvent.change(screen.getByPlaceholderText('Enter full name'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'password123' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'john@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter full name'), {
+      target: { value: 'John Doe' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter password'), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter email'), {
+      target: { value: 'john@example.com' },
+    });
 
     fireEvent.click(screen.getByText('Save'));
 
@@ -64,10 +70,19 @@ describe('UserForm Component', () => {
   });
 
   test('handles form submission for updating a user', async () => {
-    const mockFetch = jest.fn()
+    const mockFetch = jest
+      .fn()
       .mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ id: 1, fullName: 'John Doe', email: 'john@example.com', address: '123 Main St', phone: '123-456-7890', resume: 'Experienced developer' }),
+        json: () =>
+          Promise.resolve({
+            id: 1,
+            fullName: 'John Doe',
+            email: 'john@example.com',
+            address: '123 Main St',
+            phone: '123-456-7890',
+            resume: 'Experienced developer',
+          }),
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -77,32 +92,45 @@ describe('UserForm Component', () => {
 
     render(<UserForm isEditing={true} userId="1" />);
 
-    fireEvent.change(screen.getByPlaceholderText('Enter full name'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'john@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter address'), { target: { value: '123 Main St' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter phone number'), { target: { value: '123-456-7890' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter resume'), { target: { value: 'Experienced developer' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter full name'), {
+      target: { value: 'John Doe' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter email'), {
+      target: { value: 'john@example.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter address'), {
+      target: { value: '123 Main St' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter phone number'), {
+      target: { value: '123-456-7890' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter resume'), {
+      target: { value: 'Experienced developer' },
+    });
 
     fireEvent.click(screen.getByText('Save'));
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
-        method: 'PUT',
-        headers: expect.objectContaining({
-          'Content-Type': 'application/json',
-          Authorization: expect.any(String),
-        }),
-        body: JSON.stringify({
-          id: 0,
-          fullName: 'John Doe',
-          password: '',
-          email: 'john@example.com',
-          address: '123 Main St',
-          phone: '123-456-7890',
-          resume: 'Experienced developer',
-          role: 'applicant',
-        }),
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          method: 'PUT',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            Authorization: expect.any(String),
+          }),
+          body: JSON.stringify({
+            id: 0,
+            fullName: 'John Doe',
+            password: '',
+            email: 'john@example.com',
+            address: '123 Main St',
+            phone: '123-456-7890',
+            resume: 'Experienced developer',
+            role: 'applicant',
+          }),
+        })
+      );
     });
 
     // Verify that the form fields are updated with the new values
@@ -113,4 +141,3 @@ describe('UserForm Component', () => {
     expect(screen.getByPlaceholderText('Enter resume')).toHaveValue('Experienced developer');
   });
 });
-

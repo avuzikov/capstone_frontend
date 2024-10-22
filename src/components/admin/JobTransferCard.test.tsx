@@ -4,7 +4,6 @@ import JobTransferCard from './JobTransferCard';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 
-
 //TODO: Pass test
 jest.mock('../../contexts/AuthContext');
 
@@ -24,7 +23,13 @@ describe('JobTransferCard', () => {
   });
 
   test('renders correctly', () => {
-    render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
+    render(
+      <JobTransferCard
+        currentManagerId="1"
+        jobs={[]}
+        handleShouldFetchJobs={mockHandleShouldFetchJobs}
+      />
+    );
     expect(screen.getByText('Transfer Jobs')).toBeInTheDocument();
   });
 
@@ -39,14 +44,19 @@ describe('JobTransferCard', () => {
       json: async () => mockManagers,
     });
 
-    render(<JobTransferCard currentManagerId="1" jobs={[]} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
+    render(
+      <JobTransferCard
+        currentManagerId="1"
+        jobs={[]}
+        handleShouldFetchJobs={mockHandleShouldFetchJobs}
+      />
+    );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
 
     expect(screen.getByText('Manager One')).toBeInTheDocument();
     expect(screen.getByText('Manager Two')).toBeInTheDocument();
   });
-
 
   test.only('transfers jobs', async () => {
     const mockJobs: Job[] = [
@@ -74,7 +84,6 @@ describe('JobTransferCard', () => {
       },
     ];
 
-
     const mockManagers = [
       { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
       { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
@@ -85,8 +94,13 @@ describe('JobTransferCard', () => {
       json: async () => mockManagers,
     });
 
-    render(<JobTransferCard currentManagerId="1" jobs={mockJobs} handleShouldFetchJobs={mockHandleShouldFetchJobs} />);
-
+    render(
+      <JobTransferCard
+        currentManagerId="1"
+        jobs={mockJobs}
+        handleShouldFetchJobs={mockHandleShouldFetchJobs}
+      />
+    );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
 
@@ -99,4 +113,3 @@ describe('JobTransferCard', () => {
     expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
   });
 });
-

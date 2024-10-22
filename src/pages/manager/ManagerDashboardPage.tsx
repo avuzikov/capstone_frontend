@@ -23,7 +23,6 @@ const ManagerDashboardPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<ManagerStats | null>(null);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(false);
-  
 
   const fetchManagerStats = async () => {
     try {

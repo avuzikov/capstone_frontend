@@ -212,6 +212,30 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
+  // Manager-specific routes
+  http.get('/api/job/manager', ({ request }) => {
+    const user = authenticateUser(request);
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
+    }
+    const url = new URL(request.url);
+    const page = safeParseInt(url.searchParams.get('page'), 1);
+    const items = safeParseInt(url.searchParams.get('items'), 20);
+    const managerJobs = jobs.filter(job => job.userId === user.id);
+    const startIndex = (page - 1) * items;
+    const endIndex = startIndex + items;
+    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
+    return HttpResponse.json({
+      total: managerJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs.map(job => ({
+        ...job,
+        applicantCount: applications.filter(app => app.jobId === job.id).length,
+      })),
+    });
+  }),
+
   http.get('/api/job/search', ({ request }) => {
     const url = new URL(request.url);
     const page = safeParseInt(url.searchParams.get('page'), 1);
@@ -435,30 +459,6 @@ export const handlers = [
     }
     deleteApplication(parseInt(id));
     return HttpResponse.json(null, { status: 204 });
-  }),
-
-  // Manager-specific routes
-  http.get('/api/job/manager', ({ request }) => {
-    const user = authenticateUser(request);
-    if (!user || user.role !== 'hiring-manager') {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
-    }
-    const url = new URL(request.url);
-    const page = safeParseInt(url.searchParams.get('page'), 1);
-    const items = safeParseInt(url.searchParams.get('items'), 20);
-    const managerJobs = jobs.filter(job => job.userId === user.id);
-    const startIndex = (page - 1) * items;
-    const endIndex = startIndex + items;
-    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
-    return HttpResponse.json({
-      total: managerJobs.length,
-      page,
-      items,
-      jobs: paginatedJobs.map(job => ({
-        ...job,
-        applicantCount: applications.filter(app => app.jobId === job.id).length,
-      })),
-    });
   }),
 
   // Jobs

@@ -22,8 +22,20 @@ jest.mock('./ManagerCard.tsx', () => {
 describe('ManagerList Component', () => {
   const mockToken = 'mock-token';
   const mockManagers: User[] = [
-    { id: 1, fullName: 'Manager One', email: 'email@email.com', password: 'password', role: 'hiring-manager' },
-    { id: 2, fullName: 'Manager Twi', email: 'email2@email.com', password: 'password2', role: 'hiring-manager' },
+    {
+      id: 1,
+      fullName: 'Manager One',
+      email: 'email@email.com',
+      password: 'password',
+      role: 'hiring-manager',
+    },
+    {
+      id: 2,
+      fullName: 'Manager Twi',
+      email: 'email2@email.com',
+      password: 'password2',
+      role: 'hiring-manager',
+    },
   ];
 
   beforeEach(() => {
@@ -53,7 +65,9 @@ describe('ManagerList Component', () => {
 
     render(<ManagerList />);
 
-    await waitFor(() => expect(screen.getByText('Error: Failed to fetch users')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Error: Failed to fetch users')).toBeInTheDocument()
+    );
   });
 
   test('displays manager cards on successful fetch', async () => {
@@ -67,10 +81,9 @@ describe('ManagerList Component', () => {
     await waitFor(() => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       expect(screen.getAllByTestId('manager-card')).toHaveLength(mockManagers.length);
-      mockManagers.forEach((manager) => {
+      mockManagers.forEach(manager => {
         expect(screen.getByText(manager.fullName)).toBeInTheDocument();
       });
     });
   });
 });
-

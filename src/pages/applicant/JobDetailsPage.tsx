@@ -57,9 +57,7 @@ const JobDetailsPage = () => {
 
   return (
     <div className="mx-auto w-2/3 min-h-[calc(100vh-64px-56px)] m-5  gap-2 flex flex-row">
-      <main className="card-bordered  w-1/2">
-        {jobData}
-      </main>
+      <main className="card-bordered  w-1/2">{jobData}</main>
       <aside className="flex-col text-center w-1/2">
         <div>
           <ManagerCard id={data?.userId} />
