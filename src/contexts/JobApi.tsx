@@ -18,12 +18,11 @@ export const fetchJobs = async (page: number, items: number, query = '', token: 
 };
 
 export const fecthApplications = async (page: number, items: number, token: string | null) => {
-  
   const response = await fetch(`/api/application?page=${page}&items=4`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`, 
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -32,6 +31,6 @@ export const fecthApplications = async (page: number, items: number, token: stri
   }
 
   const data = await response.json();
-  console.log(data)
+  console.log(data);
   return data;
 };

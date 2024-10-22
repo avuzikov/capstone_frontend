@@ -19,8 +19,7 @@ import JobDetailsPage from './pages/applicant/JobDetailsPage';
 import JobPage from './pages/JobPage';
 import ApplicationForm from './components/applicant/ApplicationForm';
 import AdminJobManagementPage from './pages/admin/AdminJobManagementPage';
-import ApplicationsPage from "./pages/ApplicationsPage";
-
+import ApplicationsPage from './pages/ApplicationsPage';
 
 const ProtectedRoute: React.FC<{
   element: React.ReactElement;
@@ -54,7 +53,6 @@ function App() {
             <Route path="/jobs" element={<JobPage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
             <Route path="/applications" element={<ApplicationsPage />}></Route>
-
 
             {/* Protected routes */}
             <Route

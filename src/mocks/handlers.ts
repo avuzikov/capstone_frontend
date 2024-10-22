@@ -332,7 +332,7 @@ export const handlers = [
   }),
 
   //TODO: Set up for authorized users
-  
+
   http.get<{ id: string }>('/api/application/:id', ({ params, request }) => {
     const user = authenticateUser(request);
     const { id } = params;

@@ -8,7 +8,7 @@ interface Application {
   applicationStatus: string;
   coverLetter: string;
   customResume: string;
-  jobTitle?:string;
+  jobTitle?: string;
 }
 
 interface ApplicationListProps {
@@ -16,14 +16,13 @@ interface ApplicationListProps {
 }
 
 const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
-
   if (applications.length === 0) {
     return <p>No applications found.</p>;
   }
 
   return (
     <ul className="list-none">
-      {applications.map((application) => (
+      {applications.map(application => (
         <li key={application.id} className="border-b py-2">
           <h3 className="text-lg font-bold text-large">{application.jobTitle}</h3>
           <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
