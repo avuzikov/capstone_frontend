@@ -1,19 +1,17 @@
-import React, { FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 
-const JobSearchForm = ({
-  query,
-  setSearchQuery,
-}: {
-  query: string;
-  setSearchQuery: (query: string) => void;
-}) => {
+const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => void }) => {
+  const [input, setInput] = useState('');
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('Search query:', query);
+    setSearchQuery(input.toLowerCase());
   };
 
   const handleChange = (event: FormEvent<HTMLInputElement>) => {
-    setSearchQuery(event.currentTarget.value);
+    setInput(event.currentTarget.value);
+    if (event.currentTarget.value === '') {
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -22,7 +20,7 @@ const JobSearchForm = ({
         <div className="relative">
           <input
             type="text"
-            value={query}
+            value={input}
             onChange={handleChange}
             className="border min-w-[24rem] border-gray-300 transition-colors hover:border-adp-navy py-2 pr-2 pl-11 shadow-sm text-small rounded-md"
             placeholder="Search..."

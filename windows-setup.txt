@@ -1,0 +1,42 @@
+## VS Code Extensions
+1. ESLint (`dbaeumer.vscode-eslint`)
+2. Prettier (`esbenp.prettier-vscode`)
+3. EditorConfig (`editorconfig.editorconfig`)
+
+## Initial Setup
+
+### Git Configuration
+```bash
+git config --global core.autocrlf true
+```
+
+### VS Code Settings
+Open VS Code Settings (JSON) (`Ctrl + Shift + P` → "Open Settings (JSON)") and add:
+```json
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "files.eol": "\n"
+}
+```
+
+2. Reset line endings
+```bash
+git rm -rf --cached .
+git add .
+git commit -m "Normalize line endings"
+```
+
+3. Run format fix
+```bash
+npm run fix:all
+```
+
+## VS Code Line Endings
+1. Open any file
+2. Click "CRLF" in bottom-right corner
+3. Select "LF"
+4. Convert all files when prompted

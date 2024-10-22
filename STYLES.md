@@ -1,15 +1,16 @@
 # Front-End Styling
+
 Custom Tailwind styles that can be applied to components in the style of ADP guidelines.
 
 ## Styles
 
-Styles are named using kebab-case. e.g. ```img-small```. Styles are saved in ```tailwind.config.js```, here individual styles that form the custom styles can be viewed. 
+Styles are named using kebab-case. e.g. `img-small`. Styles are saved in `tailwind.config.js`, here individual styles that form the custom styles can be viewed.
 
 ### Colours
 
 - ADP Red
 
-       adp-red 
+       adp-red
 
 - ADP Light Red
 
@@ -38,7 +39,7 @@ Styles are named using kebab-case. e.g. ```img-small```. Styles are saved in ```
 ### Logo Styles
 
 - Small Logo
-        
+
         img-small
 
 - Medium Logo
@@ -51,7 +52,7 @@ Styles are named using kebab-case. e.g. ```img-small```. Styles are saved in ```
 
 ### Padding Styles
 
-Padding styles can be combined with other styles. e.g. Use ```p-small``` with ```h-large``` to  provide padding to a heading. 
+Padding styles can be combined with other styles. e.g. Use `p-small` with `h-large` to provide padding to a heading.
 
 - Small Padding
 
@@ -67,7 +68,7 @@ Padding styles can be combined with other styles. e.g. Use ```p-small``` with ``
 
 ### Margin Styles
 
-Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```btn-primary``` to  provide a margin to a button. 
+Margin styles can be combined with other styles. e.g. Use `m-small` with `btn-primary` to provide a margin to a button.
 
 - Small Margin
 
@@ -144,4 +145,3 @@ Margin styles can be combined with other styles. e.g. Use ```m-small``` with ```
 - Bordered Card
 
         card-bordered
-

@@ -1,6 +1,7 @@
 # Hiring Platform Frontend
 
 ## Table of Contents
+
 1. [Project Overview](#project-overview)
 2. [Technology Stack](#technology-stack)
 3. [Project Structure](#project-structure)
@@ -17,9 +18,11 @@
 12. [Questions to Discuss with Backend Team](#questions-to-discuss-with-backend-team)
 
 ## Project Overview
+
 This project is a full-stack hiring platform with a React + TypeScript frontend. The frontend can be run standalone or containerized using Docker. It provides functionalities for job applicants, hiring managers, and administrators to interact with the hiring process efficiently.
 
 ## Technology Stack
+
 - React 18.3.1 with TypeScript
 - Tailwind CSS 3.4.13 for styling
 - Context API for state management
@@ -27,6 +30,7 @@ This project is a full-stack hiring platform with a React + TypeScript frontend.
 - JWT for authentication
 
 ## Project Structure
+
 ```plaintext
 frontend-service/
 ├── public/
@@ -143,7 +147,9 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 ## Routes and Components
 
 ### Unprotected Routes (Applicant Section)
+
 1. `/jobs`
+
    - Components:
      - Header (with login and register buttons)
      - JobList
@@ -156,6 +162,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
        - Retrieves paginated list of job listings
 
 2. `/jobs/:id`
+
    - Components:
      - JobDetails
      - ApplyButton
@@ -171,6 +178,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
        - Submits a new job application
 
 3. `/register`
+
    - Components:
      - RegistrationForm
    - Functionality:
@@ -192,6 +200,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 ### Protected Routes - Applicant
 
 5. `/applications`
+
    - Components:
      - ApplicationList
      - ApplicationStatusFilter
@@ -224,6 +233,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 ### Protected Routes - Hiring Manager
 
 7. `/manager/console` (ManagerDashboardPage)
+
    - Functionality:
      - Display a list of jobs created by the current manager
      - Provide a form to create a new job
@@ -259,17 +269,19 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
 ### Protected Routes - Admin
 
 9. `/admin/dashboard`
-    - Components:
-      - AdminStats
-      - QuickActions
-    - Functionality:
-      - Overview of platform statistics
-      - Quick access to common admin actions
-    - API Endpoints:
-      - **GET /api/job/page?={page}&items?={items}**
-        - Retrieves paginated list of all job listings
+
+   - Components:
+     - AdminStats
+     - QuickActions
+   - Functionality:
+     - Overview of platform statistics
+     - Quick access to common admin actions
+   - API Endpoints:
+     - **GET /api/job/page?={page}&items?={items}**
+       - Retrieves paginated list of all job listings
 
 10. `/admin/managers`
+
     - Components:
       - ManagerList
       - ManagerForm
@@ -279,7 +291,7 @@ The `Dockerfile` in the `frontend-service` directory is used to containerize the
     - API Endpoints:
       - **POST /users/registration/admin**
         - Registers a new hiring manager
-      - **GET /users/admin/{id}** 
+      - **GET /users/admin/{id}**
         - Retrieves details of hiring managers associated with the admin
       - **PUT /users/admin/{id}**
         - Updates a hiring manager's details
@@ -308,6 +320,7 @@ The frontend relies on the following backend API endpoints for functionality:
 ### Authentication
 
 #### POST /users/login
+
 - Description: Authenticate user and receive JWT token
 - Request:
   ```json
@@ -323,6 +336,7 @@ The frontend relies on the following backend API endpoints for functionality:
 ### Users
 
 #### POST /users/registration
+
 - Description: Register a new user (for normal users)
 - Request:
   ```json
@@ -337,6 +351,7 @@ The frontend relies on the following backend API endpoints for functionality:
   - Cookie: JWT token containing claims with `userId` and `role`
 
 #### POST /users/registration/admin
+
 - Description: Register a new hiring manager (Admin only)
 - Request:
   ```json
@@ -351,6 +366,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The role must be admin.
 
 #### GET /users/{id}
+
 - Description: Retrieve user details by ID
 - Path Parameters:
   - `id` (required) – The ID of the user
@@ -370,6 +386,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `id` in the request.
 
 #### PUT /users/{id}
+
 - Description: Update user details
 - Path Parameters:
   - `id` (required) – The ID of the user
@@ -388,6 +405,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `id` in the request.
 
 #### DELETE /users/{id}
+
 - Description: Delete a user
 - Path Parameters:
   - `id` (required) – The ID of the user
@@ -397,6 +415,7 @@ The frontend relies on the following backend API endpoints for functionality:
 ### Jobs
 
 #### GET /api/job/{id}
+
 - Description: Retrieve job details by ID
 - Path Parameters:
   - `id` (required) – The ID of the job
@@ -419,6 +438,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie.
 
 #### POST /api/job
+
 - Description: Create a new job listing (Hiring Manager only)
 - Request Body:
   ```json
@@ -441,6 +461,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie with role "hiring-manager".
 
 #### PUT /api/job/{id}
+
 - Description: Update an existing job listing
 - Path Parameters:
   - `id` (required) – The ID of the job
@@ -449,6 +470,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` of the job listing.
 
 #### PUT /api/job/transfer
+
 - Description: Transfer job ownership from one hiring manager to another
 - Request Body:
   ```json
@@ -462,6 +484,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The role in the JWT must be "admin".
 
 #### DELETE /api/job/{id}
+
 - Description: Delete a job listing
 - Path Parameters:
   - `id` (required) – The ID of the job
@@ -469,6 +492,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Response: HTTP status `204 No Content`
 
 #### GET /api/job/page?=page&items=items
+
 - Description: Retrieve job listings based on pagination
 - Path Parameters:
   - `page` (required) – Page number
@@ -479,6 +503,7 @@ The frontend relies on the following backend API endpoints for functionality:
 ### Applications
 
 #### POST /api/application
+
 - Description: Submit a new job application
 - Request Body:
   ```json
@@ -495,6 +520,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `userId` in the request.
 
 #### GET /api/application/{id}
+
 - Description: Retrieve application details by ID
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -513,6 +539,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. Applicants can only view their own applications. Hiring managers and admins can view any application.
 
 #### PUT /api/application/{id}
+
 - Description: Update an existing job application (Applicant only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -529,6 +556,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie. The `userId` in the token must match the `id` in the request.
 
 #### PUT /api/application/manager/{id}
+
 - Description: Update application status (Hiring Manager only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -541,6 +569,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token
 
 #### PUT /api/application/manager/{id}
+
 - Description: Update application status (Hiring Manager only)
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -553,6 +582,7 @@ The frontend relies on the following backend API endpoints for functionality:
 - Authorization: Requires JWT token in a cookie with role "hiring-manager".
 
 #### DELETE /api/application/{id}
+
 - Description: Delete a job application
 - Path Parameters:
   - `id` (required) – The ID of the application
@@ -562,6 +592,7 @@ The frontend relies on the following backend API endpoints for functionality:
 ## Additional Required API Endpoints
 
 1. GET /api/job/manager
+
    - Description: Retrieve jobs created by the current manager
    - Request:
      - Query Parameters:
@@ -589,6 +620,7 @@ The frontend relies on the following backend API endpoints for functionality:
    - Explanation: This endpoint is needed because the existing `/api/job/page` endpoint doesn't provide a way to filter jobs by the creator. It also includes an applicant count, which is useful for the manager dashboard.
 
 2. GET /api/application/job/{jobId}
+
    - Description: Retrieve applications for a specific job
    - Request:
      - Path Parameters:
@@ -648,24 +680,29 @@ The frontend relies on the following backend API endpoints for functionality:
 The team will work individually, with each member focusing on specific tasks:
 
 1. Alex:
+
    - Providing documentation for the team
    - Supporting the team in case of technical problems
    - Reducing technical debt
    - Creating and supporting the Mock API
 
 2. Lalitha:
+
    - Implementation of manager pages:
      - Manager console (/manager/console)
      - Job management page (/manager/{jobid})
 
 3. Matt:
+
    - Implementation of admin pages
    - Design of pages across the application
 
 4. Abideet:
+
    - Implementation of admin pages
 
 5. Piotr:
+
    - Implementation of the registration page (/register)
    - Implementation of the job detail page (/jobs/:id)
 
@@ -674,6 +711,7 @@ The team will work individually, with each member focusing on specific tasks:
    - Implementation of the job listing page (/jobs)
 
 Shared Responsibilities:
+
 - All pairs will contribute to:
   - Component development
   - State management implementation (Context API)
@@ -683,6 +721,7 @@ Shared Responsibilities:
   - Code reviews and documentation
 
 ## Next Steps
+
 1. Set up the project structure and install necessary dependencies
 2. Implement basic routing and create placeholder components for each page
 3. Set up the Context API for state management
@@ -696,6 +735,7 @@ Shared Responsibilities:
 11. Prepare documentation for deployment and maintenance
 
 ## Contributing
+
 Please refer to the team responsibilities section for guidelines on contributing to this project. When contributing, please follow these steps:
 
 1. Create a new branch for your feature or bugfix.
@@ -706,6 +746,7 @@ Please refer to the team responsibilities section for guidelines on contributing
 6. Participate in code reviews and address any feedback.
 
 ## Code Style and Best Practices
+
 - Use TypeScript for type safety and better developer experience.
 - Follow the Airbnb JavaScript Style Guide for consistent code formatting.
 - Use functional components and hooks in React.
@@ -716,18 +757,21 @@ Please refer to the team responsibilities section for guidelines on contributing
 - Implement proper error handling and logging.
 
 ## Testing
+
 - Write unit tests for individual components and functions using Jest and React Testing Library.
 - Implement integration tests for critical user flows.
 - Use Cypress for end-to-end testing of key features.
 - Aim for high test coverage, especially for critical business logic.
 
 ## Performance Optimization
+
 - Use React.memo for components that don't need frequent re-rendering.
 - Implement lazy loading for routes and heavy components.
 - Optimize images and assets for web delivery.
 - Use performance profiling tools to identify and fix bottlenecks.
 
 ## Accessibility
+
 - Ensure the application is keyboard navigable.
 - Use semantic HTML elements.
 - Include proper ARIA labels and roles where necessary.
@@ -735,6 +779,7 @@ Please refer to the team responsibilities section for guidelines on contributing
 - Test the application with screen readers and other assistive technologies.
 
 ## Security Considerations
+
 - Implement proper authentication and authorization checks.
 - Use HTTPS for all API communications.
 - Sanitize user inputs to prevent XSS attacks.
@@ -743,56 +788,68 @@ Please refer to the team responsibilities section for guidelines on contributing
 - Conduct security audits and penetration testing.
 
 ## Deployment
+
 - Use environment variables for configuration.
 - Implement a CI/CD pipeline for automated testing and deployment.
 - Use Docker for consistent deployment across different environments.
 - Implement proper logging and monitoring in production.
 
 ## License
+
 This project is proprietary and confidential. Unauthorized copying, transferring or reproduction of the contents of this project, via any medium, is strictly prohibited.
 
 ## Questions to Discuss with Backend Team
 
 1. Media Upload/Download:
+
    - Should we implement a feature for applicants to upload profile pictures?
    - What file size and format restrictions should be in place?
 
 2. CV Upload:
+
    - Should there be a CV upload or is it too complicated for the backend side?
    - Should CV upload be part of the initial application process or a separate feature in the applicant's profile?
    - What file formats should be supported for CV uploads (e.g., PDF, DOCX)?
    - Are there any file size limitations?
 
 3. Application Form:
+
    - What specific fields should be included in the standard application form?
    - Are there any field validations or restrictions we need to implement?
 
 4. Error Handling:
+
    - What error codes and messages can we expect from the backend for various scenarios?
 
 5. API Structure:
+
    - Confirm the changes to the application status update endpoint (`PUT /application/manager/{id}`)
    - Discuss the separation of user types into distinct endpoints (`GET /users/admin/{id}` and `GET /users/{id}`)
    - Are there any other endpoints that need restructuring to better fit the application's needs?
 
 6. Authentication:
+
    - How long should JWT tokens be valid?
    - Should we implement refresh tokens?
    - How should we handle token expiration on the frontend?
 
 7. Rate Limiting:
+
    - Are there any rate limits on API endpoints we should be aware of?
    - How should we handle rate limit errors on the frontend?
 
 8. Pagination:
+
    - Confirm the structure of paginated responses for job listings and applications.
    - Are there any other endpoints that should support pagination?
 
 9. Search and Filtering:
+
    - What search and filtering capabilities does the backend support for job listings and applications?
    - How should these be implemented in the API requests?
 
 10. Data Validation:
+
     - What data validation is performed on the backend?
     - Should we implement matching validation on the frontend, or rely on backend validation responses?
 
@@ -801,4 +858,3 @@ This project is proprietary and confidential. Unauthorized copying, transferring
     - If so, which features would benefit from real-time updates?
 
 These questions will help ensure smooth integration between the frontend and backend, and clarify any ambiguities in the API documentation or feature requirements.
-

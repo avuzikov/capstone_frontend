@@ -13,24 +13,29 @@ This document provides instructions on how to use and interact with the Mock API
 ## Setup
 
 1. Ensure you have installed the necessary dependencies:
+
    ```
    npm install msw --save-dev
    ```
 
 2. Verify that you have the following files in your project:
+
    - `src/mocks/handlers.js`: Contains the request handlers for your mock API
    - `src/mocks/browser.js`: Sets up the Service Worker for browser environments
    - `src/mocks/server.js`: Sets up the server for Node.js environments (used in testing)
 
 3. Check that your `src/index.js` file includes the Mock Service Worker setup:
+
    ```javascript
    import { worker } from './mocks/browser';
 
    // At the end of the file
    if (process.env.NODE_ENV === 'development') {
-     worker.start({
-       onUnhandledRequest: 'bypass',
-     }).catch(console.error);
+     worker
+       .start({
+         onUnhandledRequest: 'bypass',
+       })
+       .catch(console.error);
    }
    ```
 
@@ -68,6 +73,7 @@ To add a new endpoint to the Mock API:
 The Mock API can be used in your tests to simulate API responses:
 
 1. In your test setup file (e.g., `src/setupTests.js`), add:
+
    ```javascript
    import { server } from './mocks/server';
 
@@ -96,4 +102,3 @@ The Mock API can be used in your tests to simulate API responses:
 4. **Mock API not working in tests**: Verify that you've set up the server correctly in your test setup file as shown in the Testing section.
 
 If you encounter any other issues or need to modify the Mock API behavior, please consult with the team lead or refer to the [MSW documentation](https://mswjs.io/docs/).
-

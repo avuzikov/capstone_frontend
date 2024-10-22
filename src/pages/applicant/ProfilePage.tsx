@@ -22,6 +22,9 @@ const ProfilePage = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
 
       const data: User = await response.json();
       setUser(data);
@@ -29,6 +32,7 @@ const ProfilePage = () => {
       console.error('Failed to fetch user data:', error);
     }
   }, [id, token]);
+ 
 
   const handleShowForm = () => {
     setShowForm(!showForm);
@@ -39,8 +43,6 @@ const ProfilePage = () => {
       fetchUser();
     }
   }, [token, fetchUser, showForm, handleShowForm]);
-
-  
 
   return (
     <div className="w-full flex items-center  flex-col justify-center">
