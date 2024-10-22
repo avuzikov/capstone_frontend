@@ -63,51 +63,38 @@ const JobManagementPage: React.FC = () => {
   const handleUpdateJob = async (updatedJobData: Partial<Job>) => {
     if (!jobId || !token) return;
 
-    const response = await fetch(`/api/job/${jobId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...updatedJobData,
-        id: jobId,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update job');
-    }
-
-    const updatedJob: Job = await response.json();
-    setJob(updatedJob);
-    setIsEditing(false);
-    await fetchJobDetails(); // Refresh the job data after update
-  };
-
-  const handleDeleteJob = async () => {
-    if (!jobId || !token) return;
-
-    if (!window.confirm('Are you sure you want to delete this job listing?')) {
-      return;
-    }
-
     try {
+      setIsLoading(true);
       const response = await fetch(`/api/job/${jobId}`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          ...updatedJobData,
+          id: jobId,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete job');
+        throw new Error('Failed to update job');
       }
 
+      // Show success message (optional)
+      // You could add a toast notification here if you have a notification system
+
+      // Navigate back to dashboard
       navigate('/manager/console');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete job');
+      setError(err instanceof Error ? err.message : 'Failed to update job');
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    navigate('/manager/console');
   };
 
   if (isLoading) {
@@ -141,25 +128,27 @@ const JobManagementPage: React.FC = () => {
       <div className="mb-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">Job Management</h1>
-          <div className="space-x-4">
+          <div className="flex gap-4">
+            {!isEditing && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+              >
+                Edit Job
+              </button>
+            )}
             <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+              onClick={handleCancel}
+              className="px-4 py-2 text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
             >
-              {isEditing ? 'Cancel Edit' : 'Edit Job'}
-            </button>
-            <button
-              onClick={handleDeleteJob}
-              className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
-            >
-              Delete Job
+              Back to Dashboard
             </button>
           </div>
         </div>
       </div>
 
       {isEditing ? (
-        <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={() => setIsEditing(false)} />
+        <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={handleCancel} />
       ) : (
         <div className="bg-white shadow rounded-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">{job.listingTitle}</h2>
@@ -194,16 +183,18 @@ const JobManagementPage: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-6">Applications</h2>
-        <ApplicantSortOptions
-          sortBy={sortBy}
-          filterStatus={filterStatus}
-          onSortChange={setSortBy}
-          onFilterChange={setFilterStatus}
-        />
-        <ApplicantList jobId={parseInt(jobId!)} />
-      </div>
+      {!isEditing && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold mb-6">Applications</h2>
+          <ApplicantSortOptions
+            sortBy={sortBy}
+            filterStatus={filterStatus}
+            onSortChange={setSortBy}
+            onFilterChange={setFilterStatus}
+          />
+          <ApplicantList jobId={parseInt(jobId!)} />
+        </div>
+      )}
     </div>
   );
 };

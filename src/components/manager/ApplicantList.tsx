@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate';
-import { Application, User } from '../../types/types';
+import { Application } from '../../types/types';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface ApplicantListProps {
   jobId: number;
 }
 
-// Ensure this matches the type in ApplicantStatusUpdate
 type ApplicationStatus = Application['applicationStatus'];
 
 interface ApplicationWithUser extends Application {
@@ -23,6 +23,7 @@ interface PaginatedApplicationResponse {
 
 const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [applications, setApplications] = useState<ApplicationWithUser[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -94,6 +95,11 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
     }
   };
 
+  const handleJobStatusUpdate = () => {
+    // Navigate to the job management page
+    navigate(`/manager/${jobId}`);
+  };
+
   if (isLoading) {
     return <div className="text-center py-4">Loading applications...</div>;
   }
@@ -134,8 +140,10 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <ApplicantStatusUpdate
                   applicationId={application.id}
+                  jobId={jobId}
                   currentStatus={application.applicationStatus}
                   onStatusChange={newStatus => handleStatusChange(application.id, newStatus)}
+                  onJobStatusUpdate={handleJobStatusUpdate}
                 />
               </td>
             </tr>
@@ -152,14 +160,14 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
           <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l disabled:opacity-50"
+            className="px-4 py-2 text-white bg-navy-600 rounded-l hover:bg-navy-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r disabled:opacity-50"
+            className="px-4 py-2 text-white bg-navy-600 rounded-r hover:bg-navy-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
