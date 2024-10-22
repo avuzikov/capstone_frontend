@@ -44,7 +44,7 @@ const Header = () => {
 
   return (
     <nav className="flex bg-adp-red text-adp-white p-large justify-between items-center">
-      <NavLink to={'/'}>
+      <NavLink to={role === 'admin' ? '/admin' : '/'}>
         <div className="flex items-center gap-3">
           <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
           <h1 className="hidden md:block text-large">Talent Site</h1>
