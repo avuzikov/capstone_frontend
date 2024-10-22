@@ -212,16 +212,6 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
-  // Jobs
-  http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
-    const { id } = params;
-    const job = jobs.find(j => j.id === parseInt(id));
-    if (!job) {
-      return HttpResponse.json({ message: 'Job not found' }, { status: 404 });
-    }
-    return HttpResponse.json(job);
-  }),
-
   http.post<never, JobRequest>('/api/job', async ({ request }) => {
     const user = authenticateUser(request);
     if (!user || user.role !== 'hiring-manager') {
@@ -428,6 +418,16 @@ export const handlers = [
         applicantCount: applications.filter(app => app.jobId === job.id).length,
       })),
     });
+  }),
+
+  // Jobs
+  http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
+    const { id } = params;
+    const job = jobs.find(j => j.id === parseInt(id));
+    if (!job) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 });
+    }
+    return HttpResponse.json(job);
   }),
 
   http.get<{ jobId: string }>('/api/application/job/:jobId', ({ params, request }) => {
