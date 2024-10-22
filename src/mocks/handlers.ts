@@ -212,6 +212,27 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
+  http.get('/api/job/search', ({ request }) => {
+    const url = new URL(request.url);
+    const page = safeParseInt(url.searchParams.get('page'), 1);
+    const items = safeParseInt(url.searchParams.get('items'), 20);
+    const searchQuery = url.searchParams.get('value') || '';
+    const filteredJobs = jobs.filter(
+      job =>
+        job.jobTitle.toLowerCase().includes(searchQuery) ||
+        job.listingTitle.toLowerCase().includes(searchQuery)
+    );
+    const startIndex = (page - 1) * items;
+    const endIndex = startIndex + items;
+    const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+    return HttpResponse.json({
+      total: filteredJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs,
+    });
+  }),
+
   // Jobs
   http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
     const { id } = params;
