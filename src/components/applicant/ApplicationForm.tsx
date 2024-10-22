@@ -24,8 +24,6 @@ const ApplicationForm: React.FC = () => {
       customResume,
     };
 
-    console.log(applicationData);
-
     try {
       const response = await fetch('/api/application', {
         method: 'POST',
