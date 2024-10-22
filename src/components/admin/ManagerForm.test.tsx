@@ -63,9 +63,15 @@ describe('ManagerForm Component', () => {
 
     render(<ManagerForm isEditing={false} />);
 
-    fireEvent.change(screen.getByPlaceholderText('Enter full name'), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter password'), { target: { value: 'password123' } });
-    fireEvent.change(screen.getByPlaceholderText('Enter email'), { target: { value: 'john.doe@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Enter full name'), {
+      target: { value: 'John Doe' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter password'), {
+      target: { value: 'password123' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Enter email'), {
+      target: { value: 'john.doe@example.com' },
+    });
 
     fireEvent.submit(screen.getByRole('button', { name: /save/i }));
 

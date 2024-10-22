@@ -4,8 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import TableCard from './TableCard';
 
-describe('TableCard Component', () => 
-{
+describe('TableCard Component', () => {
   const sampleProps = {
     link: '/admin/tables/users',
     name: 'Users',

@@ -46,7 +46,7 @@ describe('TableList Component', () => {
     await waitFor(() => {
       const tableCards = screen.getAllByTestId('table-card');
       expect(tableCards).toHaveLength(mockTables.length);
-      mockTables.forEach((table) => {
+      mockTables.forEach(table => {
         expect(screen.getByText(table.name)).toBeInTheDocument();
       });
     });
@@ -62,13 +62,12 @@ describe('TableList Component', () => {
 
     //TODO: Look over this test
     await waitFor(() => {
-      mockTables.forEach((table) => {
+      mockTables.forEach(table => {
         const h1Element = screen.getByText(table.name);
-        console.log("H1:",h1Element.innerHTML);
-        console.log("TAG Name",h1Element);
+        console.log('H1:', h1Element.innerHTML);
+        console.log('TAG Name', h1Element);
         expect(h1Element.innerHTML).toBe(table.name);
       });
     });
   });
 });
-
