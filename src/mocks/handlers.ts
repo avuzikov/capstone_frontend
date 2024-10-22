@@ -300,10 +300,6 @@ export const handlers = [
   }),
 
   http.get('/api/job', ({ request }) => {
-    const user = authenticateUser(request);
-    if (!user) {
-      return HttpResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
     const url = new URL(request.url);
     const page = safeParseInt(url.searchParams.get('page'), 1);
     const items = safeParseInt(url.searchParams.get('items'), 20);
