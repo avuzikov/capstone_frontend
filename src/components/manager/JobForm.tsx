@@ -11,7 +11,7 @@ interface JobFormProps {
     additionalInformation?: string;
   };
   onSubmit: (jobData: any) => void;
-  handleShouldUpdateJobs: () => void;
+  handleShouldUpdateJobs?: () => void;
 }
 
 const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpdateJobs }) => {
@@ -33,7 +33,9 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(job);
-    handleShouldUpdateJobs();
+    if (handleShouldUpdateJobs) {
+      handleShouldUpdateJobs();
+    }
   };
 
   return (
