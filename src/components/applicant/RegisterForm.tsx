@@ -1,13 +1,11 @@
-// src\components\applicant\RegisterForm.tsx
+// src/components/applicant/RegisterForm.tsx
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Input from '../shared/Input';
 import { isNotEmpty, isValidEmail } from '../../utils/validateInput';
-import useFetch from '../../hooks/useFetch';
-import { register } from '../../services/api';
-import { UserRegistration } from '../../types/User';
+import { userService } from '../../services/userService';
+import { ApiError } from '../../services/apiClient';
 import LoadingSpinner from '../shared/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -20,14 +18,13 @@ interface RegisterFormType {
 }
 
 type RegisterFormErrors = {
-  [K in keyof RegisterFormType]: RegisterFormType[K] | undefined;
+  [K in keyof RegisterFormType]: string | undefined;
 };
 
 type Field = keyof RegisterFormType;
 
 const RegisterForm = () => {
   const navigate = useNavigate();
-
   const [data, setData] = useState({
     firstName: '',
     lastName: '',
@@ -36,7 +33,8 @@ const RegisterForm = () => {
     confirmPassword: '',
   } as RegisterFormType);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
-  const { data: responseData, isPending, error, fetchDispatch } = useFetch(register);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { setData: setAuth } = useAuth();
 
   const checkErrors = (field: Field, value: string, wasError?: boolean): boolean => {
@@ -74,18 +72,31 @@ const RegisterForm = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (foundErrors()) {
       return;
     }
 
-    const body: UserRegistration = {
-      email: data.email,
-      password: data.password,
-      name: data.firstName + ' ' + data.lastName,
-    };
+    setIsPending(true);
+    setError(null);
 
-    await fetchDispatch(body);
+    try {
+      const response = await userService.register({
+        email: data.email,
+        password: data.password,
+        name: `${data.firstName} ${data.lastName}`,
+      });
+
+      setAuth(response.id, response.role);
+      navigate('/profile');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Registration failed. Please try again.');
+      }
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handleChange = (
@@ -95,11 +106,6 @@ const RegisterForm = () => {
     setData(currentData => ({ ...currentData, [field]: event.target.value }));
     checkErrors(field, event.target.value);
   };
-
-  if (responseData) {
-    setAuth(responseData.token, responseData.role, responseData.id);
-    navigate('/profile');
-  }
 
   return (
     <div className="p-large rounded-lg w-[28rem]">
@@ -163,13 +169,13 @@ const RegisterForm = () => {
                 clipRule="evenodd"
               />
             </svg>
-
-            <p className="txt-danger txt-small">{error.message}</p>
+            <p className="txt-danger txt-small">{error}</p>
           </div>
         )}
         <div className="flex justify-end">
-          {isPending && <LoadingSpinner size="large" />}
-          {!isPending && (
+          {isPending ? (
+            <LoadingSpinner size="large" />
+          ) : (
             <button className="mt-4 w-full btn-primary" type="submit">
               Register
             </button>

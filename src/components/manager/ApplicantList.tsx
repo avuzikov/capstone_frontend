@@ -1,32 +1,24 @@
-// src\components\manager\ApplicantList.tsx
+// src/components/manager/ApplicantList.tsx
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate';
-import { Application } from '../../types/types';
-import { useAuth } from '../../contexts/AuthContext';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
+import { Application } from '../../services/types';
+import LoadingSpinner from '../shared/LoadingSpinner';
 
 interface ApplicantListProps {
   jobId: number;
 }
 
-type ApplicationStatus = Application['applicationStatus'];
-
-interface ApplicationWithUser extends Application {
+interface EnrichedApplication extends Application {
   applicantName?: string;
 }
 
-interface PaginatedApplicationResponse {
-  total: number;
-  page: number;
-  items: number;
-  applications: ApplicationWithUser[];
-}
-
 const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
-  const { token } = useAuth();
   const navigate = useNavigate();
-  const [applications, setApplications] = useState<ApplicationWithUser[]>([]);
+  const [applications, setApplications] = useState<EnrichedApplication[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,26 +30,19 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/application/job/${jobId}?page=${currentPage}&items=${itemsPerPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await jobService.getJobApplications(jobId.toString(), {
+        page: currentPage,
+        items: itemsPerPage,
+      });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch applications');
-      }
-
-      const data: PaginatedApplicationResponse = await response.json();
-      setApplications(data.applications);
-      setTotalPages(Math.ceil(data.total / itemsPerPage));
+      setApplications(response.applications);
+      setTotalPages(Math.ceil(response.total / itemsPerPage));
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An error occurred while fetching applications'
-      );
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('An error occurred while fetching applications');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -67,50 +52,55 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
     fetchApplications();
   }, [jobId, currentPage]);
 
-  const handleStatusChange = async (applicantId: number, newStatus: ApplicationStatus) => {
+  const handleStatusChange = async (
+    applicantId: number,
+    newStatus: Application['applicationStatus']
+  ) => {
     try {
-      const response = await fetch(`/api/application/manager/${applicantId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ applicationStatus: newStatus }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update application status');
-      }
-
-      const updatedApplication: Application = await response.json();
+      await jobService.updateApplicationStatus(applicantId.toString(), newStatus);
 
       // Update local state
       setApplications(prev =>
-        prev.map(app =>
-          app.id === applicantId
-            ? { ...app, applicationStatus: updatedApplication.applicationStatus }
-            : app
-        )
+        prev.map(app => (app.id === applicantId ? { ...app, applicationStatus: newStatus } : app))
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update status');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to update application status');
+      }
     }
   };
 
   const handleJobStatusUpdate = () => {
-    // Navigate to the job management page
     navigate(`/manager/${jobId}`);
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading applications...</div>;
+    return (
+      <div className="text-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
     <div className="space-y-4">
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4">
-          <p className="text-red-700">{error}</p>
+        <div className="input-error mt-1 flex gap-2 items-center text-small">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <p className="txt-danger txt-small">{error}</p>
         </div>
       )}
 
@@ -134,11 +124,29 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
         <tbody className="bg-white divide-y divide-gray-200">
           {applications.map(application => (
             <tr key={application.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{application.applicantName}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {application.applicantName || 'Unknown Applicant'}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {new Date(application.dateApplied).toLocaleDateString()}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">{application.applicationStatus}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span
+                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                    ${
+                      application.applicationStatus === 'accepted'
+                        ? 'bg-green-100 text-green-800'
+                        : application.applicationStatus === 'rejected'
+                        ? 'bg-red-100 text-red-800'
+                        : application.applicationStatus === 'reviewed'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-yellow-100 text-yellow-800'
+                    }
+                  `}
+                >
+                  {application.applicationStatus}
+                </span>
+              </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <ApplicantStatusUpdate
                   applicationId={application.id}

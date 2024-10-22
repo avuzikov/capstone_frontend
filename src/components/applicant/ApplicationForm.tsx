@@ -1,51 +1,40 @@
-// src\components\applicant\ApplicationForm.tsx
+// src/components/applicant/ApplicationForm.tsx
 
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-
-interface ApplicationRequest {
-  jobId: number;
-  coverLetter: string;
-  customResume: string;
-}
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
 
 const ApplicationForm: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
-  const { token } = useAuth();
   const [coverLetter, setCoverLetter] = useState('');
   const [customResume, setCustomResume] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const applicationData: ApplicationRequest = {
-      jobId: parseInt(jobId!, 10),
-      coverLetter,
-      customResume,
-    };
+    setIsSubmitting(true);
+    setError(null);
 
     try {
-      const response = await fetch('/api/application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(applicationData),
-      });
+      const applicationData = {
+        jobId: parseInt(jobId!, 10),
+        coverLetter,
+        customResume,
+      };
 
-      if (!response.ok) {
-        throw new Error('Failed to create application');
-      }
-
-      const newApplication = await response.json();
-      console.log('Application created successfully:', newApplication);
-
+      await jobService.createApplication(applicationData);
       navigate('/jobs');
-    } catch (error) {
-      console.error('Error creating application:', error);
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to create application. Please try again later.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -54,9 +43,9 @@ const ApplicationForm: React.FC = () => {
       <h1 className="text-medium w-full lg:w-1/2">New Application</h1>
       <form
         onSubmit={handleSubmit}
-        className="p-medium card-bordered  flex flex-col gap-4 w-full lg:w-1/2"
+        className="p-medium card-bordered flex flex-col gap-4 w-full lg:w-1/2"
       >
-        <div className="mb-medium ">
+        <div className="mb-medium">
           <label className="block text-small">
             Cover Letter:
             <textarea
@@ -64,6 +53,7 @@ const ApplicationForm: React.FC = () => {
               value={coverLetter}
               onChange={e => setCoverLetter(e.target.value)}
               required
+              disabled={isSubmitting}
             />
           </label>
         </div>
@@ -75,11 +65,17 @@ const ApplicationForm: React.FC = () => {
               value={customResume}
               onChange={e => setCustomResume(e.target.value)}
               required
+              disabled={isSubmitting}
             />
           </label>
         </div>
-        <button type="submit" className="btn-primary">
-          Submit Application
+        {error && (
+          <div className="input-error mt-1 flex gap-2 items-center text-small">
+            <p className="txt-danger txt-small">{error}</p>
+          </div>
+        )}
+        <button type="submit" className="btn-primary" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Application'}
         </button>
       </form>
     </div>

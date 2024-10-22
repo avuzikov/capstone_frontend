@@ -4,7 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import JobForm from '../../components/manager/JobForm';
 import ActiveJobsList from '../../components/manager/ActiveJobsList';
-import { Job } from '../../types/types';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
+import { Job } from '../../services/types';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 
 interface ManagerStats {
   totalJobs: number;
@@ -25,58 +28,42 @@ const ManagerDashboardPage: React.FC = () => {
   const [stats, setStats] = useState<ManagerStats | null>(null);
   const [shouldRefresh, setShouldRefresh] = useState<boolean>(false);
 
-  const fetchManagerStats = async () => {
-    try {
-      const response = await fetch('/api/stats/manager', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch manager statistics');
-      }
-
-      const data: ManagerStats = await response.json();
-      setStats(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while fetching statistics');
-    }
-  };
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchManagerStats = async () => {
+      if (!token || showJobForm) return;
+
       setIsLoading(true);
-      await fetchManagerStats();
-      setIsLoading(false);
+      setError(null);
+
+      try {
+        const response = await jobService.getManagerStats();
+        setStats(response);
+      } catch (err) {
+        if (err instanceof ApiError) {
+          setError(err.message);
+        } else {
+          setError('Failed to fetch dashboard statistics');
+        }
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    if (token && !showJobForm) {
-      fetchData();
-    }
+    fetchManagerStats();
   }, [token, shouldRefresh, showJobForm]);
 
   const handleCreateJob = async (jobData: Partial<Job>) => {
+    setError(null);
     try {
-      const response = await fetch('/api/job', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(jobData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create job');
-      }
-
-      const newJob = await response.json();
+      await jobService.createJob(jobData);
       setShowJobForm(false);
       setShouldRefresh(prev => !prev);
-      return newJob;
-    } catch (error) {
-      throw new Error('Failed to create job');
+    } catch (err) {
+      if (err instanceof ApiError) {
+        throw new Error(err.message);
+      } else {
+        throw new Error('Failed to create job');
+      }
     }
   };
 
@@ -134,7 +121,11 @@ const ManagerDashboardPage: React.FC = () => {
           </div>
         ) : (
           <>
-            {!isLoading && stats && (
+            {isLoading ? (
+              <div className="flex justify-center py-4">
+                <LoadingSpinner />
+              </div>
+            ) : stats ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <StatCard
                   title="Jobs Overview"
@@ -186,9 +177,7 @@ const ManagerDashboardPage: React.FC = () => {
                   ]}
                 />
               </div>
-            )}
-
-            {isLoading && <div className="text-center py-4">Loading dashboard data...</div>}
+            ) : null}
 
             <div className="bg-white rounded-lg shadow-lg">
               <ActiveJobsList handleShouldUpdateJobs={() => setShouldRefresh(prev => !prev)} />

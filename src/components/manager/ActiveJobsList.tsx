@@ -1,49 +1,55 @@
 // src/components/manager/ActiveJobsList.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { Job } from '../../types/types';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
+import { Job } from '../../services/types';
 import LoadingSpinner from '../shared/LoadingSpinner';
 
 interface ActiveJobsListProps {
   handleShouldUpdateJobs: () => void;
 }
 
+interface EnrichedJob extends Job {
+  applicantCount?: number;
+}
+
 const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs }) => {
-  const { token } = useAuth();
   const navigate = useNavigate();
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<EnrichedJob[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const jobsPerPage = 5;
 
-  const fetchJobs = useCallback(async () => {
-    if (!token) return;
-
-    try {
-      const response = await fetch('/api/job/manager', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch jobs');
-      }
-
-      const data = await response.json();
-      setJobs(data.jobs || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token]);
-
   useEffect(() => {
+    const fetchJobs = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await jobService.getManagerJobs({
+          page: currentPage,
+          items: jobsPerPage,
+        });
+
+        setJobs(response.content);
+        setTotalPages(response.totalPages);
+      } catch (err) {
+        if (err instanceof ApiError) {
+          setError(err.message);
+        } else {
+          setError('Failed to fetch jobs. Please try again later.');
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchJobs();
-  }, [fetchJobs]);
+  }, [currentPage, handleShouldUpdateJobs]);
 
   const handleManageJob = (jobId: number) => {
     navigate(`/manager/${jobId}`);
@@ -58,19 +64,33 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">{error}</div>;
+    return (
+      <div className="p-4">
+        <div className="input-error mt-1 flex gap-2 items-center text-small">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <p className="txt-danger txt-small">{error}</p>
+        </div>
+      </div>
+    );
   }
-
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div className="card-bordered">
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-4 ml-3">Active Job Listings</h2>
         {jobs.length === 0 ? (
-          <p className="text-center text-gray-600">No jobs found</p>
+          <p className="text-center text-gray-600 p-4">No jobs found</p>
         ) : (
           <>
             <table className="min-w-full divide-y divide-gray-200">
@@ -94,18 +114,37 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentJobs.map(job => (
+                {jobs.map(job => (
                   <tr key={job.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{job.listingTitle}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{job.department}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{job.listingStatus}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {new Date(job.dateListed).toLocaleDateString()}
+                      <div className="text-sm font-medium text-gray-900">{job.listingTitle}</div>
+                      {job.applicantCount !== undefined && (
+                        <div className="text-xs text-gray-500">
+                          {job.applicantCount} applicant{job.applicantCount !== 1 ? 's' : ''}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {job.department}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          job.listingStatus === 'open'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {job.listingStatus}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(job.dateListed).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         onClick={() => handleManageJob(job.id)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 hover:text-blue-900 font-medium"
                       >
                         Manage
                       </button>
@@ -117,7 +156,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
           </>
         )}
       </div>
-      <div className="mt-4 flex justify-between">
+      <div className="mt-4 flex justify-between p-4">
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
@@ -126,10 +165,8 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
           Previous
         </button>
         <button
-          onClick={() =>
-            setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
-          }
-          disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
           className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:opacity-50"
         >
           Next

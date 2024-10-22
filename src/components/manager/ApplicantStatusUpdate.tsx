@@ -1,11 +1,10 @@
-// src\components\manager\ApplicantStatusUpdate.tsx
+// src/components/manager/ApplicantStatusUpdate.tsx
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Application } from '../../types/types';
-import { useAuth } from '../../contexts/AuthContext';
-
-type ApplicationStatus = 'pending' | 'reviewed' | 'rejected' | 'accepted';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
+import { ApplicationStatus } from '../../services/types';
 
 interface ApplicantStatusUpdateProps {
   applicationId: number;
@@ -22,7 +21,6 @@ const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
   onStatusChange,
   onJobStatusUpdate,
 }) => {
-  const { token } = useAuth();
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,58 +30,36 @@ const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
     setError(null);
 
     try {
-      const response = await fetch(`/api/application/manager/${applicationId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          applicationStatus: newStatus,
-        }),
-      });
+      await jobService.updateApplicationStatus(applicationId.toString(), newStatus);
+      onStatusChange(newStatus);
 
-      if (!response.ok) {
-        throw new Error('Failed to update application status');
-      }
-
-      const updatedApplication: Application = await response.json();
-      onStatusChange(updatedApplication.applicationStatus as ApplicationStatus);
-
-      // Handle job status update if needed
+      // If accepting an applicant, update job status to closed
       if (newStatus === 'accepted') {
-        await updateJobStatus(jobId, newStatus);
+        try {
+          await jobService.updateJob(jobId.toString(), {
+            listingStatus: 'closed',
+          });
+          onJobStatusUpdate();
+        } catch (err) {
+          console.error('Failed to update job status:', err);
+        }
       }
 
       // Navigate back to dashboard after successful update
       navigate('/manager/console');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update status');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to update status');
+      }
+      // Reset the select element to the current status if there's an error
       const selectElement = document.getElementById(`status-${applicationId}`) as HTMLSelectElement;
       if (selectElement) {
         selectElement.value = currentStatus;
       }
     } finally {
       setIsUpdating(false);
-    }
-  };
-
-  const updateJobStatus = async (jobId: number, applicationStatus: ApplicationStatus) => {
-    if (applicationStatus === 'accepted') {
-      try {
-        await fetch(`/api/job/${jobId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            listingStatus: 'closed',
-          }),
-        });
-      } catch (error) {
-        console.error('Failed to update job status:', error);
-      }
     }
   };
 
@@ -119,7 +95,24 @@ const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
       </select>
 
       {isUpdating && <span className="text-sm text-gray-500 mt-1">Updating...</span>}
-      {error && <span className="text-sm text-red-500 mt-1">{error}</span>}
+
+      {error && (
+        <div className="input-error mt-1 flex gap-2 items-center text-small">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="size-5"
+          >
+            <path
+              fillRule="evenodd"
+              d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <p className="txt-danger txt-small">{error}</p>
+        </div>
+      )}
     </div>
   );
 };

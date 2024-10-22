@@ -1,4 +1,5 @@
 // src/pages/manager/JobManagementPage.tsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -6,7 +7,10 @@ import JobForm from '../../components/manager/JobForm';
 import ApplicantList from '../../components/manager/ApplicantList';
 import ApplicantStatusUpdate from '../../components/manager/ApplicantStatusUpdate';
 import ApplicantSortOptions from '../../components/manager/ApplicantSortOptions';
-import { Job, Application } from '../../types/types';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
+import { Job } from '../../services/types';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 
 const JobManagementPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
@@ -18,7 +22,9 @@ const JobManagementPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
-  const [filterStatus, setFilterStatus] = useState<Application['applicationStatus'] | 'all'>('all');
+  const [filterStatus, setFilterStatus] = useState<
+    'all' | 'pending' | 'reviewed' | 'accepted' | 'rejected'
+  >('all');
 
   const fetchJobDetails = async () => {
     if (!jobId || !token) return;
@@ -27,27 +33,16 @@ const JobManagementPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch(`/api/job/${jobId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Job not found');
-        }
-        throw new Error('Failed to fetch job details');
-      }
-
-      const jobData: Job = await response.json();
+      const jobData = await jobService.getJobById(jobId);
       setJob(jobData);
     } catch (err) {
-      const error =
-        err instanceof Error ? err.message : 'An error occurred while fetching job details';
-      setError(error);
-      if (error === 'Job not found') {
-        navigate('/manager/console');
+      if (err instanceof ApiError) {
+        if (err.status === 404) {
+          navigate('/manager/console');
+        }
+        setError(err.message);
+      } else {
+        setError('Failed to fetch job details');
       }
     } finally {
       setIsLoading(false);
@@ -63,31 +58,21 @@ const JobManagementPage: React.FC = () => {
   const handleUpdateJob = async (updatedJobData: Partial<Job>) => {
     if (!jobId || !token) return;
 
+    setIsLoading(true);
+    setError(null);
+
     try {
-      setIsLoading(true);
-      const response = await fetch(`/api/job/${jobId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...updatedJobData,
-          id: jobId,
-        }),
+      await jobService.updateJob(jobId, {
+        ...updatedJobData,
+        id: parseInt(jobId),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update job');
-      }
-
-      // Show success message (optional)
-      // You could add a toast notification here if you have a notification system
-
-      // Navigate back to dashboard
       navigate('/manager/console');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update job');
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError('Failed to update job');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +85,9 @@ const JobManagementPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Loading job details...</div>
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
       </div>
     );
   }
@@ -192,7 +179,7 @@ const JobManagementPage: React.FC = () => {
             onSortChange={setSortBy}
             onFilterChange={setFilterStatus}
           />
-          <ApplicantList jobId={parseInt(jobId!)} />
+          <ApplicantList jobId={parseInt(jobId!, 10)} />
         </div>
       )}
     </div>

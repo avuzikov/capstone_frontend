@@ -1,129 +1,103 @@
-// src\pages\ApplicationsPage.tsx
+// src/pages/ApplicationsPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { fecthApplications } from '../contexts/JobApi';
 import ApplicationList from '../components/applicant/ApplicationList';
-
-interface Application {
-  id: number;
-  userId: number;
-  jobId: number;
-  dateApplied: string;
-  applicationStatus: 'pending' | 'accepted' | 'rejected';
-  coverLetter: string;
-  customResume: string;
-  jobTitle?: string;
-}
-
-interface Job {
-  id: string;
-  userId: string;
-  listingTitle: string;
-  department: string;
-  listingStatus: 'open' | 'closed';
-  dateListed: string;
-  jobTitle: string;
-  jobDescription: string;
-  experienceLevel: string;
-  additionalInformation: string;
-}
+import { jobService } from '../services/jobService';
+import { ApiError } from '../services/apiClient';
+import { Application, Job } from '../services/types';
 
 const ApplicationsPage: React.FC = () => {
-  const [applications, setApplications] = useState<any[]>([]);
-  const { token } = useAuth();
-  const { id } = useAuth();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const { token, id } = useAuth();
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [noMoreApplications, setNoMoreApplications] = useState(false);
-
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
+      if (!id) return;
       setLoading(true);
+      setError(null);
+
       try {
-        const data = await fecthApplications(page, itemsPerPage, token);
-        const filteredApplications = data.filter(
-          (application: Application) => application.userId === parseInt(id!, 10)
+        // Fetch all applications for the current page
+        const response = await jobService.getApplicationsByPage(page, itemsPerPage);
+
+        // Filter applications for the current user
+        const filteredApplications = response.filter(
+          application => application.userId === parseInt(id, 10)
         );
-        const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
-        const nApplications = filteredApplications.length;
-        if (nApplications < 3) {
-          setNoMoreApplications(true);
+
+        // Enrich applications with job titles
+        const enrichedApplications = await Promise.all(
+          filteredApplications.map(async application => {
+            try {
+              const jobDetails = await jobService.getJobById(application.jobId.toString());
+              return {
+                ...application,
+                jobTitle: jobDetails.jobTitle,
+              };
+            } catch (error) {
+              console.error(`Error fetching job details for job ID ${application.jobId}:`, error);
+              return {
+                ...application,
+                jobTitle: 'Unknown Job Title',
+              };
+            }
+          })
+        );
+
+        setApplications(enrichedApplications);
+        setNoMoreApplications(enrichedApplications.length < itemsPerPage);
+      } catch (err) {
+        if (err instanceof ApiError) {
+          setError(err.message);
         } else {
-          setNoMoreApplications(false);
+          setError('Failed to load applications. Please try again later.');
         }
-        console.log(nApplications);
-        setApplications(filteredApplications2);
-      } catch (error) {
-        console.error('Error fetching applications:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, [page, itemsPerPage]);
 
-  const fetchJobTitle = async (jobId: number): Promise<string> => {
-    try {
-      const response = await fetch(`/api/job/${jobId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Error fetching job title');
-      }
-
-      const data = await response.json();
-      const job: Job = {
-        id: data.id,
-        userId: data.userId,
-        listingTitle: data.listingTitle,
-        department: data.department,
-        listingStatus: data.listingStatus,
-        dateListed: data.dateListed,
-        jobTitle: data.jobTitle,
-        jobDescription: data.jobDescription,
-        experienceLevel: data.experienceLevel,
-        additionalInformation: data.additionalInformation,
-      };
-
-      return job.jobTitle;
-    } catch (error) {
-      console.error(`Error fetching job title for job ID ${jobId}:`, error);
-      return 'Unknown Job Title';
+    if (token) {
+      fetchData();
     }
-  };
-
-  const addJobTitlesToApplications = async (
-    applications: Application[]
-  ): Promise<Application[]> => {
-    const applicationsWithJobTitles = await Promise.all(
-      applications.map(async application => {
-        const jobTitle = await fetchJobTitle(application.jobId);
-        return { ...application, jobTitle }; // Añadimos el campo jobTitle
-      })
-    );
-
-    return applicationsWithJobTitles;
-  };
+  }, [page, itemsPerPage, token, id]);
 
   return (
     <div>
       <div className="container mx-auto p-4">
+        {error && (
+          <div className="input-error mt-1 flex gap-2 items-center text-small mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="size-5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="txt-danger txt-small">{error}</p>
+          </div>
+        )}
+
         {loading ? (
           <h1>Loading applications...</h1>
         ) : (
           <ApplicationList applications={applications} />
         )}
 
-        <div className="flex justify-between mt-4 items-center ">
+        <div className="flex justify-between mt-4 items-center">
           <button
-            className="btn-primary  text-normal"
+            className="btn-primary text-normal"
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
@@ -132,13 +106,12 @@ const ApplicationsPage: React.FC = () => {
 
           <span className="text-small">Page {page}</span>
           <button
-            className={`btn-primary  text-normal ${
+            className={`btn-primary text-normal ${
               noMoreApplications ? 'btn-disabled cursor-not-allowed' : ''
             }`}
             onClick={() => setPage(prev => prev + 1)}
             disabled={noMoreApplications}
           >
-            {' '}
             Next
           </button>
         </div>
@@ -146,4 +119,5 @@ const ApplicationsPage: React.FC = () => {
     </div>
   );
 };
+
 export default ApplicationsPage;
