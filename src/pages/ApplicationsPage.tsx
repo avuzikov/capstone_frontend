@@ -33,6 +33,7 @@ const ApplicationsPage: React.FC = () => {
   const { id } = useAuth();
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [noMoreApplications, setNoMoreApplications] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -45,6 +46,13 @@ const ApplicationsPage: React.FC = () => {
           (application: Application) => application.userId === parseInt(id!, 10)
         );
         const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
+        const nApplications = filteredApplications.length;
+        if (nApplications < 3) {
+          setNoMoreApplications(true);
+        } else {
+          setNoMoreApplications(false);
+        }
+        console.log(nApplications);
         setApplications(filteredApplications2);
       } catch (error) {
         console.error('Error fetching applications:', error);
@@ -111,19 +119,22 @@ const ApplicationsPage: React.FC = () => {
           <ApplicationList applications={applications} />
         )}
 
-        <div className="flex justify-between items-center p-medium">
+        <div className="flex justify-between mt-4 items-center ">
           <button
-            className="btn-primary m-small text-normal"
+            className="btn-primary  text-normal"
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
             Previous
           </button>
 
-          <span className="text-medium">Page {page}</span>
+          <span className="text-small">Page {page}</span>
           <button
-            className="btn-primary m-small text-normal"
+            className={`btn-primary  text-normal ${
+              noMoreApplications ? 'btn-disabled cursor-not-allowed' : ''
+            }`}
             onClick={() => setPage(prev => prev + 1)}
+            disabled={noMoreApplications}
           >
             {' '}
             Next

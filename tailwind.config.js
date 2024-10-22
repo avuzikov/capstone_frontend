@@ -5,7 +5,10 @@ module.exports = {
       colors: {
         'adp-red': '#D0271D',
         'adp-red-light': '#E44A42',
+        'adp-red-light': '#E44A42',
         'adp-navy': '#121C4E',
+        'adp-navy-light': '#2A3A6E',
+        'adp-navy-dark': '#0A1433',
         'adp-navy-light': '#2A3A6E',
         'adp-navy-dark': '#0A1433',
         'adp-white': '#FFFFFF',
@@ -14,8 +17,12 @@ module.exports = {
       borderRadius: {
         md: '0.375rem',
         lg: '0.5rem',
+        md: '0.375rem',
+        lg: '0.5rem',
       },
       padding: {
+        small: '0.5rem',
+        medium: '1rem',
         small: '0.5rem',
         medium: '1rem',
       },
@@ -81,8 +88,12 @@ module.exports = {
         '.btn-primary': {
           '@apply py-1.5 px-3 bg-adp-navy text-white text-small border border-adp-navy-light  rounded-md shadow-sm hover:bg-adp-navy-dark transition-colors':
             {},
+          '@apply py-1.5 px-3 bg-adp-navy text-white text-small border border-adp-navy-light  rounded-md shadow-sm hover:bg-adp-navy-dark transition-colors':
+            {},
         },
         '.btn-secondary': {
+          '@apply py-1.5 px-3 bg-adp-white text-adp-navy text-small border border-adp-navy-light  hover:text-adp-white  rounded-md shadow-sm hover:bg-adp-navy-light transition-colors':
+            {},
           '@apply py-1.5 px-3 bg-adp-white text-adp-navy text-small border border-adp-navy-light  hover:text-adp-white  rounded-md shadow-sm hover:bg-adp-navy-light transition-colors':
             {},
         },
@@ -90,13 +101,21 @@ module.exports = {
           '@apply py-1.5 px-3 bg-adp-red text-adp-white text-small border border-adp-red-light rounded-md shadow-sm hover:bg-adp-red-light transition-colors':
             {},
         },
+        '.btn-disabled': {
+          '@apply py-1.5 px-3 bg-gray-700 text-adp-white text-small border border-gray-300 rounded-md shadow-sm transition-colors':
+            {},
+        },
 
         // Input styles
         '.input-bordered': {
           '@apply border border-gray-300 transition-colors hover:border-adp-navy p-2 shadow-sm text-normal rounded-md':
             {},
+          '@apply border border-gray-300 transition-colors hover:border-adp-navy p-2 shadow-sm text-normal rounded-md':
+            {},
         },
         '.input-filled': {
+          '@apply border bg-adp-gray transition-colors hover:border-adp-navy  p-2 shadow-sm text-normal rounded-md':
+            {},
           '@apply border bg-adp-gray transition-colors hover:border-adp-navy  p-2 shadow-sm text-normal rounded-md':
             {},
         },
@@ -105,8 +124,12 @@ module.exports = {
         '.card-filled': {
           '@apply border transition-colors bg-adp-gray hover:border-adp-navy shadow-sm p-medium rounded-lg':
             {},
+          '@apply border transition-colors bg-adp-gray hover:border-adp-navy shadow-sm p-medium rounded-lg':
+            {},
         },
         '.card-bordered': {
+          '@apply border border shadow-sm transition-colors hover:border-adp-navy p-medium rounded-lg':
+            {},
           '@apply border border shadow-sm transition-colors hover:border-adp-navy p-medium rounded-lg':
             {},
         },
@@ -116,7 +139,6 @@ module.exports = {
           '@apply text-adp-red bg-red-200 p-medium shadow-sm rounded-lg': {},
         },
       };
-
       addUtilities(newUtilities, ['responsive', 'hover']);
     },
   ],
