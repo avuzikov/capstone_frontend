@@ -9,6 +9,7 @@ interface JobFormProps {
     jobDescription: string;
     experienceLevel: string;
     additionalInformation?: string;
+    dateListed?: string;
   };
   onSubmit: (jobData: any) => void;
   handleShouldUpdateJobs?: () => void;
@@ -24,6 +25,8 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
       jobDescription: '',
       experienceLevel: '',
       additionalInformation: '',
+      // keep existing date if updating, else use current date
+      dateListed: initialJob?.dateListed || new Date().toISOString(),
     }
   );
 
@@ -31,7 +34,10 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setJob(prevJob => ({ ...prevJob, [name]: value }));
+    setJob(prevJob => ({
+      ...prevJob,
+      [name]: name === 'listingStatus' ? value.toUpperCase() : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -83,8 +89,12 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, handleShouldUpd
           onChange={handleChange}
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
         >
-          <option value="open">Open</option>
-          <option value="closed">Closed</option>
+          <option value="OPEN" className="text-green-600 font-semibold">
+            Open
+          </option>
+          <option value="CLOSED" className="text-red-600 font-semibold">
+            Closed
+          </option>
         </select>
       </div>
       <div>
