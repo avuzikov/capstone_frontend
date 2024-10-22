@@ -41,8 +41,6 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
 
   let url: string;
 
-  console.log(userId);
-
   if (userId != '' && userId != undefined) {
     url = `/users/${userId}`;
   } else {
@@ -209,7 +207,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId }) => {
 
   return (
     <div className="m-medium flex flex-col gap-3">
-      <BackButton />
+      {id && <BackButton />}
       <div className="flex flex-col justify-center items-center">
         {isEditing && !userId && <h1 className="text-large w-full lg:w-1/2">Edit User</h1>}
         {isEditing && userId && <h1 className="text-large w-full lg:w-1/2">Profile</h1>}
