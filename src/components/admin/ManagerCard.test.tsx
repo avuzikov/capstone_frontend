@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import ManagerCard from "./ManagerCard";
-import { User } from "../types/User.ts";
+import { User } from "../../types/types";
 
 
 const mockManager: User = {
