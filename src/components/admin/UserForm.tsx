@@ -201,6 +201,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
       }
 
       if (!userId) {
+        console.log("Navigating to previous page");
         navigate(-1);
       }
 

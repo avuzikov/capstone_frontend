@@ -36,6 +36,9 @@ frontend-service/
 ├── public/
 │   ├── index.html
 │   └── favicon.ico
+├── public/
+│   ├── index.html
+│   └── favicon.ico
 ├── src/
 │   ├── components/
 │   │   ├── admin/
@@ -52,9 +55,29 @@ frontend-service/
 │   │   │   ├── UserCard.tsx
 │   │   │   ├── UserForm.tsx
 │   │   │   └── UserList.tsx
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardCard.tsx
+│   │   │   ├── AdminJobList.tsx
+│   │   │   ├── JobCard.tsx
+│   │   │   ├── JobTransferCard.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   ├── ManagerForm.tsx
+│   │   │   ├── ManagerList.tsx
+│   │   │   ├── TableCard.tsx
+│   │   │   ├── TableDisplay.tsx
+│   │   │   ├── TableList.tsx
+│   │   │   ├── UserCard.tsx
+│   │   │   ├── UserForm.tsx
+│   │   │   └── UserList.tsx
 │   │   ├── applicant/
 │   │   │   ├── ApplicationForm.tsx
+│   │   │   ├── ApplicationForm.tsx
 │   │   │   ├── ApplyButton.tsx
+│   │   │   ├── JobDetails.tsx
+│   │   │   ├── JobList.tsx
+│   │   │   ├── ManagerCard.tsx
+│   │   │   └── RegisterForm.tsx
+│   │   ├── manager/
 │   │   │   ├── JobDetails.tsx
 │   │   │   ├── JobList.tsx
 │   │   │   ├── ManagerCard.tsx
@@ -63,7 +86,17 @@ frontend-service/
 │   │   │   ├── ActiveJobsList.tsx
 │   │   │   ├── ApplicantList.tsx
 │   │   │   ├── ApplicantSortOptions.tsx
+│   │   │   ├── ApplicantSortOptions.tsx
 │   │   │   ├── ApplicantStatusUpdate.tsx
+│   │   │   ├── JobForm.tsx
+│   │   │   └── types.ts
+│   │   └── shared/
+│   │       ├── BackButton.tsx
+│   │       ├── CustomStyles.tsx
+│   │       ├── Footer.tsx
+│   │       ├── Header.tsx
+│   │       ├── Input.tsx
+│   │       └── LoadingSpinner.tsx
 │   │   │   ├── JobForm.tsx
 │   │   │   └── types.ts
 │   │   └── shared/
@@ -83,7 +116,21 @@ frontend-service/
 │   │   ├── handlers.ts
 │   │   ├── mockData.ts
 │   │   └── server.ts
+│   │   └── JobApi.tsx
+│   ├── hooks/
+│   │   └── useFetch.tsx
+│   ├── mocks/
+│   │   ├── browser.ts
+│   │   ├── handlers.ts
+│   │   ├── mockData.ts
+│   │   └── server.ts
 │   ├── pages/
+│   │   ├── admin/
+│   │   │   ├── AdminDashboardPage.tsx
+│   │   │   ├── AdminJobManagementPage.tsx
+│   │   │   ├── DataTableManagementPage.tsx
+│   │   │   ├── ManagerManagementPage.tsx
+│   │   │   └── UserManagementPage.tsx
 │   │   ├── admin/
 │   │   │   ├── AdminDashboardPage.tsx
 │   │   │   ├── AdminJobManagementPage.tsx
@@ -99,8 +146,17 @@ frontend-service/
 │   │   │   └── ManagerDashboardPage.tsx
 │   │   ├── JobPage.tsx
 │   │   └── LoginPage.tsx
+│   │   │   ├── ProfilePage.tsx
+│   │   │   └── RegisterPage.tsx
+│   │   ├── manager/
+│   │   │   ├── JobManagementPage.tsx
+│   │   │   └── ManagerDashboardPage.tsx
+│   │   ├── JobPage.tsx
+│   │   └── LoginPage.tsx
 │   ├── types/
 │   │   ├── Job.ts
+│   │   ├── types.ts
+│   │   └── User.ts
 │   │   ├── types.ts
 │   │   └── User.ts
 │   ├── utils/
@@ -111,9 +167,14 @@ frontend-service/
 │   ├── index.js
 │   ├── reportWebVitals.js
 │   └── setupTests.ts
+│   ├── index.css
+│   ├── index.js
+│   ├── reportWebVitals.js
+│   └── setupTests.ts
 ├── Dockerfile
 ├── package.json
 ├── tailwind.config.js
+├── tsconfig.json
 ├── tsconfig.json
 └── README.md
 ```
@@ -678,31 +739,27 @@ The frontend relies on the following backend API endpoints for functionality:
 ## Team Responsibilities
 
 The team will work individually, with each member focusing on specific tasks:
+The team will work individually, with each member focusing on specific tasks:
 
 1. Alex:
-
    - Providing documentation for the team
    - Supporting the team in case of technical problems
    - Reducing technical debt
    - Creating and supporting the Mock API
 
 2. Lalitha:
-
    - Implementation of manager pages:
      - Manager console (/manager/console)
      - Job management page (/manager/{jobid})
 
 3. Matt:
-
    - Implementation of admin pages
    - Design of pages across the application
 
 4. Abideet:
-
    - Implementation of admin pages
 
 5. Piotr:
-
    - Implementation of the registration page (/register)
    - Implementation of the job detail page (/jobs/:id)
 
