@@ -20,7 +20,7 @@ const Input: React.FC<InputProps> = ({
   error,
 }) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-grow flex-col gap-1 h-full">
       <label htmlFor={name} className="txt-small pl-2.5">
         {name.charAt(0).toUpperCase() + name.slice(1)}
       </label>
@@ -29,7 +29,7 @@ const Input: React.FC<InputProps> = ({
           name={name}
           id={name}
           placeholder={placeholder}
-          className="input-bordered"
+          className="flex-grow input-bordered h-full"
           value={value}
           onChange={onChange}
         />

@@ -1,4 +1,5 @@
 import { UserRegistration } from '../types/User';
+import { ApplicationDetailsType, UpdateApplicationType } from '../types/Application';
 
 const BASE_URL = '';
 
@@ -10,6 +11,17 @@ type GetJobDetailsType = {
 type GetUserDetailsType = {
   id: string | undefined;
   token: string | null;
+};
+
+type GetApplicationDetailsType = {
+  id: string | undefined;
+  token: string | null;
+};
+
+type UpdateApplicationDetailsType = {
+  id: string | undefined;
+  token: string | null;
+  application: ApplicationDetailsType;
 };
 
 export const register = async (user: UserRegistration) => {
@@ -48,7 +60,7 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
 };
 
 export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
-  const response = await fetch(`${BASE_URL}/api/user/manager/${id}`, {
+  const response = await fetch(`${BASE_URL}/user/manager/${id}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -59,6 +71,52 @@ export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
 
   if (!response.ok) {
     throw new Error(responseData.message || 'Failed to fetch user details');
+  }
+
+  return responseData;
+};
+
+export const getApplicationDetails = async ({ id, token }: GetApplicationDetailsType) => {
+  const response = await fetch(`${BASE_URL}/api/application/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseData.message || 'Failed to fetch application details');
+  }
+
+  return responseData;
+};
+
+export const updateApplication = async ({
+  id,
+  token,
+  application,
+}: UpdateApplicationDetailsType) => {
+  const updatedApplication: UpdateApplicationType = {
+    id: application.id,
+    userId: application.userId,
+    dateApplied: application.dateApplied,
+    coverLetter: application.coverLetter,
+    customResume: application.customResume,
+  };
+  const response = await fetch(`${BASE_URL}/api/application/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(updatedApplication),
+  });
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(responseData.message || 'Failed to fetch application details');
   }
 
   return responseData;
