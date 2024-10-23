@@ -33,9 +33,8 @@ const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
   };
 
   return (
-    <div className="mb-6 space-y-4">
+    <div className="mb-6 space-y-4 p-medium">
       {/* Summary Stats */}
-      <div className="text-sm text-gray-600">Total Applications: {totalApplications}</div>
 
       <div className="flex flex-wrap gap-4">
         {/* Sort Options */}
@@ -58,7 +57,7 @@ const ApplicantSortOptions: React.FC<ApplicantSortOptionsProps> = ({
         </div>
 
         {/* Filter Options */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="flex-1 min-w-[200px] ">
           <label htmlFor="filterStatus" className="block text-sm font-medium text-gray-700 mb-1">
             Filter by Status
           </label>

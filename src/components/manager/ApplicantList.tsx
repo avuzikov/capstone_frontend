@@ -158,18 +158,18 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
       )}
 
       {applications.length > 0 && (
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex px-small justify-between">
           <button
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+            className="btn-disabled disabled:opacity-50 transition-colors"
           >
             Previous
           </button>
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+            className="btn-disabled disabled:opacity-50 transition-colors"
           >
             Next
           </button>
