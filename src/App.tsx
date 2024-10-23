@@ -55,10 +55,21 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/jobs" element={<JobPage />} />
             <Route path="/jobs/:id" element={<JobDetailsPage />} />
-            <Route path="/applications/:id" element={<ApplicationDetailsPage />} />
-            <Route path="/applications" element={<ApplicationsPage />}></Route>
 
             {/* Protected routes */}
+
+            <Route
+              path="/applications/:id"
+              element={
+                <ProtectedRoute element={<ApplicationDetailsPage />} allowedRoles={['applicant']} />
+              }
+            />
+            <Route
+              path="/applications"
+              element={
+                <ProtectedRoute element={<ApplicationsPage />} allowedRoles={['applicant']} />
+              }
+            ></Route>
             <Route
               path="/profile"
               element={

@@ -82,9 +82,9 @@ const ManagerDashboardPage: React.FC = () => {
     title: string;
     items: { label: string; value: number; color: string }[];
   }> = ({ title, items }) => (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <div className="space-y-2">
+    <div className="card-bordered">
+      <h3 className="text-lg font-semibold p-2">{title}</h3>
+      <div className="space-y-2 p-2">
         {items.map(item => (
           <p key={item.label} className={item.color}>
             {item.label}: {item.value}
@@ -98,17 +98,14 @@ const ManagerDashboardPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       {/* Header with Create Button */}
       <div className="mb-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative bg-white rounded-lg shadow-sm p-4">
+        <div className="relative card-bordered">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Manager Dashboard</h1>
+            <h1 className="text-large font-bold text-gray-900">Manager Dashboard</h1>
             <div className="relative z-10">
               <button
                 onClick={() => setShowJobForm(!showJobForm)}
-                className="inline-flex items-center justify-center px-4 py-2 border border-transparent 
-                         text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 
-                         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 
-                         transition-colors duration-200 ease-in-out shadow-sm"
-                style={{ backgroundColor: '#1a4689' }}
+                className="btn-primary"
+        
               >
                 {showJobForm ? 'Cancel' : 'Create New Job'}
               </button>
@@ -126,10 +123,12 @@ const ManagerDashboardPage: React.FC = () => {
         )}
 
         {showJobForm ? (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Create New Job</h2>
+          <div>
+            <h2 className="text-medium p-medium font-semibold">Create New Job</h2>
+          <div className="card-bordered">
             <JobForm onSubmit={handleCreateJob} onCancel={() => setShowJobForm(false)} />
           </div>
+            </div>
         ) : (
           <>
             {!isLoading && stats && (

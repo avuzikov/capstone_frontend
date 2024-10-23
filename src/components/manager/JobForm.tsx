@@ -54,7 +54,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
+    <form onSubmit={handleSubmit} className="p-medium">
       {error && (
         <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
           <p className="text-red-700">{error}</p>
@@ -74,7 +74,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             onChange={handleChange}
             required
             disabled={isLoading}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           />
         </div>
 
@@ -90,7 +90,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             onChange={handleChange}
             required
             disabled={isLoading}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           />
         </div>
 
@@ -106,7 +106,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             onChange={handleChange}
             required
             disabled={isLoading}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           />
         </div>
 
@@ -122,7 +122,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             onChange={handleChange}
             required
             disabled={isLoading}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
             placeholder="e.g., 5+ years, Entry Level, Senior"
           />
         </div>
@@ -137,7 +137,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             value={formData.listingStatus}
             onChange={handleChange}
             disabled={isLoading}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           >
             <option value="open">Open</option>
             <option value="closed">Closed</option>
@@ -156,7 +156,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             required
             disabled={isLoading}
             rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           />
         </div>
 
@@ -174,18 +174,18 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             onChange={handleChange}
             disabled={isLoading}
             rows={3}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="input-bordered w-full mt-1"
           />
         </div>
       </div>
 
-      <div className="flex justify-end space-x-4 pt-4">
+      <div className="flex justify-end space-x-2 pt-4">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+            className="btn-destructive"
           >
             Cancel
           </button>
@@ -193,7 +193,7 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
         <button
           type="submit"
           disabled={isLoading}
-          className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+          className="btn-primary"
         >
           {isLoading ? 'Submitting...' : initialJob?.id ? 'Update Job' : 'Create Job'}
         </button>
