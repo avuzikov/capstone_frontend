@@ -181,20 +181,11 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
 
       <div className="flex justify-end space-x-2 pt-4">
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isLoading}
-            className="btn-destructive"
-          >
+          <button type="button" onClick={onCancel} disabled={isLoading} className="btn-destructive">
             Cancel
           </button>
         )}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="btn-primary"
-        >
+        <button type="submit" disabled={isLoading} className="btn-primary">
           {isLoading ? 'Submitting...' : initialJob?.id ? 'Update Job' : 'Create Job'}
         </button>
       </div>

@@ -55,7 +55,8 @@ export let jobs: Job[] = [
     listingStatus: 'open',
     dateListed: new Date('2023-05-01').toISOString(),
     jobTitle: 'Senior Software Engineer',
-    jobDescription: 'We are looking for an experienced software engineer to join our team...',
+    jobDescription:
+      'We are looking for \n an experienced software engineer \n \t\t\t to join our team...',
     experienceLevel: '5+ years',
     additionalInformation: 'Knowledge of React and Node.js is a plus.',
   },

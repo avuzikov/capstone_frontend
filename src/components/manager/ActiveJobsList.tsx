@@ -103,10 +103,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                       {new Date(job.dateListed).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleManageJob(job.id)}
-                        className="text-adp-navy"
-                      >
+                      <button onClick={() => handleManageJob(job.id)} className="text-adp-navy">
                         Manage
                       </button>
                     </td>
