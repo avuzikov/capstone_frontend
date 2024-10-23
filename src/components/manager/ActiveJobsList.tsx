@@ -121,7 +121,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className={`btn-primary text-normal ${
+          className={`btn-primary border-none text-normal ${
             currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
           }`}
         >
@@ -132,7 +132,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
             setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
           }
           disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
-          className={`btn-primary text-normal ${
+          className={`btn-primary border-none text-normal ${
             currentPage === Math.ceil(jobs.length / jobsPerPage)
               ? 'bg-gray-500 cursor-not-allowed'
               : 'bg-gray-300 hover:bg-adp-red'
