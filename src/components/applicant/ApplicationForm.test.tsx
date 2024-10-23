@@ -28,7 +28,7 @@ describe('Application form', () => {
     role: 'applicant',
     login: jest.fn(),
     logout: jest.fn(),
-    setData: jest.fn(),
+    setToken: jest.fn(),
   };
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('Application form', () => {
     mockLog.mockRestore();
     authContext.login.mockClear();
     authContext.logout.mockClear();
-    authContext.setData.mockClear();
+    authContext.setToken.mockClear();
   });
 
   it('Should render Cover Letter, Custom Resume and Button', () => {

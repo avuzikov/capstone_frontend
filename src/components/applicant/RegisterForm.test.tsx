@@ -18,7 +18,7 @@ describe('RegisterForm', () => {
   const mockFetchDispatch = jest.fn();
 
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({ setData: mockSetAuth });
+    (useAuth as jest.Mock).mockReturnValue({ setToken: mockSetAuth });
     (useFetch as jest.Mock).mockReturnValue({
       data: null,
       isPending: false,
@@ -51,7 +51,7 @@ describe('RegisterForm', () => {
     fireEvent.click(screen.getByText('Register'));
 
     await waitFor(() => {
-      expect(screen.getByText('Field cannot be empty')).toBeInTheDocument();
+      expect(screen.getAllByText('Field cannot be empty')).toHaveLength(3);
     });
   });
 
@@ -125,7 +125,9 @@ describe('RegisterForm', () => {
     fireEvent.click(screen.getByText('Register'));
 
     await waitFor(() => {
-      expect(mockSetAuth).toHaveBeenCalledWith('mock-token', 'user', '1');
+      expect(mockSetAuth).toHaveBeenCalledWith(
+        expect.objectContaining({ token: 'mock-token', role: 'user', id: '1' })
+      );
     });
   });
 

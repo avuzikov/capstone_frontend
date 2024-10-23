@@ -37,7 +37,7 @@ const RegisterForm = () => {
   } as RegisterFormType);
   const [errors, setErrors] = useState({} as RegisterFormErrors);
   const { data: responseData, isPending, error, fetchDispatch } = useFetch(register);
-  const { setData: setAuth } = useAuth();
+  const { setToken: setAuth } = useAuth();
 
   const checkErrors = (field: Field, value: string, wasError?: boolean): boolean => {
     if (field === 'email') {
@@ -96,10 +96,12 @@ const RegisterForm = () => {
     checkErrors(field, event.target.value);
   };
 
-  if (responseData) {
-    setAuth(responseData.token, responseData.role, responseData.id);
-    navigate('/profile');
-  }
+  useEffect(() => {
+    if (responseData) {
+      setAuth(responseData);
+      navigate('/profile');
+    }
+  }, [responseData, setAuth, navigate]);
 
   return (
     <div className="p-large rounded-lg w-[28rem]">

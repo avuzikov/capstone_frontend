@@ -11,6 +11,8 @@ const ProfilePage = () => {
   const [showForm, setShowForm] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
+  console.log('Profile page rerendering!');
+
   const fetchUser = useCallback(async () => {
     try {
       const response = await fetch(`/users/${id}`, {
@@ -43,7 +45,7 @@ const ProfilePage = () => {
     if (token) {
       fetchUser();
     }
-  }, [token, fetchUser, showForm, handleShowForm]);
+  }, [token, fetchUser, showForm]);
 
   return (
     <div className="w-full flex items-center  flex-col justify-center">
