@@ -54,24 +54,36 @@ describe('ApplicantStatusUpdate', () => {
     });
   });
 
-//   it('displays error message on failed status change', async () => {
-//     global.fetch = jest.fn().mockResolvedValue({
-//       ok: false,
-//     });
+  //   it('displays error message on failed status change', async () => {
+  //     global.fetch = jest.fn().mockResolvedValue({
+  //       ok: false,
+  //     });
 
-//     const { getByDisplayValue, getByText } = render(<ApplicantStatusUpdate {...defaultProps} />);
+  //     const { getByDisplayValue, getByText } = render(<ApplicantStatusUpdate {...defaultProps} />);
 
-//     fireEvent.change(getByDisplayValue(/Pending/i), { target: { value: 'reviewed' } });
+  //     fireEvent.change(getByDisplayValue(/Pending/i), { target: { value: 'reviewed' } });
 
-//     await waitFor(() => {
-//       expect(getByText(/Failed to update status/i)).toBeInTheDocument();
-//     });
-//   });
+  //     await waitFor(() => {
+  //       expect(getByText(/Failed to update status/i)).toBeInTheDocument();
+  //     });
+  //   });
 
   it('displays loading indicator while updating', async () => {
-    global.fetch = jest.fn().mockImplementation(() =>
-      new Promise(resolve => setTimeout(() => resolve({ ok: true, json: jest.fn().mockResolvedValue({ applicationStatus: 'reviewed' }) }), 100))
-    );
+    global.fetch = jest
+      .fn()
+      .mockImplementation(
+        () =>
+          new Promise(resolve =>
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: jest.fn().mockResolvedValue({ applicationStatus: 'reviewed' }),
+                }),
+              100
+            )
+          )
+      );
 
     const { getByDisplayValue, getByText } = render(<ApplicantStatusUpdate {...defaultProps} />);
 

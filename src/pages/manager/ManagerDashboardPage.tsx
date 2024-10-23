@@ -1,5 +1,3 @@
-// src/pages/manager/ManagerDashboardPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import JobForm from '../../components/manager/JobForm';
