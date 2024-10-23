@@ -3,7 +3,8 @@
 import { UserRegistration } from '../types/User';
 import { ApplicationDetailsType, UpdateApplicationType } from '../types/Application';
 
-const BASE_URL = '';
+const ACCOUNT_BASE_URL = 'http://localhost:8180';
+const DATA_BASE_URL = 'http://localhost:8000';
 
 type GetJobDetailsType = {
   id: string | undefined;
@@ -27,7 +28,7 @@ type UpdateApplicationDetailsType = {
 };
 
 export const register = async (user: UserRegistration) => {
-  const response = await fetch(`${BASE_URL}/users/registration`, {
+  const response = await fetch(`${ACCOUNT_BASE_URL}/registration`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -35,17 +36,19 @@ export const register = async (user: UserRegistration) => {
     body: JSON.stringify(user),
   });
 
+  console.log(response.body);
+
   const responseData = await response.json();
 
   if (!response.ok) {
     throw new Error(responseData.message || 'Failed to register new user');
   }
 
-  return responseData;
+  return responseData.token;
 };
 
 export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
-  const response = await fetch(`${BASE_URL}/api/job/${id}`, {
+  const response = await fetch(`${DATA_BASE_URL}/api/job/${id}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -62,14 +65,16 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
 };
 
 export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
-  const response = await fetch(`${BASE_URL}/user/manager/${id}`, {
+  const response = await fetch(`${ACCOUNT_BASE_URL}/users/manager/${id}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });
 
+  });
+  
   const responseData = await response.json();
+  console.log(responseData);
 
   if (!response.ok) {
     throw new Error(responseData.message || 'Failed to fetch user details');
@@ -79,7 +84,7 @@ export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
 };
 
 export const getApplicationDetails = async ({ id, token }: GetApplicationDetailsType) => {
-  const response = await fetch(`${BASE_URL}/api/application/${id}`, {
+  const response = await fetch(`${DATA_BASE_URL}/api/application/${id}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -107,7 +112,7 @@ export const updateApplication = async ({
     coverLetter: application.coverLetter,
     customResume: application.customResume,
   };
-  const response = await fetch(`${BASE_URL}/api/application/${id}`, {
+  const response = await fetch(`${DATA_BASE_URL}/api/application/${id}`, {
     method: 'PUT',
     headers: {
       Authorization: `Bearer ${token}`,
