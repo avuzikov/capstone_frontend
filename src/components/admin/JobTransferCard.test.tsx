@@ -1,4 +1,4 @@
-// src\components\admin\JobTransferCard.test.tsx
+// src/components/admin/JobTransferCard.test.tsx
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -6,7 +6,6 @@ import JobTransferCard from './JobTransferCard';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 
-//TODO: Pass test
 jest.mock('../../contexts/AuthContext');
 
 describe('JobTransferCard', () => {
@@ -24,17 +23,7 @@ describe('JobTransferCard', () => {
     jest.clearAllMocks();
   });
 
-  test('renders correctly', async () => {
-    const mockManagers = [
-      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
-    ];
-
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockManagers,
-    });
-
+  test('renders correctly', () => {
     render(
       <JobTransferCard
         currentManagerId="1"
@@ -42,8 +31,7 @@ describe('JobTransferCard', () => {
         handleShouldFetchJobs={mockHandleShouldFetchJobs}
       />
     );
-    const transferElement = await screen.findByRole('heading', { name: 'Transfer Jobs' });
-    expect(transferElement).toBeInTheDocument();
+    expect(screen.getByText('Transfer Jobs')).toBeInTheDocument();
   });
 
   test('fetches and displays managers', async () => {
@@ -66,11 +54,9 @@ describe('JobTransferCard', () => {
     );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
-    const managerOne = await screen.findByText('Manager One');
-    const managerTwo = await screen.findByText('Manager One');
 
-    expect(managerOne).toBeInTheDocument();
-    expect(managerTwo).toBeInTheDocument();
+    expect(screen.getByText('Manager One')).toBeInTheDocument();
+    expect(screen.getByText('Manager Two')).toBeInTheDocument();
   });
 
   test('transfers jobs', async () => {
@@ -104,7 +90,7 @@ describe('JobTransferCard', () => {
       { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
     ];
 
-    mockFetch.mockResolvedValue({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockManagers,
     });
@@ -118,15 +104,15 @@ describe('JobTransferCard', () => {
     );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
-    const comboBox = await screen.findByRole('combobox');
-    const button = await screen.findByRole('button', { name: 'Transfer Jobs' });
-    fireEvent.change(comboBox, { target: { value: '2' } });
-    fireEvent.click(button);
 
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for
-    await waitFor(() =>
-      expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object))
-    );
-    await waitFor(() => expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2));
+    screen.debug();
+
+    fireEvent.change(screen.getByRole('combobox', { name: /manager/i }), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Transfer Jobs' }));
+
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
+
+    expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object));
+    expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
   });
 });

@@ -742,6 +742,7 @@ The team will work individually, with each member focusing on specific tasks:
 The team will work individually, with each member focusing on specific tasks:
 
 1. Alex:
+   - Creation of initial project structure
    - Providing documentation for the team
    - Supporting the team in case of technical problems
    - Reducing technical debt
@@ -762,6 +763,8 @@ The team will work individually, with each member focusing on specific tasks:
 5. Piotr:
    - Implementation of the registration page (/register)
    - Implementation of the job detail page (/jobs/:id)
+   - Implementation of the application detail page (/applications/:id)
+   - Implementation of job search functionality
 
 6. Sergio:
    - Implementation of the login page (/login)
