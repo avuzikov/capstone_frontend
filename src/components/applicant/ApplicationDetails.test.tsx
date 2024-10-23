@@ -8,8 +8,6 @@ import { ApplicationDetailsType } from '../../types/Application';
 import { JobDetailsType } from '../../types/Job';
 import { format } from '../../utils/formatDate';
 import * as AuthContext from '../../contexts/AuthContext';
-import { getJobDetails } from '../../services/api';
-import { exact } from 'prop-types';
 
 jest.mock('../../contexts/AuthContext');
 jest.mock('../../hooks/useFetch');
