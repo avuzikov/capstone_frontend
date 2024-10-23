@@ -742,28 +742,29 @@ The team will work individually, with each member focusing on specific tasks:
 The team will work individually, with each member focusing on specific tasks:
 
 1. Alex:
+   - Creation of initial project structure
    - Providing documentation for the team
    - Supporting the team in case of technical problems
    - Reducing technical debt
    - Creating and supporting the Mock API
 
-2. Lalitha:
+3. Lalitha:
    - Implementation of manager pages:
      - Manager console (/manager/console)
      - Job management page (/manager/{jobid})
 
-3. Matt:
+4. Matt:
    - Implementation of admin pages
    - Design of pages across the application
 
-4. Abideet:
+5. Abideet:
    - Implementation of admin pages
 
-5. Piotr:
+6. Piotr:
    - Implementation of the registration page (/register)
    - Implementation of the job detail page (/jobs/:id)
 
-6. Sergio:
+7. Sergio:
    - Implementation of the login page (/login)
    - Implementation of the job listing page (/jobs)
 
