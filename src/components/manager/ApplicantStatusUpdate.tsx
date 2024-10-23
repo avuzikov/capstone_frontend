@@ -1,3 +1,5 @@
+// src\components\manager\ApplicantStatusUpdate.tsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Application } from '../../types/types';

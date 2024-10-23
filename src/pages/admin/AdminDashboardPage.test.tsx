@@ -1,3 +1,5 @@
+// src\pages\admin\AdminDashboardPage.test.tsx
+
 import React from 'react';
 import AdminDashboardPage from './AdminDashboardPage';
 import { render, screen } from '@testing-library/react';

@@ -1,3 +1,5 @@
+// src\pages\JobPage.tsx
+
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import JobList from '../components/applicant/JobList';
 import { fetchJobs } from '../contexts/JobApi';
@@ -10,13 +12,9 @@ const JobPage: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const itemsPerPage = 6;
   const [searchQuery, setSearchQuery] = useState('');
   const [noMoreJobs, setNoMoreJobs] = useState(false);
-
-  const handleItemsPerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(parseInt(event.currentTarget.value));
-  };
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -25,7 +23,7 @@ const JobPage: React.FC = () => {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
         setJobs(data.jobs);
         const nJobs = data.jobs.length;
-        if (nJobs < 3) {
+        if (nJobs < itemsPerPage) {
           setNoMoreJobs(true);
         } else {
           setNoMoreJobs(false);
@@ -42,30 +40,16 @@ const JobPage: React.FC = () => {
   return (
     <div>
       <div className="container mx-auto p-6">
-        <div className="relative mb-4">
-          <div className="absolute left-1/2 transfrom -translate-x-1/2">
-            <JobSearchForm setSearchQuery={setSearchQuery} />
-          </div>
-          <div className="flex justify-end h-16">
-            <select
-              onChange={handleItemsPerPageChange}
-              className="block mt-6 border text-small p-0 rounded-md border-adp-navy-light"
-            >
-              <option value={1}>1</option>
-              <option value={3} selected={true}>
-                3
-              </option>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
+        <div className="flex justify-center mb-4">
+          <JobSearchForm setSearchQuery={setSearchQuery} />
         </div>
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
         <div className="flex justify-between mt-4 items-center">
           <button
-            className="btn-primary text-normal"
+            className={`btn-primary text-normal ${
+              page === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'
+            }`}
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
@@ -75,12 +59,11 @@ const JobPage: React.FC = () => {
           <span className="text-small">Page {page}</span>
           <button
             className={`btn-primary text-normal ${
-              noMoreJobs ? 'btn-disabled cursor-not-allowed' : ''
+              noMoreJobs ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'
             }`}
             onClick={() => setPage(prev => prev + 1)}
             disabled={noMoreJobs}
           >
-            {' '}
             Next
           </button>
         </div>

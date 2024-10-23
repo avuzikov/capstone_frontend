@@ -1,3 +1,5 @@
+// src\components\shared\CustomStyles.tsx
+
 import React from 'react';
 import '../../index.css';
 

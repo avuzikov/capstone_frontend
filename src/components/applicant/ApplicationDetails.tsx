@@ -1,3 +1,5 @@
+// src\components\applicant\ApplicationDetails.tsx
+
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 

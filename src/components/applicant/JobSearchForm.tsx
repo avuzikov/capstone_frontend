@@ -1,3 +1,5 @@
+// src\components\applicant\JobSearchForm.tsx
+
 import React, { useState, FormEvent } from 'react';
 
 const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => void }) => {

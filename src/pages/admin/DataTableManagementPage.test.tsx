@@ -1,3 +1,5 @@
+// src\pages\admin\DataTableManagementPage.test.tsx
+
 import React from 'react';
 import { render } from '@testing-library/react';
 import DataTableManagementPage from './DataTableManagementPage';

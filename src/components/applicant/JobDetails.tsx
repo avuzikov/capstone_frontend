@@ -1,3 +1,5 @@
+// src\components\applicant\JobDetails.tsx
+
 import React from 'react';
 import { JobDetailsType } from '../../types/Job';
 import { format } from '../../utils/formatDate';

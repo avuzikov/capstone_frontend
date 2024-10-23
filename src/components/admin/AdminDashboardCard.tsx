@@ -1,3 +1,5 @@
+// src\components\admin\AdminDashboardCard.tsx
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
