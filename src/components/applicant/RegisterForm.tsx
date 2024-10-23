@@ -17,6 +17,12 @@ interface RegisterFormType {
   confirmPassword: string;
 }
 
+interface AuthResponse {
+  token: string;
+  role: string;
+  id: string;
+}
+
 type RegisterFormErrors = {
   [K in keyof RegisterFormType]: string | undefined;
 };
@@ -80,13 +86,13 @@ const RegisterForm = () => {
     setError(null);
 
     try {
-      const response = await userService.register({
+      const response = (await userService.register({
         email: data.email,
         password: data.password,
         name: `${data.firstName} ${data.lastName}`,
-      });
+      })) as AuthResponse;
 
-      setAuth(response.id, response.role);
+      setAuth(response.token, response.role, response.id);
       navigate('/profile');
     } catch (err) {
       if (err instanceof ApiError) {

@@ -1,5 +1,4 @@
 // src/components/manager/ActiveJobsList.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jobService } from '../../services/jobService';
@@ -22,7 +21,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const jobsPerPage = 5;
+  const jobsPerPage = 5; // Define the constant here
 
   useEffect(() => {
     const fetchJobs = async () => {

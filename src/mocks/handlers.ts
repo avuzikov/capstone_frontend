@@ -621,6 +621,24 @@ export const handlers = [
     if (!user || user.role !== 'hiring-manager') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
+    const mockStats = {
+      totalJobs: 10,
+      openJobs: 5,
+      closedJobs: 5,
+      totalApplications: 25,
+      pendingApplications: 10,
+      reviewedApplications: 8,
+      acceptedApplications: 4,
+      rejectedApplications: 3,
+    };
+    return HttpResponse.json(mockStats);
+  }),
+
+  http.get('/api/stats/manager', ({ request }) => {
+    const user = authenticateUser(request);
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
+    }
     const managerJobs = jobs.filter(job => job.userId === user.id);
     const jobApplications = applications.filter(app =>
       managerJobs.some(job => job.id === app.jobId)

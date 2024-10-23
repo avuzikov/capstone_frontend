@@ -140,3 +140,14 @@ export interface ApplicationStatistics extends Application {
   averageScore?: string;
   review?: string;
 }
+
+export interface ManagerStats {
+  totalJobs: number;
+  openJobs: number;
+  closedJobs: number;
+  totalApplications: number;
+  pendingApplications: number;
+  reviewedApplications: number;
+  acceptedApplications: number;
+  rejectedApplications: number;
+}

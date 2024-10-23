@@ -2,6 +2,7 @@
 import { apiClient } from './apiClient';
 import { ENDPOINTS } from './endpoints';
 import { Job, Application } from '../types/types';
+import { ManagerStats } from './types';
 
 interface PaginatedResponse<T> {
   content: T[];
@@ -11,10 +12,51 @@ interface PaginatedResponse<T> {
   number: number;
 }
 
+interface ManagerJobsResponse {
+  content: (Job & { applicantCount?: number })[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  pageable: {
+    sort: {
+      sorted: boolean;
+      unsorted: boolean;
+      empty: boolean;
+    };
+    pageNumber: number;
+    pageSize: number;
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  last: boolean;
+  sort: {
+    sorted: boolean;
+    unsorted: boolean;
+    empty: boolean;
+  };
+  numberOfElements: number;
+  first: boolean;
+  empty: boolean;
+}
+
+interface JobApplicationsResponse {
+  total: number;
+  page: number;
+  items: number;
+  applications: (Application & { applicantName?: string })[];
+}
+
 interface JobTransfer {
   jobId: number;
   fromUserId: number;
   toUserId: number;
+}
+
+interface PaginationParams {
+  page: number;
+  items?: number;
 }
 
 export const jobService = {
@@ -53,9 +95,39 @@ export const jobService = {
     });
   },
 
+  // Manager specific endpoints
+  async getManagerJobs(params: PaginationParams): Promise<ManagerJobsResponse> {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', params.page.toString());
+    if (params.items) {
+      queryParams.append('items', params.items.toString());
+    }
+    return apiClient.request(`/api/job/manager?${queryParams.toString()}`);
+  },
+
+  async getManagerStats(): Promise<ManagerStats> {
+    return apiClient.request('/api/stats/manager');
+  },
+
   // Applications
   async getApplications(jobId: string): Promise<Application[]> {
     return apiClient.request(ENDPOINTS.jobs.applications(jobId));
+  },
+
+  async getJobApplications(
+    jobId: string,
+    params?: PaginationParams
+  ): Promise<JobApplicationsResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) {
+      queryParams.append('page', params.page.toString());
+    }
+    if (params?.items) {
+      queryParams.append('items', params.items.toString());
+    }
+    return apiClient.request(
+      `/api/application/job/${jobId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    );
   },
 
   async getApplicationById(id: string): Promise<Application> {

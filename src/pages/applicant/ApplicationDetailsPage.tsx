@@ -1,29 +1,49 @@
-// src\pages\applicant\ApplicationDetailsPage.tsx
+// src/pages/applicant/ApplicationDetailsPage.tsx
 
 import React, { useEffect, ReactNode } from 'react';
 import { useParams } from 'react-router';
-
-import useFetch from '../../hooks/useFetch';
 import { useAuth } from '../../contexts/AuthContext';
-import { getApplicationDetails } from '../../services/api';
+import { jobService } from '../../services/jobService';
+import { ApiError } from '../../services/apiClient';
 import LoadingSpinner from '../../components/shared/LoadingSpinner';
-import { ApplicationDetailsType } from '../../types/Application';
+import { Application } from '../../services/types';
 import ApplicationDetails from '../../components/applicant/ApplicationDetails';
 
 const ApplicationDetailsPage = () => {
   const { id } = useParams();
   const { token } = useAuth();
-  const { data, isPending, error, fetchDispatch } = useFetch(getApplicationDetails);
+  const [application, setApplication] = React.useState<Application | null>(null);
+  const [isPending, setIsPending] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
-    fetchDispatch({ id, token });
-  }, [id, token, fetchDispatch]);
+    const fetchApplication = async () => {
+      if (!id || !token) return;
+      setIsPending(true);
+      setError(null);
+
+      try {
+        const applicationData = await jobService.getApplicationById(id);
+        setApplication(applicationData);
+      } catch (err) {
+        if (err instanceof ApiError) {
+          setError(err.message);
+        } else {
+          setError('Failed to load application data!');
+        }
+      } finally {
+        setIsPending(false);
+      }
+    };
+
+    fetchApplication();
+  }, [id, token]);
 
   let applicationData: ReactNode;
   if (isPending) {
     applicationData = (
       <div className="flex justify-center items-center h-full">
-        <LoadingSpinner size="large"></LoadingSpinner>
+        <LoadingSpinner size="large" />
       </div>
     );
   }
@@ -43,20 +63,17 @@ const ApplicationDetailsPage = () => {
             clipRule="evenodd"
           />
         </svg>
-
-        <p className="txt-danger txt-small">
-          {error?.message || 'Failed to fetch application data!'}
-        </p>
+        <p className="txt-danger txt-small">{error}</p>
       </div>
     );
   }
 
-  if (data as ApplicationDetailsType) {
-    applicationData = <ApplicationDetails application={data} />;
+  if (application) {
+    applicationData = <ApplicationDetails application={application} />;
   }
 
   return (
-    <main className="mx-auto w-full  lg:w-1/2 m-4 p-4 card-bordered min-h-[calc(100vh-64px-56px)]">
+    <main className="mx-auto w-full lg:w-1/2 m-4 p-4 card-bordered min-h-[calc(100vh-64px-56px)]">
       {applicationData}
     </main>
   );

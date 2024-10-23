@@ -37,7 +37,9 @@ const ManagerDashboardPage: React.FC = () => {
 
       try {
         const response = await jobService.getManagerStats();
-        setStats(response);
+        if (response) {
+          setStats(response);
+        }
       } catch (err) {
         if (err instanceof ApiError) {
           setError(err.message);

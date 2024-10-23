@@ -11,5 +11,5 @@ export interface JobDetailsType {
   jobTitle: string;
   jobDescription: string;
   experienceLevel: string;
-  additionalInformation: string;
+  additionalInformation?: string;
 }
