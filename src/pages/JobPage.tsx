@@ -65,7 +65,7 @@ const JobPage: React.FC = () => {
 
         <div className="flex justify-between mt-4 items-center">
           <button
-            className="btn-primary text-normal"
+            className={`btn-primary text-normal ${page === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'}`}
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
@@ -74,13 +74,10 @@ const JobPage: React.FC = () => {
 
           <span className="text-small">Page {page}</span>
           <button
-            className={`btn-primary text-normal ${
-              noMoreJobs ? 'btn-disabled cursor-not-allowed' : ''
-            }`}
+            className={`btn-primary text-normal ${noMoreJobs ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'}`}
             onClick={() => setPage(prev => prev + 1)}
             disabled={noMoreJobs}
           >
-            {' '}
             Next
           </button>
         </div>
