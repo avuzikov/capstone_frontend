@@ -10,13 +10,9 @@ const JobPage: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const itemsPerPage = 6;
   const [searchQuery, setSearchQuery] = useState('');
   const [noMoreJobs, setNoMoreJobs] = useState(false);
-
-  const handleItemsPerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(parseInt(event.currentTarget.value));
-  };
 
   useEffect(() => {
     const loadJobs = async () => {
