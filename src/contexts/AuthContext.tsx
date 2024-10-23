@@ -6,7 +6,7 @@ interface AuthContextType {
   token: string | null;
   id: string | null;
   role: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ token: string; role: string; id: string }>; // Modified return type
   logout: () => void;
   setData: (token: string, role: string, id: string) => void;
 }
@@ -62,6 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(data.token);
       setRole(data.role);
       setId(data.id);
+      return { token: data.token, role: data.role, id: data.id }; // Return the data
     } else {
       throw new Error('Login failed');
     }

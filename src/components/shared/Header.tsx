@@ -32,9 +32,13 @@ const Header = () => {
         return [
           { to: '/jobs', text: 'Jobs' },
           { to: '/manager/console', text: 'Console' },
+          { to: '/profile', text: 'Profile' },
         ];
       case 'admin':
-        return [{ to: '/admin', text: 'Dashboard' }];
+        return [
+          { to: '/admin', text: 'Dashboard' },
+          { to: '/profile', text: 'Profile' },
+        ];
       default:
         return [];
     }
