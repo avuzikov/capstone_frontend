@@ -69,21 +69,19 @@ describe('ApplicantStatusUpdate', () => {
   //   });
 
   it('displays loading indicator while updating', async () => {
-    global.fetch = jest
-      .fn()
-      .mockImplementation(
-        () =>
-          new Promise(resolve =>
-            setTimeout(
-              () =>
-                resolve({
-                  ok: true,
-                  json: jest.fn().mockResolvedValue({ applicationStatus: 'reviewed' }),
-                }),
-              100
-            )
+    global.fetch = jest.fn().mockImplementation(
+      () =>
+        new Promise(resolve =>
+          setTimeout(
+            () =>
+              resolve({
+                ok: true,
+                json: jest.fn().mockResolvedValue({ applicationStatus: 'reviewed' }),
+              }),
+            100
           )
-      );
+        )
+    );
 
     const { getByDisplayValue, getByText } = render(<ApplicantStatusUpdate {...defaultProps} />);
 

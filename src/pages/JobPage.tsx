@@ -26,7 +26,7 @@ const JobPage: React.FC = () => {
 
         const aux = await fetchJobs(page + 1, itemsPerPage, searchQuery, token);
         const nAux = aux.jobs.length;
-        console.log("njobs aux: " + nAux)
+        console.log('njobs aux: ' + nAux);
         if (nAux > 0) {
           setNoMoreJobs(false);
         } else {

@@ -61,12 +61,7 @@ function App() {
             {/* Protected routes */}
             <Route
               path="/profile"
-              element={
-                <ProtectedRoute
-                  element={<ProfilePage />}
-                  allowedRoles={['applicant']}
-                />
-              }
+              element={<ProtectedRoute element={<ProfilePage />} allowedRoles={['applicant']} />}
             />
             <Route
               path="/apply/:jobId"
