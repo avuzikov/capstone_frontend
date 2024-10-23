@@ -64,7 +64,7 @@ function App() {
               element={
                 <ProtectedRoute
                   element={<ProfilePage />}
-                  allowedRoles={['applicant', 'hiring-manager', 'admin']}
+                  allowedRoles={['applicant']}
                 />
               }
             />
