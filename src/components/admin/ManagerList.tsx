@@ -54,6 +54,10 @@ const ManagerList: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
+  if (managers.length === 0) {
+    return <div>No managers found</div>;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {managers.map(manager => (

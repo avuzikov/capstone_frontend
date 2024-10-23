@@ -1,5 +1,3 @@
-// src\pages\JobPage.tsx
-
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import JobList from '../components/applicant/JobList';
 import { fetchJobs } from '../contexts/JobApi';
@@ -12,9 +10,13 @@ const JobPage: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const [itemsPerPage, setItemsPerPage] = useState(3);
   const [searchQuery, setSearchQuery] = useState('');
   const [noMoreJobs, setNoMoreJobs] = useState(false);
+
+  const handleItemsPerPageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setItemsPerPage(parseInt(event.currentTarget.value));
+  };
 
   useEffect(() => {
     const loadJobs = async () => {
@@ -48,7 +50,7 @@ const JobPage: React.FC = () => {
         <div className="flex justify-between mt-4 items-center">
           <button
             className={`btn-primary text-normal ${
-              page === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'
+              page === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
             }`}
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
@@ -59,7 +61,7 @@ const JobPage: React.FC = () => {
           <span className="text-small">Page {page}</span>
           <button
             className={`btn-primary text-normal ${
-              noMoreJobs ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'
+              noMoreJobs ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
             }`}
             onClick={() => setPage(prev => prev + 1)}
             disabled={noMoreJobs}

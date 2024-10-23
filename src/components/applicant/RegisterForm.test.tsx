@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RegisterForm from './RegisterForm';
 import { useAuth } from '../../contexts/AuthContext';
 import useFetch from '../../hooks/useFetch';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom';
 
 // Mock the useAuth hook
 jest.mock('../../contexts/AuthContext', () => ({
@@ -12,6 +12,12 @@ jest.mock('../../contexts/AuthContext', () => ({
 
 // Mock the useFetch hook
 jest.mock('../../hooks/useFetch', () => jest.fn());
+
+// Mock useNavigate hook
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 describe('RegisterForm', () => {
   const mockSetAuth = jest.fn();
@@ -50,9 +56,9 @@ describe('RegisterForm', () => {
 
     fireEvent.click(screen.getByText('Register'));
 
-    await waitFor(() => {
-      expect(screen.getByText('Field cannot be empty')).toBeInTheDocument();
-    });
+    const errorElements = await screen.findAllByText('Field cannot be empty');
+
+    expect(errorElements).toHaveLength(3);
   });
 
   it('shows validation error for invalid email', async () => {
@@ -94,7 +100,7 @@ describe('RegisterForm', () => {
 
   it('submits the form successfully', async () => {
     (useFetch as jest.Mock).mockReturnValue({
-      data: { token: 'mock-token', role: 'user', id: '1' },
+      data: undefined,
       isPending: false,
       error: null,
       fetchDispatch: mockFetchDispatch,
@@ -125,8 +131,42 @@ describe('RegisterForm', () => {
     fireEvent.click(screen.getByText('Register'));
 
     await waitFor(() => {
-      expect(mockSetAuth).toHaveBeenCalledWith('mock-token', 'user', '1');
+      expect(mockFetchDispatch).toHaveBeenCalledTimes(1);
     });
+    await waitFor(() => {
+      expect(mockFetchDispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: 'john.doe@example.com',
+          password: 'password123',
+          name: 'John Doe',
+        })
+      );
+    });
+  });
+
+  it('sets auth context and redirects when register is succesfull', async () => {
+    (useFetch as jest.Mock).mockReturnValue({
+      data: { token: 'mock-token', role: 'user', id: '1' },
+      isPending: false,
+      error: null,
+      fetchDispatch: mockFetchDispatch,
+    });
+
+    const mockNavigate = jest.fn();
+    (useNavigate as jest.Mock).mockImplementation(() => mockNavigate);
+
+    render(
+      <Router>
+        <RegisterForm />
+      </Router>
+    );
+
+    await waitFor(() => expect(mockSetAuth).toHaveBeenCalled());
+    await waitFor(() => expect(mockSetAuth.mock.calls[0]).toEqual(['mock-token', 'user', '1']));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalled());
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/profile'));
+
+    (useNavigate as jest.Mock).mockRestore();
   });
 
   it('shows error message on form submission failure', async () => {

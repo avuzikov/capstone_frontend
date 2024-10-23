@@ -34,7 +34,7 @@ const ApplicationsPage: React.FC = () => {
   const { token } = useAuth();
   const { id } = useAuth();
   const [page, setPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = 6;
   const [noMoreApplications, setNoMoreApplications] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -49,11 +49,19 @@ const ApplicationsPage: React.FC = () => {
         );
         const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
         const nApplications = filteredApplications.length;
-        if (nApplications < 3) {
-          setNoMoreApplications(true);
-        } else {
+
+        const aux = await fecthApplications(page + 1, itemsPerPage, token);
+        const auxFilter = aux.filter(
+          (application: Application) => application.userId === parseInt(id!, 10)
+        );
+        const nAux = auxFilter.length;
+        console.log('nApps aux: ' + nAux);
+        if (nAux > 0) {
           setNoMoreApplications(false);
+        } else {
+          setNoMoreApplications(true);
         }
+
         console.log(nApplications);
         setApplications(filteredApplications2);
       } catch (error) {
@@ -123,7 +131,9 @@ const ApplicationsPage: React.FC = () => {
 
         <div className="flex justify-between mt-4 items-center ">
           <button
-            className="btn-primary  text-normal"
+            className={`btn-primary text-normal ${
+              page === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-gray-400'
+            }`}
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
