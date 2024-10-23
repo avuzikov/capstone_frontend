@@ -1,4 +1,4 @@
-// src\components\admin\JobTransferCard.test.tsx
+// src/components/admin/JobTransferCard.test.tsx
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -6,7 +6,6 @@ import JobTransferCard from './JobTransferCard';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 
-//TODO: Pass test
 jest.mock('../../contexts/AuthContext');
 
 describe('JobTransferCard', () => {
@@ -60,7 +59,7 @@ describe('JobTransferCard', () => {
     expect(screen.getByText('Manager Two')).toBeInTheDocument();
   });
 
-  test.only('transfers jobs', async () => {
+  test('transfers jobs', async () => {
     const mockJobs: Job[] = [
       {
         id: 1,
@@ -106,7 +105,9 @@ describe('JobTransferCard', () => {
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
 
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
+    screen.debug();
+
+    fireEvent.change(screen.getByRole('combobox', { name: /manager/i }), { target: { value: '2' } });
     fireEvent.click(screen.getByRole('button', { name: 'Transfer Jobs' }));
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
