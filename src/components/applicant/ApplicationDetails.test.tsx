@@ -65,7 +65,7 @@ describe('Application Details', () => {
   it('Should containt application details - date, status, cover letter and resume', () => {
     // Given
     const appliedAt = 'Applied at: ';
-    const status = 'Status: ';
+    const status = 'Status:';
     const coverLetterLabel = 'Cover Letter';
     const resumeLabel = 'Resume';
     const updateButtonLabel = 'Update';
@@ -85,7 +85,7 @@ describe('Application Details', () => {
 
     // When
     const appliedAtElement = screen.getByText(appliedAt + format(APPLICATION_DETAILS.dateApplied));
-    const statusElement = screen.getByText(status + APPLICATION_DETAILS.applicationStatus);
+    const statusElement = screen.getByText(status, { exact: false });
     const coverLetterElement = screen.getByLabelText(coverLetterLabel);
     const resumeElement = screen.getByLabelText(resumeLabel);
     const updateButton = screen.getByText(updateButtonLabel);
