@@ -11,20 +11,20 @@ jest.mock('../../utils/formatDate', () => ({
 
 describe('JobDetails', () => {
   const job: JobDetailsType = {
-      listingTitle: 'Software Engineer',
-      dateListed: '2023-10-01',
-      listingStatus: 'open',
-      jobTitle: 'Frontend Developer',
-      department: 'Engineering',
-      experienceLevel: 'Mid-level',
-      jobDescription: 'Develop and maintain web applications.',
-      additionalInformation: 'Remote position',
-      id: 0,
-      userId: 0
+    listingTitle: 'Software Engineer',
+    dateListed: '2023-10-01',
+    listingStatus: 'open',
+    jobTitle: 'Frontend Developer',
+    department: 'Engineering',
+    experienceLevel: 'Mid-level',
+    jobDescription: 'Develop and maintain web applications.',
+    additionalInformation: 'Remote position',
+    id: 0,
+    userId: 0,
   };
 
   beforeEach(() => {
-    (format as jest.Mock).mockImplementation((date) => `Formatted ${date}`);
+    (format as jest.Mock).mockImplementation(date => `Formatted ${date}`);
   });
 
   it('renders job details correctly', () => {
@@ -44,11 +44,10 @@ describe('JobDetails', () => {
     expect(screen.getByText('Remote position')).toBeInTheDocument();
   });
 
-it('renders closed status correctly', () => {
+  it('renders closed status correctly', () => {
     const closedJob: JobDetailsType = { ...job, listingStatus: 'closed' };
     render(<JobDetails job={closedJob} />);
 
     expect(screen.getByText('Closed: Formatted 2023-10-01')).toBeInTheDocument();
-});
-
+  });
 });
