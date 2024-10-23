@@ -1,5 +1,6 @@
 // src\contexts\AuthContext.tsx
 
+import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface AuthContextType {
@@ -20,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (token) {
+      console.log(jwtDecode(token));
       localStorage.setItem('authToken', token);
     } else {
       localStorage.removeItem('authToken');
