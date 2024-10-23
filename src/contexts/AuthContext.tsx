@@ -16,12 +16,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
-  const [role, setRole] = useState<string | null>(localStorage.getItem('userRole'));
+  const [role, setRole] = useState<'applicant' | 'hiring-manager' | 'admin' | null >(localStorage.getItem('userRole') as 'applicant' | 'hiring-manager' | 'admin' | null);
   const [id, setId] = useState<string | null>(localStorage.getItem('userId'));
 
   useEffect(() => {
     if (token) {
-      const { userId, role } = jwtDecode(token) as { userId: string; role: string };
+      const { userId, role } = jwtDecode(token) as { userId: string; role: 'applicant' | 'hiring-manager' | 'admin' };
       setRole(role);
       setId(userId);
       localStorage.setItem('authToken', token);
@@ -49,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [id]);
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('/users/login', {
+    const response = await fetch('http://localhost:8180/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,8 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (response.ok) {
       const data = await response.json();
-      setToken(data);
-      return { token: data }; // Return the data
+      setToken(data.token);
+      return { token: data.token }; // Return the data
     } else {
       throw new Error('Login failed');
     }

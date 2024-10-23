@@ -55,10 +55,10 @@ const ManagerCard = ({ id }: { id: string | undefined }) => {
         </h3>
         <div className="flex justify-between m-2 items-center">
           <div className="flex-col text-start">
-            <p className="text-adp-navy-dark text-small">{data.fullName}</p>
+            <p className="text-adp-navy-dark text-small">{data.name}</p>
             <p className="text-sm text-adp-navy-light">{data.department}</p>
           </div>
-          <p className="text-adp-navy-dark text-small">{data.publicContactInfo}</p>
+          <p className="text-adp-navy-dark text-small">{data.email}</p>
         </div>
       </>
     );
