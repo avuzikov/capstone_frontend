@@ -1,3 +1,5 @@
+// src\components\applicant\JobSearchForm.tsx
+
 import React, { useState, FormEvent } from 'react';
 
 const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => void }) => {
@@ -42,7 +44,7 @@ const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => 
             </svg>
           </div>
         </div>
-        <button type="submit" className="btn-primary">
+        <button type="submit" className="btn-primary h-9">
           Search
         </button>
       </form>

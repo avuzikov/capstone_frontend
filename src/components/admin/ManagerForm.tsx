@@ -1,3 +1,5 @@
+// src\components\admin\ManagerForm.tsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import Input from '../shared/Input';
 import BackButton from '../shared/BackButton';

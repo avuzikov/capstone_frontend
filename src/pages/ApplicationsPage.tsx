@@ -1,3 +1,5 @@
+// src\pages\ApplicationsPage.tsx
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { fecthApplications } from '../contexts/JobApi';
@@ -119,18 +121,18 @@ const ApplicationsPage: React.FC = () => {
           <ApplicationList applications={applications} />
         )}
 
-        <div className="flex justify-between items-center p-medium">
+        <div className="flex justify-between mt-4 items-center ">
           <button
-            className="btn-primary m-small text-normal"
+            className="btn-primary  text-normal"
             disabled={page === 1}
             onClick={() => setPage(prev => Math.max(prev - 1, 1))}
           >
             Previous
           </button>
 
-          <span className="text-medium">Page {page}</span>
+          <span className="text-small">Page {page}</span>
           <button
-            className={`btn-primary m-small text-normal ${
+            className={`btn-primary  text-normal ${
               noMoreApplications ? 'btn-disabled cursor-not-allowed' : ''
             }`}
             onClick={() => setPage(prev => prev + 1)}

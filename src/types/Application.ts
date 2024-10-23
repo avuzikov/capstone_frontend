@@ -1,3 +1,5 @@
+// src\types\Application.ts
+
 export interface ApplicationDetailsType {
   id: number;
   userId: number;

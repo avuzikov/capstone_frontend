@@ -1,5 +1,7 @@
+// src\components\applicant\ApplicationList.tsx
+
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 interface Application {
   id: number;
@@ -28,18 +30,19 @@ const ApplicationList: React.FC<ApplicationListProps> = ({ applications }) => {
   };
 
   return (
-    <ul className="list-none">
+    <ul className="list-none flex flex-col gap-3">
       {applications.map(application => (
         <li
           key={application.id}
           className="card-bordered hover:cursor-pointer"
           onClick={() => handleClick(application.id)}
         >
-          <h3 className="text-lg font-bold text-large">{application.jobTitle}</h3>
-          <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
-          <p>Status: {application.applicationStatus}</p>
-          <p>Cover Letter: {application.coverLetter}</p>
-          <p>Custom Resume: {application.customResume}</p>
+          <h3 className="text-medium font-bold mb-2">{application.jobTitle}</h3>
+          <div className="text-small flex gap-2 items-center">
+            <p>Date Applied: {new Date(application.dateApplied).toLocaleDateString()}</p>
+            <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
+            <p>Status: {application.applicationStatus}</p>
+          </div>
         </li>
       ))}
     </ul>

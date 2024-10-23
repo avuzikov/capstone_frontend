@@ -1,3 +1,5 @@
+// src\types\types.ts
+
 export interface User {
   id: number;
   fullName: string;

@@ -1,3 +1,5 @@
+// src\mocks\handlers.ts
+
 import { http, HttpResponse } from 'msw';
 import { User, Job, Application } from '../types/types';
 import {
@@ -212,6 +214,30 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
+  // Manager-specific routes
+  http.get('/api/job/manager', ({ request }) => {
+    const user = authenticateUser(request);
+    if (!user || user.role !== 'hiring-manager') {
+      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
+    }
+    const url = new URL(request.url);
+    const page = safeParseInt(url.searchParams.get('page'), 1);
+    const items = safeParseInt(url.searchParams.get('items'), 20);
+    const managerJobs = jobs.filter(job => job.userId === user.id);
+    const startIndex = (page - 1) * items;
+    const endIndex = startIndex + items;
+    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
+    return HttpResponse.json({
+      total: managerJobs.length,
+      page,
+      items,
+      jobs: paginatedJobs.map(job => ({
+        ...job,
+        applicantCount: applications.filter(app => app.jobId === job.id).length,
+      })),
+    });
+  }),
+
   http.get('/api/job/search', ({ request }) => {
     const url = new URL(request.url);
     const page = safeParseInt(url.searchParams.get('page'), 1);
@@ -281,12 +307,22 @@ export const handlers = [
     const user = authenticateUser(request);
     const { id } = params;
     const job = jobs.find(j => j.id === parseInt(id));
+
     if (!user || user.role !== 'hiring-manager' || !job || job.userId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
-    const updatedData = await request.json();
-    updateJob(parseInt(id), updatedData);
-    const updatedJob = jobs.find(j => j.id === parseInt(id));
+
+    const updatedData: JobRequest = await request.json();
+
+    const updatedJob: Job = {
+      ...job,
+      ...updatedData,
+      id: job.id, // Preserve the original ID
+      userId: job.userId, // Preserve the user ID
+      dateListed: job.dateListed, // Preserve the original listing date
+    };
+
+    updateJob(parseInt(id), updatedJob);
     return HttpResponse.json(updatedJob);
   }),
 
@@ -427,28 +463,14 @@ export const handlers = [
     return HttpResponse.json(null, { status: 204 });
   }),
 
-  // Manager-specific routes
-  http.get('/api/job/manager', ({ request }) => {
-    const user = authenticateUser(request);
-    if (!user || user.role !== 'hiring-manager') {
-      return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
+  // Jobs
+  http.get<{ id: string }>('/api/job/:id', ({ params, request }) => {
+    const { id } = params;
+    const job = jobs.find(j => j.id === parseInt(id));
+    if (!job) {
+      return HttpResponse.json({ message: 'Job not found' }, { status: 404 });
     }
-    const url = new URL(request.url);
-    const page = safeParseInt(url.searchParams.get('page'), 1);
-    const items = safeParseInt(url.searchParams.get('items'), 20);
-    const managerJobs = jobs.filter(job => job.userId === user.id);
-    const startIndex = (page - 1) * items;
-    const endIndex = startIndex + items;
-    const paginatedJobs = managerJobs.slice(startIndex, endIndex);
-    return HttpResponse.json({
-      total: managerJobs.length,
-      page,
-      items,
-      jobs: paginatedJobs.map(job => ({
-        ...job,
-        applicantCount: applications.filter(app => app.jobId === job.id).length,
-      })),
-    });
+    return HttpResponse.json(job);
   }),
 
   http.get<{ jobId: string }>('/api/application/job/:jobId', ({ params, request }) => {

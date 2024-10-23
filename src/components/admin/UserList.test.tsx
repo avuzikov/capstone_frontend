@@ -1,3 +1,5 @@
+// src\components\admin\UserList.test.tsx
+
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -8,7 +10,7 @@ jest.mock('../../contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock('./UserCard.tsx', () => ({ user, link }) => (
+jest.mock('./UserCard.tsx', () => ({ user, link }: { user: any; link: any }) => (
   <div data-testid="user-card">
     <div>{user.fullName}</div>
     <div>{link}</div>

@@ -1,3 +1,5 @@
+// src\components\applicant\ManagerCard.tsx
+
 import React, { useEffect, ReactNode } from 'react';
 import useFetch from '../../hooks/useFetch';
 
@@ -48,21 +50,21 @@ const ManagerCard = ({ id }: { id: string | undefined }) => {
   if (data) {
     managerData = (
       <>
-        <h3 className="text-start text-adp-navy-dark text-large mt-6 ml-2">
+        <h3 className="text-start text-adp-navy-dark text-medium mt-4 ml-2">
           Hiring Manager Details
         </h3>
-        <div className="flex justify-between m-4 items-center">
+        <div className="flex justify-between m-2 items-center">
           <div className="flex-col text-start">
-            <p className="text-adp-navy-dark text-medium">{data.fullName}</p>
+            <p className="text-adp-navy-dark text-small">{data.fullName}</p>
             <p className="text-sm text-adp-navy-light">{data.department}</p>
           </div>
-          <p className="text-adp-navy-dark text-medium">{data.publicContactInfo}</p>
+          <p className="text-adp-navy-dark text-small">{data.publicContactInfo}</p>
         </div>
       </>
     );
   }
 
-  return <div className="card-filled">{managerData}</div>;
+  return <div className="card-bordered">{managerData}</div>;
 };
 
 export default ManagerCard;

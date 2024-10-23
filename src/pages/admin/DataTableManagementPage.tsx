@@ -1,3 +1,5 @@
+// src\pages\admin\DataTableManagementPage.tsx
+
 import React from 'react';
 import BackButton from '../../components/shared/BackButton';
 import TableList from '../../components/admin/TableList';

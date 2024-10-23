@@ -1,3 +1,5 @@
+// src\components\admin\AdminJobList.tsx
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
