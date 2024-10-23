@@ -7,6 +7,7 @@ import JobSearchForm from '../components/applicant/JobSearchForm';
 import { jobService } from '../services/jobService';
 import { ApiError } from '../services/apiClient';
 import { Job } from '../services/types';
+import { PaginatedResponse } from '../services/types';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const JobPage: React.FC = () => {
@@ -34,7 +35,9 @@ const JobPage: React.FC = () => {
         const response = await jobService.getJobs(page, itemsPerPage);
         setJobs(response.content);
         setTotalPages(response.totalPages);
-        setNoMoreJobs(response.last);
+        // Check if we're on the last page by comparing current page, items per page, and total elements
+        const isLastPage = page >= Math.ceil(response.totalElements / itemsPerPage);
+        setNoMoreJobs(isLastPage);
       } catch (err) {
         if (err instanceof ApiError) {
           setError(err.message);
@@ -49,12 +52,17 @@ const JobPage: React.FC = () => {
     loadJobs();
   }, [page, itemsPerPage, searchQuery]);
 
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    setPage(1); // Reset to first page when searching
+  };
+
   return (
     <div>
       <div className="container mx-auto p-6">
         <div className="relative mb-4">
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <JobSearchForm setSearchQuery={setSearchQuery} />
+            <JobSearchForm setSearchQuery={handleSearch} />
           </div>
           <div className="flex justify-end h-16">
             <select
@@ -94,7 +102,9 @@ const JobPage: React.FC = () => {
             Previous
           </button>
 
-          <span className="text-small">Page {page}</span>
+          <span className="text-small">
+            Page {page} of {totalPages}
+          </span>
 
           <button
             className={`btn-primary text-normal ${

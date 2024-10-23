@@ -1,19 +1,18 @@
-// src\components\applicant\ApplicationDetails.test.tsx
+// src/components/applicant/ApplicationDetails.test.tsx
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-
 import ApplicationDetails from './ApplicationDetails';
-import { ApplicationDetailsType } from '../../types/Application';
-import { JobDetailsType } from '../../types/Job';
+import { Application, Job } from '../../services/types';
 import { format } from '../../utils/formatDate';
 import * as AuthContext from '../../contexts/AuthContext';
-import { getJobDetails } from '../../services/api';
-import { exact } from 'prop-types';
+import { jobService } from '../../services/jobService';
 
+// Mock the services
+jest.mock('../../services/jobService');
 jest.mock('../../contexts/AuthContext');
-jest.mock('../../hooks/useFetch');
-const APPLICATION_DETAILS: ApplicationDetailsType = {
+
+const APPLICATION_DETAILS: Application = {
   id: 1,
   userId: 1,
   jobId: 1,
@@ -23,7 +22,7 @@ const APPLICATION_DETAILS: ApplicationDetailsType = {
   customResume: 'John Doe\nSoftware Engineer\n5 years of experience in web development...',
 };
 
-const JOB_DATA: JobDetailsType = {
+const JOB_DATA: Job = {
   id: 1,
   userId: 1,
   listingTitle: 'Test job',
@@ -48,38 +47,31 @@ describe('Application Details', () => {
   const mockNavigate = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
+
+    // Mock the job service methods
+    (jobService.getJobById as jest.Mock).mockResolvedValue(JOB_DATA);
+    (jobService.updateApplication as jest.Mock).mockResolvedValue(APPLICATION_DETAILS);
+
+    jest.spyOn(AuthContext, 'useAuth').mockImplementation(() => authContext);
+
     jest.mock('react-router-dom', () => ({
       ...(jest.requireActual('react-router-dom') as any),
       useNavigate: () => mockNavigate,
     }));
-
-    jest.spyOn(AuthContext, 'useAuth').mockImplementation(() => authContext);
   });
 
   afterEach(() => {
-    mockNavigate.mockClear();
-
-    authContext.login.mockClear();
-    authContext.logout.mockClear();
-    authContext.setData.mockClear();
+    jest.restoreAllMocks();
   });
 
-  it('Should containt application details - date, status, cover letter and resume', () => {
+  it('Should contain application details - date, status, cover letter and resume', () => {
     // Given
     const appliedAt = 'Applied at: ';
     const status = 'Status: ';
     const coverLetterLabel = 'Cover Letter';
     const resumeLabel = 'Resume';
     const updateButtonLabel = 'Update';
-
-    jest.spyOn(require('../../hooks/useFetch'), 'default').mockImplementation(fetchFunction => {
-      return {
-        data: JOB_DATA,
-        isPending: false,
-        error: null,
-        fetchDispatch: jest.fn(),
-      };
-    });
 
     render(<ApplicationDetails application={APPLICATION_DETAILS} />, {
       wrapper: BrowserRouter,
@@ -105,24 +97,17 @@ describe('Application Details', () => {
     const coverLetterLabel = 'Cover Letter';
     const resumeLabel = 'Resume';
 
-    jest.spyOn(require('../../hooks/useFetch'), 'default').mockImplementation(fetchFunction => {
-      return {
-        data: JOB_DATA,
-        isPending: false,
-        error: null,
-        fetchDispatch: jest.fn(),
-      };
-    });
-
     render(<ApplicationDetails application={APPLICATION_DETAILS} />, {
       wrapper: BrowserRouter,
     });
+
     const coverLetterElement = screen.getByLabelText(coverLetterLabel);
     const resumeElement = screen.getByLabelText(resumeLabel);
 
     // When
     fireEvent.change(coverLetterElement, { target: { value: 'Cover letter update test' } });
     fireEvent.change(resumeElement, { target: { value: 'Resume update test' } });
+
     const updatedCoverLetter = screen.getByText('Cover letter update test', { exact: false });
     const updatedResume = screen.getByText('Resume update test', { exact: false });
 
@@ -134,16 +119,6 @@ describe('Application Details', () => {
   it('Should be able to update Application', () => {
     // Given
     const buttonLabel = 'Update';
-    const mockDispatch = jest.fn();
-    jest.spyOn(require('../../hooks/useFetch'), 'default').mockImplementation(fetchFunction => {
-      return {
-        data: JOB_DATA,
-        isPending: false,
-        error: null,
-        fetchDispatch: mockDispatch,
-      };
-    });
-
     render(<ApplicationDetails application={APPLICATION_DETAILS} />, {
       wrapper: BrowserRouter,
     });
@@ -153,12 +128,13 @@ describe('Application Details', () => {
     fireEvent.click(buttonElement);
 
     // Then
-    expect(mockDispatch).toHaveBeenCalledWith(
+    expect(jobService.updateApplication).toHaveBeenCalledWith(
+      APPLICATION_DETAILS.id.toString(),
       expect.objectContaining({
-        id: APPLICATION_DETAILS.id.toString(),
-        token: authContext.token,
-        application: expect.any(Object),
+        coverLetter: APPLICATION_DETAILS.coverLetter,
+        customResume: APPLICATION_DETAILS.customResume,
       })
     );
+    expect(mockNavigate).toHaveBeenCalledWith('/applications');
   });
 });

@@ -1,20 +1,8 @@
-// src\components\applicant\JobList.tsx
+// src/components/applicant/JobList.tsx
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
-interface Job {
-  id: string;
-  userId: string;
-  listingTitle: string;
-  department: string;
-  listingStatus: 'open' | 'closed';
-  dateListed: string;
-  jobTitle: string;
-  jobDescription: string;
-  experienceLevel: string;
-  additionalInformation: string;
-}
+import { Job } from '../../services/types'; // Update import to use service types
 
 interface JobListProps {
   jobs: Job[];
@@ -29,7 +17,7 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
     return <p>No jobs found</p>;
   }
 
-  const handleClick = (id: string) => {
+  const handleClick = (id: number) => {
     navigate(`/jobs/${id}`);
   };
 
@@ -38,10 +26,10 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
       {jobs.map(job => (
         <li
           key={job.id}
-          className="card-bordered  my-1 cursor-pointer"
+          className="card-bordered my-1 cursor-pointer"
           onClick={() => handleClick(job.id)}
         >
-          <h3 className="t font-bold text-medium mb-1">{job.listingTitle}</h3>
+          <h3 className="font-bold text-medium mb-1">{job.listingTitle}</h3>
           <div className="flex items-center gap-2">
             <p className="text-small">Department: {job.department}</p>
             <div className="w-1 h-1 rounded-full bg-adp-navy"></div>
@@ -50,7 +38,7 @@ const JobList: React.FC<JobListProps> = ({ jobs }) => {
             </p>
           </div>
           {job.listingStatus === 'closed' && (
-            <p className="text-adp-red-light">Recrutation closed</p>
+            <p className="text-adp-red-light">Recruitment closed</p>
           )}
         </li>
       ))}

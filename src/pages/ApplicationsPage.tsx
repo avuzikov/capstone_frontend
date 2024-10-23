@@ -23,17 +23,16 @@ const ApplicationsPage: React.FC = () => {
       setError(null);
 
       try {
-        // Fetch all applications for the current page
-        const response = await jobService.getApplicationsByPage(page, itemsPerPage);
-
+        // Get all applications for the user
+        const response = await jobService.getApplications(`page=${page}&items=${itemsPerPage}`);
         // Filter applications for the current user
-        const filteredApplications = response.filter(
+        const userApplications = response.filter(
           application => application.userId === parseInt(id, 10)
         );
 
         // Enrich applications with job titles
         const enrichedApplications = await Promise.all(
-          filteredApplications.map(async application => {
+          userApplications.map(async application => {
             try {
               const jobDetails = await jobService.getJobById(application.jobId.toString());
               return {
