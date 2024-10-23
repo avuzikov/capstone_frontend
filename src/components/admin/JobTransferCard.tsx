@@ -91,38 +91,40 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
   // if no other managers are available, display a message
   if (managers.length > 1) {
-    return (
-      <div className="flex flex-col w-full items-center justify-center">
-        <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
-        <div className=" card-bordered mt-1 w-full lg:w-1/2">
-          <div className="flex flex-col p-medium lg:p-large ">
-            <p className="pl-small mb-1">Manager</p>
+  return (
+    <div className="flex flex-col w-full items-center justify-center">
+      <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
+      <div className=" card-bordered mt-1 w-full lg:w-1/2">
+        <div className="flex flex-col p-medium lg:p-large ">
+          <p className="pl-small mb-1">Manager</p>
 
-            <select
-              name="manager"
-              id="manager"
-              className="input-filled w-full md:w-auto"
-              value={selectedManagerId}
-              onChange={e => setSelectedManagerId(e.target.value)}
-            >
-              {managers
-                .filter(manager => manager.id.toString() !== currentManagerId)
-                .map(manager => (
-                  <option key={manager.id} value={manager.id}>
-                    {manager.fullName}
-                  </option>
-                ))}
-            </select>
+          <select
+            name="manager"
+            id="manager"
+            className="input-filled w-full md:w-auto"
+            value={selectedManagerId}
+            onChange={e => setSelectedManagerId(e.target.value)}
+          >
+            {managers
+              .filter(manager => manager.id.toString() !== currentManagerId)
+              .map(manager => (
+                <option key={manager.id} value={manager.id}>
+                  {manager.fullName}
+                </option>
+              ))}
+          </select>
 
-            <button className="btn-primary mt-6 w-full" onClick={transferJobs}>
-              Transfer Jobs
-            </button>
-          </div>
+          <button className="btn-primary mt-6 w-full" onClick={transferJobs}>
+            Transfer Jobs
+          </button>
         </div>
       </div>
-    );
-  }
-  return <></>;
+    </div>
+  );
+              }
+  return (
+    <></>
+  );
 };
 
 export default JobTransferCard;

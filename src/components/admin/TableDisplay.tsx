@@ -56,7 +56,7 @@ const TableDisplay = () => {
 
       const keys = (Array.isArray(data.jobs || data) ? data.jobs || data : []).reduce(
         (acc: string[], row: Record<string, any>) => {
-          Object.keys(row).forEach(key => {
+            Object.keys(row).forEach(key => {
             if (!acc.includes(key) && key !== 'password') {
               acc.push(key);
             }
