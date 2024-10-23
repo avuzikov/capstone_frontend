@@ -130,17 +130,11 @@ const JobManagementPage: React.FC = () => {
           <h1 className="text-large font-bold">Job Management</h1>
           <div className="flex gap-2">
             {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="btn-primary"
-              >
+              <button onClick={() => setIsEditing(true)} className="btn-primary">
                 Edit Job
               </button>
             )}
-            <button
-              onClick={handleCancel}
-              className="btn-primary"
-            >
+            <button onClick={handleCancel} className="btn-primary">
               Back to Dashboard
             </button>
           </div>
@@ -186,16 +180,15 @@ const JobManagementPage: React.FC = () => {
       {!isEditing && (
         <div className="mt-8">
           <h2 className="text-large font-semibold mb-2">Applications</h2>
-          <div className='card-bordered'>
-
-          <ApplicantSortOptions
-            sortBy={sortBy}
-            filterStatus={filterStatus}
-            onSortChange={setSortBy}
-            onFilterChange={setFilterStatus}
-          />
-          <ApplicantList jobId={parseInt(jobId!)} />
-        </div>
+          <div className="card-bordered">
+            <ApplicantSortOptions
+              sortBy={sortBy}
+              filterStatus={filterStatus}
+              onSortChange={setSortBy}
+              onFilterChange={setFilterStatus}
+            />
+            <ApplicantList jobId={parseInt(jobId!)} />
+          </div>
         </div>
       )}
     </div>

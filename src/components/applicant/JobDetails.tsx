@@ -40,12 +40,12 @@ const JobDetails = ({ job }: { job: JobDetailsType }) => {
         <div className="flex-col space-y-4 my-4">
           <div className="flex-col gap-2">
             <p className="font-bold">Description:</p>
-            <p className="text-adp-navy-light">{job.jobDescription}</p>
+            <p className="text-adp-navy-light whitespace-pre">{job.jobDescription}</p>
           </div>
 
           <div className="flex-col gap-2">
             <p className="font-bold">Additional Information:</p>
-            <p className="text-adp-navy-light">{job.additionalInformation}</p>
+            <p className="text-adp-navy-light whitespace-pre">{job.additionalInformation}</p>
           </div>
         </div>
       </main>

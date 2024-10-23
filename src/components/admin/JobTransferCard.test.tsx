@@ -107,7 +107,9 @@ describe('JobTransferCard', () => {
 
     screen.debug();
 
-    fireEvent.change(screen.getByRole('combobox', { name: /manager/i }), { target: { value: '2' } });
+    fireEvent.change(screen.getByRole('combobox', { name: /manager/i }), {
+      target: { value: '2' },
+    });
     fireEvent.click(screen.getByRole('button', { name: 'Transfer Jobs' }));
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs

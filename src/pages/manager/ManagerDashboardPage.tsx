@@ -102,11 +102,7 @@ const ManagerDashboardPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <h1 className="text-large font-bold text-gray-900">Manager Dashboard</h1>
             <div className="relative z-10">
-              <button
-                onClick={() => setShowJobForm(!showJobForm)}
-                className="btn-primary"
-        
-              >
+              <button onClick={() => setShowJobForm(!showJobForm)} className="btn-primary">
                 {showJobForm ? 'Cancel' : 'Create New Job'}
               </button>
             </div>
@@ -125,10 +121,10 @@ const ManagerDashboardPage: React.FC = () => {
         {showJobForm ? (
           <div>
             <h2 className="text-medium p-medium font-semibold">Create New Job</h2>
-          <div className="card-bordered">
-            <JobForm onSubmit={handleCreateJob} onCancel={() => setShowJobForm(false)} />
-          </div>
+            <div className="card-bordered">
+              <JobForm onSubmit={handleCreateJob} onCancel={() => setShowJobForm(false)} />
             </div>
+          </div>
         ) : (
           <>
             {!isLoading && stats && (
