@@ -24,7 +24,17 @@ describe('JobTransferCard', () => {
     jest.clearAllMocks();
   });
 
-  test('renders correctly', () => {
+  test('renders correctly', async () => {
+    const mockManagers = [
+      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
+      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+    ];
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockManagers,
+    });
+
     render(
       <JobTransferCard
         currentManagerId="1"
@@ -32,7 +42,8 @@ describe('JobTransferCard', () => {
         handleShouldFetchJobs={mockHandleShouldFetchJobs}
       />
     );
-    expect(screen.getByText('Transfer Jobs')).toBeInTheDocument();
+    const transferElement = await screen.findByRole('heading', { name: 'Transfer Jobs' });
+    expect(transferElement).toBeInTheDocument();
   });
 
   test('fetches and displays managers', async () => {
@@ -55,12 +66,14 @@ describe('JobTransferCard', () => {
     );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    const managerOne = await screen.findByText('Manager One');
+    const managerTwo = await screen.findByText('Manager One');
 
-    expect(screen.getByText('Manager One')).toBeInTheDocument();
-    expect(screen.getByText('Manager Two')).toBeInTheDocument();
+    expect(managerOne).toBeInTheDocument();
+    expect(managerTwo).toBeInTheDocument();
   });
 
-  test.only('transfers jobs', async () => {
+  test('transfers jobs', async () => {
     const mockJobs: Job[] = [
       {
         id: 1,
@@ -91,7 +104,7 @@ describe('JobTransferCard', () => {
       { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
     ];
 
-    mockFetch.mockResolvedValueOnce({
+    mockFetch.mockResolvedValue({
       ok: true,
       json: async () => mockManagers,
     });
@@ -105,13 +118,15 @@ describe('JobTransferCard', () => {
     );
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    const comboBox = await screen.findByRole('combobox');
+    const button = await screen.findByRole('button', { name: 'Transfer Jobs' });
+    fireEvent.change(comboBox, { target: { value: '2' } });
+    fireEvent.click(button);
 
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Transfer Jobs' }));
-
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
-
-    expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object));
-    expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object))
+    );
+    await waitFor(() => expect(mockHandleShouldFetchJobs).toHaveBeenCalledTimes(2));
   });
 });

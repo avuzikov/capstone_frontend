@@ -96,10 +96,12 @@ const RegisterForm = () => {
     checkErrors(field, event.target.value);
   };
 
-  if (responseData) {
-    setAuth(responseData.token, responseData.role, responseData.id);
-    navigate('/profile');
-  }
+  useEffect(() => {
+    if (responseData) {
+      setAuth(responseData.token, responseData.role, responseData.id);
+      navigate('/profile');
+    }
+  }, [responseData, setAuth, navigate]);
 
   return (
     <div className="p-large rounded-lg w-[28rem]">
