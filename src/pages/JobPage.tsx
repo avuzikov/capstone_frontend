@@ -42,24 +42,8 @@ const JobPage: React.FC = () => {
   return (
     <div>
       <div className="container mx-auto p-6">
-        <div className="relative mb-4">
-          <div className="absolute left-1/2 transfrom -translate-x-1/2">
-            <JobSearchForm setSearchQuery={setSearchQuery} />
-          </div>
-          <div className="flex justify-end h-16">
-            <select
-              onChange={handleItemsPerPageChange}
-              className="block mt-6 border text-small p-0 rounded-md border-adp-navy-light"
-            >
-              <option value={1}>1</option>
-              <option value={3} selected={true}>
-                3
-              </option>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
+        <div className="flex justify-center mb-4">
+          <JobSearchForm setSearchQuery={setSearchQuery} />
         </div>
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
