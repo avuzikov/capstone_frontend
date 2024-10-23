@@ -121,8 +121,8 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className={`bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md ${
-            currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : ''
+          className={`btn-primary text-normal ${
+            currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
           }`}
         >
           Previous
@@ -132,12 +132,8 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
             setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
           }
           disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
-          className={`bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md ${
-            currentPage === Math.ceil(jobs.length / jobsPerPage)
-              ? 'bg-gray-500 cursor-not-allowed'
-              : ''
-          }`}
-        >
+          className={`btn-primary text-normal ${
+            currentPage === Math.ceil(jobs.length / jobsPerPage) ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'}`}
           Next
         </button>
       </div>
