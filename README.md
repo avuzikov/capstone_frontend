@@ -771,6 +771,9 @@ The team will work individually, with each member focusing on specific tasks:
 6. Sergio:
    - Implementation of the login page (/login)
    - Implementation of the job listing page (/jobs)
+   - Implementation of the application listing page (/applications)
+   - Implementation of the apply button functionality
+   - Implementation of pagination in job and application list 
 
 Shared Responsibilities:
 
