@@ -133,8 +133,12 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
           }
           disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
           className={`btn-primary text-normal ${
-            currentPage === Math.ceil(jobs.length / jobsPerPage) ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'}`}
-          >Next
+            currentPage === Math.ceil(jobs.length / jobsPerPage)
+              ? 'bg-gray-500 cursor-not-allowed'
+              : 'bg-gray-300 hover:bg-adp-red'
+          }`}
+        >
+          Next
         </button>
       </div>
     </div>
