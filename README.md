@@ -749,9 +749,10 @@ The team will work individually, with each member focusing on specific tasks:
    - Creating and supporting the Mock API
 
 2. Lalitha:
-   - Implementation of manager pages:
-     - Manager console (/manager/console)
-     - Job management page (/manager/{jobid})
+   - Implementation of managerdashboard page (/manager/console)
+   - Implementation of comprehensive hiring statistics
+   - Implementation of job management page (/manager/job:id)
+   - Implementation of sorting, status updating and filtering of applications
 
 3. Matt:
    - Implementation of admin pages
