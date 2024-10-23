@@ -125,21 +125,21 @@ const JobManagementPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6">
+      <div className="mb-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Job Management</h1>
-          <div className="flex gap-4">
+          <h1 className="text-large font-bold">Job Management</h1>
+          <div className="flex gap-2">
             {!isEditing && (
               <button
                 onClick={() => setIsEditing(true)}
-                className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+                className="btn-primary"
               >
                 Edit Job
               </button>
             )}
             <button
               onClick={handleCancel}
-              className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
+              className="btn-primary"
             >
               Back to Dashboard
             </button>
@@ -150,8 +150,8 @@ const JobManagementPage: React.FC = () => {
       {isEditing ? (
         <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={handleCancel} />
       ) : (
-        <div className="bg-white shadow rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">{job.listingTitle}</h2>
+        <div className="card-bordered">
+          <h2 className="text-medium font-semibold mb-2">{job.listingTitle}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <p className="font-medium">Department</p>
@@ -185,7 +185,9 @@ const JobManagementPage: React.FC = () => {
 
       {!isEditing && (
         <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-6">Applications</h2>
+          <h2 className="text-large font-semibold mb-2">Applications</h2>
+          <div className='card-bordered'>
+
           <ApplicantSortOptions
             sortBy={sortBy}
             filterStatus={filterStatus}
@@ -193,6 +195,7 @@ const JobManagementPage: React.FC = () => {
             onFilterChange={setFilterStatus}
           />
           <ApplicantList jobId={parseInt(jobId!)} />
+        </div>
         </div>
       )}
     </div>
