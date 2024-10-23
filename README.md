@@ -748,23 +748,25 @@ The team will work individually, with each member focusing on specific tasks:
    - Reducing technical debt
    - Creating and supporting the Mock API
 
-3. Lalitha:
+2. Lalitha:
    - Implementation of manager pages:
      - Manager console (/manager/console)
      - Job management page (/manager/{jobid})
 
-4. Matt:
+3. Matt:
    - Implementation of admin pages
    - Design of pages across the application
 
-5. Abideet:
+4. Abideet:
    - Implementation of admin pages
 
-6. Piotr:
+5. Piotr:
    - Implementation of the registration page (/register)
    - Implementation of the job detail page (/jobs/:id)
+   - Implementation of the application detail page (/applications/:id)
+   - Implementation of job search functionality
 
-7. Sergio:
+6. Sergio:
    - Implementation of the login page (/login)
    - Implementation of the job listing page (/jobs)
 
