@@ -7,7 +7,6 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
-
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -16,8 +15,25 @@ const LoginPage: React.FC = () => {
     setLoginError('');
 
     try {
-      await login(email, password);
-      navigate('/profile');
+      const data = await login(email, password);
+
+      // Get role from the auth context since that's how it was working before
+      const role = data.role;
+
+      // Redirect based on user role
+      switch (role) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'hiring-manager':
+          navigate('/manager/console');
+          break;
+        case 'applicant':
+          navigate('/jobs');
+          break;
+        default:
+          navigate('/jobs');
+      }
     } catch (error) {
       console.error('Login failed:', error);
       setLoginError('Invalid email or password. Please try again.');
@@ -50,7 +66,6 @@ const LoginPage: React.FC = () => {
           <button type="submit" className="btn-primary mt-medium">
             Log In
           </button>
-
           {loginError && <div className="mt-small text-danger">{loginError}</div>}
         </form>
       </div>

@@ -1,4 +1,3 @@
-// src/components/manager/ActiveJobsList.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -121,7 +120,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
         <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:opacity-50"
+          className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
         >
           Previous
         </button>
@@ -130,7 +129,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
             setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
           }
           disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md disabled:opacity-50"
+          className="bg-[#0a2558] hover:bg-[#051838] text-white font-bold py-2 px-4 rounded-md disabled:opacity-50 transition-colors"
         >
           Next
         </button>
