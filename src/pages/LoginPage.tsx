@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Input from '../components/shared/Input';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ const LoginPage: React.FC = () => {
       const data = await login(email, password);
 
       // Get role from the auth context since that's how it was working before
-      const role = data.role;
+      const { role } = jwtDecode(data.token) as { role: string };
 
       // Redirect based on user role
       switch (role) {

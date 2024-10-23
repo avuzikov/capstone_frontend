@@ -7,9 +7,9 @@ interface AuthContextType {
   token: string | null;
   id: string | null;
   role: string | null;
-  login: (email: string, password: string) => Promise<{ token: string; role: string; id: string }>; // Modified return type
+  login: (email: string, password: string) => Promise<{ token: string }>; // Modified return type
   logout: () => void;
-  setData: (token: string, role: string, id: string) => void;
+  setToken: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,10 +21,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (token) {
-      console.log(jwtDecode(token));
+      const { userId, role } = jwtDecode(token) as { userId: string; role: string };
+      setRole(role);
+      setId(userId);
       localStorage.setItem('authToken', token);
     } else {
       localStorage.removeItem('authToken');
+      setRole(role);
+      setId(id);
     }
   }, [token]);
 
@@ -44,12 +48,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [id]);
 
-  const setData = (token: string, role: string, id: string) => {
-    setToken(token);
-    setRole(role);
-    setId(id);
-  };
-
   const login = async (email: string, password: string) => {
     const response = await fetch('/users/login', {
       method: 'POST',
@@ -61,10 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (response.ok) {
       const data = await response.json();
-      setToken(data.token);
-      setRole(data.role);
-      setId(data.id);
-      return { token: data.token, role: data.role, id: data.id }; // Return the data
+      setToken(data);
+      return { token: data }; // Return the data
     } else {
       throw new Error('Login failed');
     }
@@ -77,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ token, id, role, login, logout, setData }}>
+    <AuthContext.Provider value={{ token, id, role, login, logout, setToken }}>
       {children}
     </AuthContext.Provider>
   );
