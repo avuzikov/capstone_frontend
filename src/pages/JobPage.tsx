@@ -27,7 +27,7 @@ const JobPage: React.FC = () => {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
         setJobs(data.jobs);
         const nJobs = data.jobs.length;
-        if (nJobs < 3) {
+        if (nJobs < itemsPerPage) {
           setNoMoreJobs(true);
         } else {
           setNoMoreJobs(false);
