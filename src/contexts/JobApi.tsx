@@ -23,7 +23,7 @@ export const fetchJobs = async (page: number, items: number, query = '', token: 
 };
 
 export const fecthApplications = async (page: number, items: number, token: string | null) => {
-  const response = await fetch(`/api/application?page=${page}&items=4`, {
+  const response = await fetch(`/api/application?page=${page}&items=${items}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

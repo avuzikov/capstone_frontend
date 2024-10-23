@@ -23,10 +23,14 @@ const JobPage: React.FC = () => {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
         setJobs(data.jobs);
         const nJobs = data.jobs.length;
-        if (nJobs < itemsPerPage) {
-          setNoMoreJobs(true);
-        } else {
+
+        const aux = await fetchJobs(page + 1, itemsPerPage, searchQuery, token);
+        const nAux = aux.jobs.length;
+        console.log("njobs aux: " + nAux)
+        if (nAux > 0) {
           setNoMoreJobs(false);
+        } else {
+          setNoMoreJobs(true);
         }
       } catch (error) {
         console.error('Error fetching jobs:', error);
