@@ -42,8 +42,20 @@ describe('ActiveJobsList', () => {
 
   test('displays job listings when data is fetched successfully', async () => {
     const jobs = [
-      { id: 1, listingTitle: 'Job 1', department: 'Dept 1', listingStatus: 'Open', dateListed: '2023-01-01' },
-      { id: 2, listingTitle: 'Job 2', department: 'Dept 2', listingStatus: 'Closed', dateListed: '2023-01-02' },
+      {
+        id: 1,
+        listingTitle: 'Job 1',
+        department: 'Dept 1',
+        listingStatus: 'Open',
+        dateListed: '2023-01-01',
+      },
+      {
+        id: 2,
+        listingTitle: 'Job 2',
+        department: 'Dept 2',
+        listingStatus: 'Closed',
+        dateListed: '2023-01-02',
+      },
     ];
 
     mockFetch.mockResolvedValueOnce({

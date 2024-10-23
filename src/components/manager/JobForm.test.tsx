@@ -27,8 +27,12 @@ describe('JobForm', () => {
     fireEvent.change(getByLabelText(/Department/i), { target: { value: 'IT' } });
     fireEvent.change(getByLabelText(/Job Title/i), { target: { value: 'Backend Developer' } });
     fireEvent.change(getByLabelText(/Experience Level/i), { target: { value: 'Senior' } });
-    fireEvent.change(getByLabelText(/Job Description/i), { target: { value: 'Develop backend services.' } });
-    fireEvent.change(getByLabelText(/Additional Information/i), { target: { value: 'On-site position' } });
+    fireEvent.change(getByLabelText(/Job Description/i), {
+      target: { value: 'Develop backend services.' },
+    });
+    fireEvent.change(getByLabelText(/Additional Information/i), {
+      target: { value: 'On-site position' },
+    });
 
     fireEvent.click(getByRole('button', { name: /Create Job/i }));
 
