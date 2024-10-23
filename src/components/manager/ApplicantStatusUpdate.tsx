@@ -88,21 +88,16 @@ const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
   };
 
   return (
-    <div className="inline-flex flex-col">
+    <div className="inline-flex flex-col ">
       <select
         id={`status-${applicationId}`}
         value={currentStatus}
         onChange={e => handleStatusChange(e.target.value as ApplicationStatus)}
         disabled={isUpdating}
         className={`
-          border border-gray-300 rounded-md shadow-sm p-2
-          text-white bg-blue-600 hover:bg-blue-700
-          focus:ring-blue-500 focus:border-blue-500
-          disabled:bg-gray-400 disabled:cursor-not-allowed
-          transition-colors duration-200
+          btn-primary
           ${error ? 'border-red-500' : ''}
         `}
-        style={{ backgroundColor: '#1a4689' }}
       >
         <option value="pending" className="bg-white text-gray-900">
           Pending

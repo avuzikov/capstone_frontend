@@ -105,7 +105,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => handleManageJob(job.id)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-adp-navy"
                       >
                         Manage
                       </button>
