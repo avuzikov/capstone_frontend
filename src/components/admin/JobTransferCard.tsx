@@ -89,6 +89,8 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
     }
   }, [token, fetchManagers]);
 
+  // if no other managers are available, display a message
+  if (managers.length > 1) {
   return (
     <div className="flex flex-col w-full items-center justify-center">
       <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
@@ -118,6 +120,10 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
         </div>
       </div>
     </div>
+  );
+              }
+  return (
+    <></>
   );
 };
 
