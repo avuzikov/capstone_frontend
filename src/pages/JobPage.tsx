@@ -38,10 +38,8 @@ const JobPage: React.FC = () => {
   return (
     <div>
       <div className="container mx-auto p-6">
-        <div className="relative mb-4">
-          <div className="absolute left-1/2 transfrom -translate-x-1/2">
-            <JobSearchForm setSearchQuery={setSearchQuery} />
-          </div>
+        <div className="flex justify-center mb-4">
+          <JobSearchForm setSearchQuery={setSearchQuery} />
         </div>
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
