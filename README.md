@@ -756,6 +756,8 @@ The team will work individually, with each member focusing on specific tasks:
 3. Matt:
    - Implementation of admin pages
    - Design of pages across the application
+   - Implementation of design system
+   - Comms with Back-End Team
 
 4. Abideet:
    - Implementation of admin pages
