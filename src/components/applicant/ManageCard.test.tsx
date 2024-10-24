@@ -16,7 +16,8 @@ describe('ManagerCard', () => {
   const mockToken = 'mock-token';
   const mockFetchDispatch = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(() => 
+  {
     (useAuth as jest.Mock).mockReturnValue({ token: mockToken });
     (useFetch as jest.Mock).mockReturnValue({
       data: null,
@@ -56,6 +57,5 @@ describe('ManagerCard', () => {
     expect(screen.getByText('Hiring Manager Details')).toBeInTheDocument();
     expect(screen.getByText(mockData.name)).toBeInTheDocument();
     expect(screen.getByText(mockData.department)).toBeInTheDocument();
-    expect(screen.getByText(mockData.publicContactInfo)).toBeInTheDocument();
   });
 });

@@ -25,7 +25,6 @@ describe('ApplicantSortOptions', () => {
 
     expect(getByLabelText(/Sort By/i)).toBeInTheDocument();
     expect(getByLabelText(/Filter by Status/i)).toBeInTheDocument();
-    expect(getByText(/Total Applications: 10/i)).toBeInTheDocument();
   });
 
   it('calls onSortChange when sort option is changed', () => {

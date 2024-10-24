@@ -7,7 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { worker } from './mocks/browser.ts';
 
 async function startMockServiceWorker() {
-  if (process.env.NODE_ENV === 'development') {
+  // Only start MSW if we're in development AND REACT_APP_ENABLE_MOCKS is true
+  if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_ENABLE_MOCKS === 'true') {
     const { worker } = await import('./mocks/browser.ts');
     return worker.start({
       onUnhandledRequest: 'bypass',
