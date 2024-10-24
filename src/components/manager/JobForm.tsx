@@ -1,6 +1,5 @@
-// src\components\manager\JobForm.tsx
-
 import React, { useState, useCallback } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Job } from '../../types/types';
 
 interface JobFormProps {
@@ -12,6 +11,7 @@ interface JobFormProps {
 const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPreview, setIsPreview] = useState(false);
 
   const [formData, setFormData] = useState<Partial<Job>>({
     department: initialJob?.department || '',
@@ -52,6 +52,17 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
       setIsLoading(false);
     }
   };
+
+  const markdownGuide = `
+## Markdown Guide
+- Use **bold** for emphasis
+- Use *italic* for subtle emphasis
+- Use # for headings (## for h2, ### for h3)
+- Use - or * for bullet points
+- Use 1. 2. 3. for numbered lists
+- Use > for blockquotes
+- Use \`code\` for inline code
+`;
 
   return (
     <form onSubmit={handleSubmit} className="p-medium">
@@ -145,19 +156,40 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
         </div>
 
         <div>
-          <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">
-            Job Description *
-          </label>
-          <textarea
-            id="jobDescription"
-            name="jobDescription"
-            value={formData.jobDescription}
-            onChange={handleChange}
-            required
-            disabled={isLoading}
-            rows={4}
-            className="input-bordered w-full mt-1"
-          />
+          <div className="flex justify-between items-center mb-2">
+            <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700">
+              Job Description * (Markdown supported)
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsPreview(!isPreview)}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              {isPreview ? 'Edit' : 'Preview'}
+            </button>
+          </div>
+
+          {isPreview ? (
+            <div className="prose max-w-none border rounded-md p-4 bg-white min-h-[200px]">
+              <ReactMarkdown>{formData.jobDescription || ''}</ReactMarkdown>
+            </div>
+          ) : (
+            <>
+              <textarea
+                id="jobDescription"
+                name="jobDescription"
+                value={formData.jobDescription}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+                rows={8}
+                className="input-bordered w-full mt-1 font-mono"
+              />
+              <div className="mt-2 text-sm text-gray-500">
+                <ReactMarkdown className="prose max-w-none">{markdownGuide}</ReactMarkdown>
+              </div>
+            </>
+          )}
         </div>
 
         <div>
@@ -165,17 +197,23 @@ const JobForm: React.FC<JobFormProps> = ({ initialJob, onSubmit, onCancel }) => 
             htmlFor="additionalInformation"
             className="block text-sm font-medium text-gray-700"
           >
-            Additional Information
+            Additional Information (Markdown supported)
           </label>
-          <textarea
-            id="additionalInformation"
-            name="additionalInformation"
-            value={formData.additionalInformation}
-            onChange={handleChange}
-            disabled={isLoading}
-            rows={3}
-            className="input-bordered w-full mt-1"
-          />
+          {isPreview ? (
+            <div className="prose max-w-none border rounded-md p-4 bg-white min-h-[150px]">
+              <ReactMarkdown>{formData.additionalInformation || ''}</ReactMarkdown>
+            </div>
+          ) : (
+            <textarea
+              id="additionalInformation"
+              name="additionalInformation"
+              value={formData.additionalInformation}
+              onChange={handleChange}
+              disabled={isLoading}
+              rows={4}
+              className="input-bordered w-full mt-1 font-mono"
+            />
+          )}
         </div>
       </div>
 

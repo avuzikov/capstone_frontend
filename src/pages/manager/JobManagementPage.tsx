@@ -1,6 +1,6 @@
-// src/pages/manager/JobManagementPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../../contexts/AuthContext';
 import JobForm from '../../components/manager/JobForm';
 import ApplicantList from '../../components/manager/ApplicantList';
@@ -11,7 +11,6 @@ import { Job, Application } from '../../types/types';
 const JobManagementPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
   const { token, id } = useAuth();
-
   const navigate = useNavigate();
 
   const [job, setJob] = useState<Job | null>(null);
@@ -74,22 +73,17 @@ const JobManagementPage: React.FC = () => {
         },
         body: JSON.stringify({
           ...updatedJobData,
-          id: jobId,
-          userId: id,
+          id: parseInt(jobId),
+          userId: parseInt(id ?? ''),
         }),
       });
-
-      console.log(response);
 
       if (!response.ok) {
         throw new Error('Failed to update job');
       }
 
-      // Show success message (optional)
-      // You could add a toast notification here if you have a notification system
-
-      // Navigate back to dashboard
-      navigate('/manager/console');
+      setIsEditing(false);
+      fetchJobDetails();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update job');
     } finally {
@@ -98,7 +92,11 @@ const JobManagementPage: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate('/manager/console');
+    if (isEditing) {
+      setIsEditing(false);
+    } else {
+      navigate('/manager/console');
+    }
   };
 
   if (isLoading) {
@@ -138,8 +136,8 @@ const JobManagementPage: React.FC = () => {
                 Edit Job
               </button>
             )}
-            <button onClick={handleCancel} className="btn-primary">
-              Back to Dashboard
+            <button onClick={handleCancel} className="btn-secondary">
+              {isEditing ? 'Cancel Edit' : 'Back to Dashboard'}
             </button>
           </div>
         </div>
@@ -148,50 +146,84 @@ const JobManagementPage: React.FC = () => {
       {isEditing ? (
         <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={handleCancel} />
       ) : (
-        <div className="card-bordered">
-          <h2 className="text-medium font-semibold mb-2">{job.listingTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="space-y-6">
             <div>
-              <p className="font-medium">Department</p>
-              <p>{job.department}</p>
+              <h2 className="text-2xl font-semibold text-gray-900">{job.listingTitle}</h2>
+              <p className="text-sm text-gray-500">
+                Posted on {new Date(job.dateListed).toLocaleDateString()}
+              </p>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Department</h3>
+                  <p className="mt-1 text-gray-900">{job.department}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Job Title</h3>
+                  <p className="mt-1 text-gray-900">{job.jobTitle}</p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Status</h3>
+                  <p className="mt-1">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        job.listingStatus === 'open'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {job.listingStatus.charAt(0).toUpperCase() + job.listingStatus.slice(1)}
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Experience Level</h3>
+                  <p className="mt-1 text-gray-900">{job.experienceLevel}</p>
+                </div>
+              </div>
+            </div>
+
             <div>
-              <p className="font-medium">Status</p>
-              <p>{job.listingStatus}</p>
+              <h3 className="text-sm font-medium text-gray-500">Job Description</h3>
+              <div className="mt-2 prose max-w-none">
+                <ReactMarkdown>{job.jobDescription}</ReactMarkdown>
+              </div>
             </div>
-            <div>
-              <p className="font-medium">Job Title</p>
-              <p>{job.jobTitle}</p>
-            </div>
-            <div>
-              <p className="font-medium">Experience Level</p>
-              <p>{job.experienceLevel}</p>
-            </div>
+
+            {job.additionalInformation && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Additional Information</h3>
+                <div className="mt-2 prose max-w-none">
+                  <ReactMarkdown>{job.additionalInformation}</ReactMarkdown>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="mb-4">
-            <p className="font-medium">Job Description</p>
-            <p className="whitespace-pre-wrap">{job.jobDescription}</p>
-          </div>
-          {job.additionalInformation && (
-            <div>
-              <p className="font-medium">Additional Information</p>
-              <p className="whitespace-pre-wrap">{job.additionalInformation}</p>
-            </div>
-          )}
         </div>
       )}
 
       {!isEditing && (
         <div className="mt-8">
-          <h2 className="text-large font-semibold mb-2">Applications</h2>
-          <div className="card-bordered">
-            <ApplicantSortOptions
-              sortBy={sortBy}
-              filterStatus={filterStatus}
-              onSortChange={setSortBy}
-              onFilterChange={setFilterStatus}
-            />
-            <ApplicantList jobId={parseInt(jobId!)} />
+          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Applications</h2>
+            </div>
+
+            <div>
+              <ApplicantSortOptions
+                sortBy={sortBy}
+                filterStatus={filterStatus}
+                onSortChange={setSortBy}
+                onFilterChange={setFilterStatus}
+              />
+              <ApplicantList jobId={parseInt(jobId!)} />
+            </div>
           </div>
         </div>
       )}
