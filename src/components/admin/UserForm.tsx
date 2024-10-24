@@ -23,7 +23,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
-    fullName: '',
+    name: '',
     password: '',
     email: '',
     address: '',
@@ -32,7 +32,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
     role: 'applicant',
   });
   const [formErrors, setFormErrors] = useState({
-    fullName: '',
+    name: '',
     password: '',
     email: '',
     address: '',
@@ -45,9 +45,9 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
   let url: string;
 
   if (userId != '' && userId != undefined) {
-    url = `/users/${userId}`;
+    url = `http://localhost:8180/users/${userId}`;
   } else {
-    url = `/users/${id}`;
+    url = `http://localhost:8180/users/${id}`;
   }
 
   const fetchUser = useCallback(async () => {
@@ -76,15 +76,15 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
 
   const createUser = async () => {
     try {
-      const response = await fetch('/users/registration', {
+      const response = await fetch('http://localhost:8180/registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
+          name: formData.name,
           password: formData.password,
+          email: formData.email,
         }),
       });
 
@@ -101,7 +101,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
 
   const updateUser = async () => {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`http://localhost:8180/users/admin/${userId || id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -117,8 +117,8 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
         throw new Error('Failed to update user');
       }
 
-      const data = await response.json();
-      console.log('User updated:', data);
+      fetchUser();
+    
     } catch (error) {
       console.error('Failed to update user:', error);
     }
@@ -126,18 +126,20 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
 
   const deleteUser = async () => {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(`http://localhost:8180/users/admin/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      navigate(-1);
 
+      
       if (!response.ok) {
         throw new Error('Failed to delete user');
       }
+
+      navigate(-1);
     } catch (error) {
       console.error('Failed to delete user:', error);
     }
@@ -159,7 +161,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
 
   const validateForm = () => {
     const errors = {
-      fullName: '',
+      name: '',
       password: '',
       email: '',
       address: '',
@@ -167,8 +169,8 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
       resume: '',
     };
 
-    if (!formData.fullName) {
-      errors.fullName = 'Full name is required';
+    if (!formData.name) {
+      errors.name = 'Full name is required';
     }
     if (!formData.password && !isEditing) {
       errors.password = 'Password is required';
@@ -200,12 +202,10 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
         updateUser();
       } else {
         createUser();
-      }
 
-      if (!userId) {
-        console.log('Navigating to previous page');
         navigate(-1);
       }
+
 
       if (handleShowForm) {
         handleShowForm();
@@ -215,7 +215,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
 
   return (
     <div className="m-medium flex flex-col gap-3">
-      {id && <BackButton />}
+      {!userId && <BackButton />}
       <div className="flex flex-col justify-center items-center">
         {isEditing && !userId && <h1 className="text-large w-full lg:w-1/2">Edit User</h1>}
         {isEditing && userId && <h1 className="text-large w-full lg:w-1/2">Edit Profile</h1>}
@@ -224,12 +224,12 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
         <form onSubmit={handleSubmit} className="card-bordered mt-2 w-full lg:w-1/2">
           <div className="p-medium md:p-large flex flex-col gap-4">
             <Input
-              name="fullName"
+              name="name"
               placeholder="Enter full name"
               type="text"
-              value={formData.fullName}
+              value={formData.name}
               onChange={handleChange}
-              error={formErrors.fullName}
+              error={formErrors.name}
             />
             {!isEditing && (
               <Input

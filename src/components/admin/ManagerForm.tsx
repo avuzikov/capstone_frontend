@@ -24,7 +24,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const [formData, setFormData] = useState<RegistrationData>({
     id: 0,
-    fullName: '',
+    name: '',
     password: '',
     email: '',
     phone: '',
@@ -32,7 +32,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     role: 'hiring-manager',
   });
   const [formErrors, setFormErrors] = useState({
-    fullName: '',
+    name: '',
     password: '',
     email: '',
     phone: '',
@@ -48,7 +48,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const fetchManager = useCallback(async () => {
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(`http://localhost:8180/users/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -78,33 +78,33 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const createManager = async () => {
     try {
-      const response = await fetch('/users/registration/admin', {
+      const response = await fetch('http://localhost:8180/registration/admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
+          name: formData.name,
           password: formData.password,
+          email: formData.email
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create applicant');
+        throw new Error('Failed to create manager');
       }
 
       const data = await response.json();
-      console.log('Applicant created:', data);
+      fetchManager();
     } catch (error) {
-      console.error('Failed to create applicant:', error);
+      console.error('Failed to create manager:', error);
     }
   };
 
   const updateManager = async () => {
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(`http://localhost:8180/users/admin/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -115,15 +115,16 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          throw new Error('Forbidden: You do not have permission to update this applicant.');
+          throw new Error('Forbidden: You do not have permission to update this manager.');
         }
-        throw new Error('Failed to update applicant');
+        throw new Error('Failed to update manager');
       }
 
       const data = await response.json();
       console.log('Applicant updated:', data);
+      fetchManager();
     } catch (error) {
-      console.error('Failed to update applicant:', error);
+      console.error('Failed to update manager:', error);
     }
   };
 
@@ -136,7 +137,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     }
 
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(`http:/localhost:8180/users/admin/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,7 +156,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const fetchJobs = useCallback(async () => {
     try {
-      const response = await fetch('/api/job?page=1&items=1000', {
+      const response = await fetch('http://localhost:8000/api/job', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -165,7 +166,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
       const data = await response.json();
 
-      const filteredJobs = data.jobs.filter((job: Job) => job.userId.toString() === id);
+      const filteredJobs = data.filter((job: Job) => job.userId.toString() === id);
 
       setJobs(filteredJobs);
     } catch (err) {
@@ -187,15 +188,15 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
 
   const validateForm = () => {
     const errors = {
-      fullName: '',
+      name: '',
       password: '',
       email: '',
       phone: '',
       department: '',
     };
 
-    if (!formData.fullName) {
-      errors.fullName = 'Full name is required';
+    if (!formData.name) {
+      errors.name = 'Full name is required';
     }
     if (!formData.password && !isEditing) {
       errors.password = 'Password is required';
@@ -224,9 +225,9 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
         updateManager();
       } else {
         createManager();
+        navigate(-1);
       }
 
-      navigate(-1);
     }
   };
 
@@ -241,12 +242,12 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
         <form onSubmit={handleSubmit} className="card-bordered w-full  mt-2 lg:w-1/2">
           <div className="p-medium md:p-large flex flex-col gap-4">
             <Input
-              name="fullName"
+              name="name"
               placeholder="Enter full name"
               type="text"
-              value={formData.fullName}
+              value={formData.name}
               onChange={handleChange}
-              error={formErrors.fullName}
+              error={formErrors.name}
             />
             {!isEditing && (
               <Input

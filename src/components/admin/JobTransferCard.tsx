@@ -22,7 +22,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
   const fetchManagers = useCallback(async () => {
     try {
-      const response = await fetch('/users', {
+      const response = await fetch('http://localhost:8180/users/admin/1', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
 
       const managers = data.filter(user => user.role === 'hiring-manager');
 
-      managers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+      managers.sort((a, b) => a.name.localeCompare(b.name));
 
       setManagers(managers);
 
@@ -59,7 +59,10 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   const transferJobs = async () => {
     try {
       for (const job of jobs) {
-        const response = await fetch('/api/job/transfer', {
+
+        console.log(job.id + ' ' + currentManagerId + ' ' + selectedManagerId);
+
+        const response = await fetch('http://localhost:8000/api/job/transfer', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +93,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
   }, [token, fetchManagers]);
 
   // if no other managers are available, display a message
-  if (managers.length > 1) {
+  if (managers.length >= 1) {
     return (
       <div className="flex flex-col w-full items-center justify-center">
         <h1 className="text-large p-small w-full lg:w-1/2    ">Transfer Jobs</h1>
@@ -109,7 +112,7 @@ const JobTransferCard: React.FC<JobTransferCardProps> = ({
                 .filter(manager => manager.id.toString() !== currentManagerId)
                 .map(manager => (
                   <option key={manager.id} value={manager.id}>
-                    {manager.fullName}
+                    {manager.name}
                   </option>
                 ))}
             </select>
