@@ -50,9 +50,6 @@ export const register = async (user: UserRegistration) => {
 export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
   const response = await fetch(`${DATA_BASE_URL}/api/job/${id}`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   const responseData = await response.json();
@@ -67,12 +64,8 @@ export const getJobDetails = async ({ id, token }: GetJobDetailsType) => {
 export const getUserDetails = async ({ id, token }: GetUserDetailsType) => {
   const response = await fetch(`${ACCOUNT_BASE_URL}/users/manager/${id}`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-
   });
-  
+
   const responseData = await response.json();
   console.log(responseData);
 
