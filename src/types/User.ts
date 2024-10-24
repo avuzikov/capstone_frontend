@@ -3,7 +3,7 @@
 export interface UserRegistration {
   email: string;
   password: string;
-  fullName: string;
+  name: string;
 }
 
 export interface UserLogin {
