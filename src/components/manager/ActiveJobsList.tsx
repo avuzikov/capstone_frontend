@@ -18,12 +18,14 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const jobsPerPage = 5;
+   const [first, setFirst] = useState(true);
+  const [last, setLast] = useState(true);
 
   const fetchJobs = useCallback(async () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/job/page?page=${currentPage}&items=${jobsPerPage}`, {
+      const response = await fetch(`http://localhost:8000/api/job/manager/${id}?page=${currentPage}&items=${jobsPerPage}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -31,18 +33,20 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
 
       const data = await response.json();
 
-      const filteredJobs = data.content.filter((job: Job) => job.userId === Number(id));
-
-      setJobs(filteredJobs);
+      setJobs(data.content);
+       setFirst(data.first);
+        setLast(data.last);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [token, id,  currentPage]);
 
   useEffect(() => {
     fetchJobs();
+
+    console.log(jobs);
   }, [fetchJobs]);
 
   const handleManageJob = (jobId: number) => {
@@ -60,10 +64,6 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   if (error) {
     return <div className="p-4 text-red-600">{error}</div>;
   }
-
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div className="card-bordered">
@@ -94,7 +94,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentJobs.map(job => (
+                {jobs.map(job => (
                   <tr key={job.id}>
                     <td className="px-6 py-4 whitespace-nowrap">{job.listingTitle}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{job.department}</td>
@@ -116,21 +116,21 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
       </div>
       <div className="mt-4 flex justify-between">
         <button
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+          disabled={first}
           className={`btn-primary border-none text-normal ${
-            currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
+            first ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
           }`}
         >
           Previous
         </button>
         <button
           onClick={() =>
-            setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
+            setCurrentPage(prev => prev + 1)
           }
-          disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
+          disabled={last}
           className={`btn-primary border-none text-normal ${
-            currentPage === Math.ceil(jobs.length / jobsPerPage)
+            last
               ? 'bg-gray-500 cursor-not-allowed'
               : 'bg-gray-300 hover:bg-adp-red'
           }`}
