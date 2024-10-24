@@ -74,7 +74,7 @@ const ProfilePage = () => {
                         <p className="text-small pl-small">
                           {key.charAt(0).toUpperCase() + key.slice(1)}
                         </p>
-                        <div className="card-bordered">{value}</div>
+                        <div className="card-bordered">{value || 'N/A'}</div>
                       </div>
                     );
                   }
