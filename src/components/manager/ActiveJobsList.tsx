@@ -15,14 +15,14 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const jobsPerPage = 5;
 
   const fetchJobs = useCallback(async () => {
     if (!token) return;
 
     try {
-      const response = await fetch('/api/job?page=page&items=items', {
+      const response = await fetch(`http://localhost:8000/api/job/page?page=${currentPage}&items=${jobsPerPage}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

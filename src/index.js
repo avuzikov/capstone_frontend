@@ -4,6 +4,27 @@ import './index.css';
 import App from './App.tsx';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+reportWebVitals();
+
+// Below code with Mock API
+
+/*
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
 import { worker } from './mocks/browser.ts';
 
 async function startMockServiceWorker() {
@@ -40,29 +61,5 @@ if (process.env.NODE_ENV === 'development') {
     })
     .catch(console.error);
 }
-
-
-// Below code without Mock API
-
-/*
-
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from 'react-router-dom';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
-);
-
-reportWebVitals();
-
 
 */
