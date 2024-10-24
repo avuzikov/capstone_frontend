@@ -25,7 +25,7 @@ const ManagerDashboardPage: React.FC = () => {
 
   const fetchManagerStats = async () => {
     try {
-      const response = await fetch('/api/stats/manager', {
+      const response = await fetch('http://localhost:8000/api/stats/manager', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,6 +61,7 @@ const ManagerDashboardPage: React.FC = () => {
 
 
     try {
+      const response = await fetch('http://localhost:8000/api/job', {
       const response = await fetch('http://localhost:8000/api/job', {
         method: 'POST',
         headers: {

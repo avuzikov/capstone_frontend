@@ -1,19 +1,25 @@
 // src\types\Application.ts
 
+import { JobDetailsType } from './Job';
+
 export interface ApplicationDetailsType {
   id: number;
-  userId: number;
-  jobId: number;
+  candidateId: number;
+  candidateEmail: string;
+  job: JobDetailsType;
   dateApplied: string;
   customResume: string;
   coverLetter: string;
   applicationStatus: 'pending' | 'reviewed' | 'rejected' | 'accepted';
+  yearsOfExperience: number;
 }
 
 export interface UpdateApplicationType {
-  id: number;
-  userId: number;
-  dateApplied: string;
+  candidateId: number;
+  candidateEmail: string;
+  jobId: number;
   coverLetter: string;
   customResume: string;
+  applicationStatus: string;
+  yearsOfExperience: number;
 }

@@ -63,7 +63,12 @@ describe('JobTransferCard', () => {
       />
     );
 
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8180/users/admin/1',
+        expect.any(Object)
+      )
+    );
 
     expect(await screen.findByText('Manager One')).toBeInTheDocument();
     expect(await screen.findByText('Manager Two')).toBeInTheDocument();
@@ -113,7 +118,12 @@ describe('JobTransferCard', () => {
       />
     );
 
-    await waitFor(() => expect(mockFetch).toHaveBeenCalledWith('/users', expect.any(Object)));
+    await waitFor(() =>
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:8180/users/admin/1',
+        expect.any(Object)
+      )
+    );
 
     fireEvent.change(await screen.findByRole('combobox'), {
       target: { value: '2' },
@@ -122,6 +132,9 @@ describe('JobTransferCard', () => {
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(3)); // 1 for fetching managers, 2 for transferring jobs
 
-    expect(mockFetch).toHaveBeenCalledWith('/api/job/transfer', expect.any(Object));
+    expect(mockFetch).toHaveBeenCalledWith(
+      'http://localhost:8000/api/job/transfer',
+      expect.any(Object)
+    );
   });
 });
