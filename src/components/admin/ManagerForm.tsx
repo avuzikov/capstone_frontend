@@ -123,6 +123,8 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
       const data = await response.json();
       console.log('Applicant updated:', data);
       fetchManager();
+
+      navigate(-1);
     } catch (error) {
       console.error('Failed to update manager:', error);
     }
@@ -137,7 +139,7 @@ const ManagerForm: React.FC<ManagerFormProps> = ({ isEditing }) => {
     }
 
     try {
-      const response = await fetch(`http:/localhost:8180/users/admin/${id}`, {
+      const response = await fetch(`http://localhost:8180/users/admin/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

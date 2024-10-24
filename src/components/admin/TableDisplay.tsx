@@ -65,9 +65,7 @@ const TableDisplay = () => {
             if (!acc.includes(key) && key !== 'password') {
               acc.push(key);
             }
-            if (key.includes('date')) {
-              row[key] = new Date(row[key]).toLocaleDateString();
-            }
+           
           });
           return acc;
         },
