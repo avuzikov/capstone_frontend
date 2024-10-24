@@ -1,5 +1,3 @@
-// src\components\manager\ApplicantList.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApplicantStatusUpdate from './ApplicantStatusUpdate';
@@ -16,18 +14,11 @@ interface ApplicationWithUser extends Application {
   applicantName?: string;
 }
 
-interface PaginatedApplicationResponse {
-  total: number;
-  page: number;
-  items: number;
-  applications: ApplicationWithUser[];
-}
-
 const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<ApplicationWithUser[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0); // Changed to 0-based for Spring pagination
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,22 +29,31 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
     setError(null);
 
     try {
+      // Using the Spring backend endpoint
       const response = await fetch(
-        `/api/application/job/${jobId}?page=${currentPage}&items=${itemsPerPage}`,
+        `http://localhost:8000/api/job/${jobId}/applications?page=${currentPage}&items=${itemsPerPage}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         }
       );
 
       if (!response.ok) {
+        if (response.status === 404) {
+          setApplications([]);
+          setTotalPages(1);
+          return;
+        }
         throw new Error('Failed to fetch applications');
       }
 
-      const data: PaginatedApplicationResponse = await response.json();
-      setApplications(data.applications);
-      setTotalPages(Math.ceil(data.total / itemsPerPage));
+      const data = await response.json();
+
+      // Handle Spring Pageable response format
+      setApplications(data.content || []);
+      setTotalPages(data.totalPages || 1);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'An error occurred while fetching applications'
@@ -64,12 +64,14 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
   };
 
   useEffect(() => {
-    fetchApplications();
-  }, [jobId, currentPage]);
+    if (token && jobId) {
+      fetchApplications();
+    }
+  }, [jobId, currentPage, token]);
 
   const handleStatusChange = async (applicantId: number, newStatus: ApplicationStatus) => {
     try {
-      const response = await fetch(`/api/application/manager/${applicantId}`, {
+      const response = await fetch(`http://localhost:8000/api/application/manager/${applicantId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -92,13 +94,15 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
             : app
         )
       );
+
+      // Refresh the applications list
+      fetchApplications();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update status');
     }
   };
 
   const handleJobStatusUpdate = () => {
-    // Navigate to the job management page
     navigate(`/manager/${jobId}`);
   };
 
@@ -160,15 +164,15 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
       {applications.length > 0 && (
         <div className="mt-4 flex px-small justify-between">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+            disabled={currentPage === 0}
             className="btn-disabled disabled:opacity-50 transition-colors"
           >
             Previous
           </button>
           <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+            disabled={currentPage === totalPages - 1}
             className="btn-disabled disabled:opacity-50 transition-colors"
           >
             Next

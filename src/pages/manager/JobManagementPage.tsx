@@ -1,5 +1,5 @@
 // src/pages/manager/JobManagementPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import JobForm from '../../components/manager/JobForm';
@@ -14,11 +14,25 @@ const JobManagementPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [job, setJob] = useState<Job | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
   const [filterStatus, setFilterStatus] = useState<Application['applicationStatus'] | 'all'>('all');
+
+  // Calculate stats from applications data
+  const applicationStats = useMemo(() => {
+    if (!applications.length) return null;
+
+    return {
+      total: applications.length,
+      pending: applications.filter(app => app.applicationStatus === 'pending').length,
+      reviewed: applications.filter(app => app.applicationStatus === 'reviewed').length,
+      accepted: applications.filter(app => app.applicationStatus === 'accepted').length,
+      rejected: applications.filter(app => app.applicationStatus === 'rejected').length,
+    };
+  }, [applications]);
 
   const fetchJobDetails = async () => {
     if (!jobId || !token) return;
@@ -27,26 +41,43 @@ const JobManagementPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch(`/api/job/${jobId}`, {
+      // Fetch job details
+      const jobResponse = await fetch(`http://localhost:8000/api/job/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error('Job not found');
-        }
-        throw new Error('Failed to fetch job details');
+      if (!jobResponse.ok) {
+        throw new Error(
+          jobResponse.status === 404 ? 'Job not found' : 'Failed to fetch job details'
+        );
       }
 
-      const jobData: Job = await response.json();
+      const jobData: Job = await jobResponse.json();
       setJob(jobData);
+
+      // Fetch applications for the job
+      const applicationsResponse = await fetch(
+        `http://localhost:8000/api/job/${jobId}/applications`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (applicationsResponse.ok) {
+        const applicationsData = await applicationsResponse.json();
+        setApplications(applicationsData);
+      }
     } catch (err) {
-      const error =
+      const errorMessage =
         err instanceof Error ? err.message : 'An error occurred while fetching job details';
-      setError(error);
-      if (error === 'Job not found') {
+      setError(errorMessage);
+      if (errorMessage === 'Job not found') {
         navigate('/manager/console');
       }
     } finally {
@@ -60,12 +91,37 @@ const JobManagementPage: React.FC = () => {
     }
   }, [token, jobId, isEditing]);
 
+  // Sort and filter applications
+  const processedApplications = useMemo(() => {
+    let filtered = [...applications];
+
+    // Apply status filter
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(app => app.applicationStatus === filterStatus);
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      if (sortBy === 'date') {
+        return new Date(b.dateApplied).getTime() - new Date(a.dateApplied).getTime();
+      } else {
+        // Sort by status priority: pending -> reviewed -> accepted -> rejected
+        const statusPriority = { pending: 0, reviewed: 1, accepted: 2, rejected: 3 };
+        return (
+          (statusPriority[a.applicationStatus] || 0) - (statusPriority[b.applicationStatus] || 0)
+        );
+      }
+    });
+
+    return filtered;
+  }, [applications, sortBy, filterStatus]);
+
   const handleUpdateJob = async (updatedJobData: Partial<Job>) => {
     if (!jobId || !token) return;
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/job/${jobId}`, {
+      const response = await fetch(`http://localhost:8000/api/job/${jobId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -73,7 +129,7 @@ const JobManagementPage: React.FC = () => {
         },
         body: JSON.stringify({
           ...updatedJobData,
-          id: jobId,
+          id: parseInt(jobId),
         }),
       });
 
@@ -81,11 +137,9 @@ const JobManagementPage: React.FC = () => {
         throw new Error('Failed to update job');
       }
 
-      // Show success message (optional)
-      // You could add a toast notification here if you have a notification system
-
-      // Navigate back to dashboard
-      navigate('/manager/console');
+      const updatedJob = await response.json();
+      setJob(updatedJob);
+      setIsEditing(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update job');
     } finally {
@@ -142,7 +196,7 @@ const JobManagementPage: React.FC = () => {
       </div>
 
       {isEditing ? (
-        <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={handleCancel} />
+        <JobForm initialJob={job} onSubmit={handleUpdateJob} onCancel={() => setIsEditing(false)} />
       ) : (
         <div className="card-bordered">
           <h2 className="text-medium font-semibold mb-2">{job.listingTitle}</h2>
@@ -180,12 +234,38 @@ const JobManagementPage: React.FC = () => {
       {!isEditing && (
         <div className="mt-8">
           <h2 className="text-large font-semibold mb-2">Applications</h2>
+          {applicationStats && (
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+              <div className="card-bordered p-4 text-center">
+                <p className="text-gray-600">Total</p>
+                <p className="text-xl font-bold">{applicationStats.total}</p>
+              </div>
+              <div className="card-bordered p-4 text-center">
+                <p className="text-yellow-600">Pending</p>
+                <p className="text-xl font-bold">{applicationStats.pending}</p>
+              </div>
+              <div className="card-bordered p-4 text-center">
+                <p className="text-blue-600">Reviewed</p>
+                <p className="text-xl font-bold">{applicationStats.reviewed}</p>
+              </div>
+              <div className="card-bordered p-4 text-center">
+                <p className="text-green-600">Accepted</p>
+                <p className="text-xl font-bold">{applicationStats.accepted}</p>
+              </div>
+              <div className="card-bordered p-4 text-center">
+                <p className="text-red-600">Rejected</p>
+                <p className="text-xl font-bold">{applicationStats.rejected}</p>
+              </div>
+            </div>
+          )}
           <div className="card-bordered">
             <ApplicantSortOptions
               sortBy={sortBy}
               filterStatus={filterStatus}
               onSortChange={setSortBy}
               onFilterChange={setFilterStatus}
+              isLoading={isLoading}
+              totalApplications={applicationStats?.total}
             />
             <ApplicantList jobId={parseInt(jobId!)} />
           </div>

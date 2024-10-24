@@ -1,4 +1,3 @@
-// src/components/manager/ActiveJobsList.tsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,41 +8,63 @@ interface ActiveJobsListProps {
   handleShouldUpdateJobs: () => void;
 }
 
+interface JobsResponse {
+  content: Job[];
+  totalElements: number;
+  totalPages: number;
+  number: number; // current page number
+  size: number; // items per page
+}
+
 const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0); // Start at 0 to match backend
+  const [totalPages, setTotalPages] = useState(0);
   const jobsPerPage = 5;
 
   const fetchJobs = useCallback(async () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`http://localhost:8000/api/job/page?page=${currentPage}&items=${jobsPerPage}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8000/job/page?page=${currentPage}&items=${jobsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Failed to fetch jobs');
       }
 
-      const data = await response.json();
-      setJobs(data.jobs || []);
+      const data: JobsResponse = await response.json();
+      console.log('Fetched jobs data:', data); // Add this for debugging
+      setJobs(data.content || []); // Spring returns content array
+      setTotalPages(data.totalPages);
     } catch (err) {
+      console.error('Error fetching jobs:', err); // Add this for debugging
       setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [token, currentPage]); // Add currentPage as dependency
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+  }, [fetchJobs, currentPage]); // Re-fetch when page changes
+
+  useEffect(() => {
+    // Add this effect to refresh jobs when handleShouldUpdateJobs is called
+    fetchJobs();
+  }, [handleShouldUpdateJobs, fetchJobs]);
 
   const handleManageJob = (jobId: number) => {
     navigate(`/manager/${jobId}`);
@@ -60,10 +81,6 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
   if (error) {
     return <div className="p-4 text-red-600">{error}</div>;
   }
-
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
 
   return (
     <div className="card-bordered">
@@ -94,7 +111,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {currentJobs.map(job => (
+                {jobs.map(job => (
                   <tr key={job.id}>
                     <td className="px-6 py-4 whitespace-nowrap">{job.listingTitle}</td>
                     <td className="px-6 py-4 whitespace-nowrap">{job.department}</td>
@@ -116,21 +133,19 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
       </div>
       <div className="mt-4 flex justify-between">
         <button
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+          disabled={currentPage === 0}
           className={`btn-primary border-none text-normal ${
-            currentPage === 1 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
+            currentPage === 0 ? 'bg-gray-500 cursor-not-allowed' : 'bg-gray-300 hover:bg-adp-red'
           }`}
         >
           Previous
         </button>
         <button
-          onClick={() =>
-            setCurrentPage(prev => Math.min(prev + 1, Math.ceil(jobs.length / jobsPerPage)))
-          }
-          disabled={currentPage === Math.ceil(jobs.length / jobsPerPage)}
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+          disabled={currentPage === totalPages - 1}
           className={`btn-primary border-none text-normal ${
-            currentPage === Math.ceil(jobs.length / jobsPerPage)
+            currentPage === totalPages - 1
               ? 'bg-gray-500 cursor-not-allowed'
               : 'bg-gray-300 hover:bg-adp-red'
           }`}

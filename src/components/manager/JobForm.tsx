@@ -1,5 +1,3 @@
-// src\components\manager\JobForm.tsx
-
 import React, { useState, useCallback } from 'react';
 import { Job } from '../../types/types';
 
