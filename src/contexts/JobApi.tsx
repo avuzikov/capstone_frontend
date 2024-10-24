@@ -20,9 +20,14 @@ export const fetchJobs = async (page: number, items: number, query = '', token: 
   return data;
 };
 
-export const fecthApplications = async (page: number, items: number, token: string | null) => {
+export const fecthApplications = async (
+  candidateId: string,
+  page: number,
+  items: number,
+  token: string | null
+) => {
   const response = await fetch(
-    `${DATA_BASE_URL}/api/application/page?page=${page}&items=${items}`,
+    `${DATA_BASE_URL}/api/application/candidate/${candidateId}?page=${page}&items=${items}`,
     {
       method: 'GET',
       headers: {

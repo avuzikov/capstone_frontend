@@ -68,7 +68,7 @@ const JobDetailsPage = () => {
         {isAuthenticatedApplicant && data?.listingStatus === 'open' && (
           <ApplyButton id={data?.id} />
         )}
-        {!isAuthenticatedApplicant && (
+        {!isAuthenticatedApplicant && data?.listingStatus === 'open' && (
           <Link
             to="/login"
             className="block py-1.5 px-3 bg-adp-gray text-adp-navy-light border border-red-200 rounded-md shadow-sm hover:bg-stone-200 transition-colors w-full mt-2 text-medium"
