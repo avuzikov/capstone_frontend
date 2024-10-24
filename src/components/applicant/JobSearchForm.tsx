@@ -2,16 +2,24 @@
 
 import React, { useState, FormEvent } from 'react';
 
-const JobSearchForm = ({ setSearchQuery }: { setSearchQuery: (query: string) => void }) => {
+const JobSearchForm = ({
+  setSearchQuery,
+  setPage,
+}: {
+  setSearchQuery: (query: string) => void;
+  setPage: (query: number) => void;
+}) => {
   const [input, setInput] = useState('');
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setPage(0);
     setSearchQuery(input.toLowerCase());
   };
 
   const handleChange = (event: FormEvent<HTMLInputElement>) => {
     setInput(event.currentTarget.value);
     if (event.currentTarget.value === '') {
+      setPage(0);
       setSearchQuery('');
     }
   };

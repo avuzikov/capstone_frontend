@@ -9,23 +9,20 @@ const JobPage: React.FC = () => {
   const { id } = useAuth();
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const itemsPerPage = 6;
   const [searchQuery, setSearchQuery] = useState('');
-  const [noMoreJobs, setNoMoreJobs] = useState(false);
+  const [first, setFirst] = useState(true);
+  const [last, setLast] = useState(true);
 
   useEffect(() => {
     const loadJobs = async () => {
       setLoading(true);
       try {
         const data = await fetchJobs(page, itemsPerPage, searchQuery, token);
-        setJobs(data.jobs);
-        const nJobs = data.jobs.length;
-        if (nJobs < itemsPerPage) {
-          setNoMoreJobs(true);
-        } else {
-          setNoMoreJobs(false);
-        }
+        setJobs(data.content);
+        setFirst(data.first);
+        setLast(data.last);
       } catch (error) {
         console.error('Error fetching jobs:', error);
       } finally {
@@ -39,28 +36,23 @@ const JobPage: React.FC = () => {
     <div>
       <div className="container mx-auto p-6">
         <div className="flex justify-center mb-4">
-          <JobSearchForm setSearchQuery={setSearchQuery} />
+          <JobSearchForm setSearchQuery={setSearchQuery} setPage={setPage} />
         </div>
         {loading ? <p>Loading jobs...</p> : <JobList jobs={jobs} token={token} userId={id} />}
 
         <div className="flex justify-between mt-4 items-center">
           <button
-            className={`btn-primary text-normal ${
-              page === 1 ? 'btn-disabled cursor-not-allowed' : ''
-            }`}
-            disabled={page === 1}
-            onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+            className={`btn-primary text-normal ${first ? 'btn-disabled cursor-not-allowed' : ''}`}
+            disabled={first}
+            onClick={() => setPage(prev => Math.max(prev - 1, 0))}
           >
             Previous
           </button>
-
-          <span className="text-small">Page {page}</span>
+          <span className="text-small">Page {page + 1}</span>
           <button
-            className={`btn-primary text-normal ${
-              noMoreJobs ? 'btn-disabled cursor-not-allowed' : ''
-            }`}
+            className={`btn-primary text-normal ${last ? 'btn-disabled cursor-not-allowed' : ''}`}
             onClick={() => setPage(prev => prev + 1)}
-            disabled={noMoreJobs}
+            disabled={last}
           >
             Next
           </button>
