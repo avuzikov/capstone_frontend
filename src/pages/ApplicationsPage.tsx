@@ -21,7 +21,7 @@ const ApplicationsPage: React.FC = () => {
   const { token } = useAuth();
   const { id } = useAuth();
   const [page, setPage] = useState(0);
-  const itemsPerPage = 1;
+  const itemsPerPage = 6;
   const [first, setFirst] = useState(true);
   const [last, setLast] = useState(true);
 
@@ -31,7 +31,7 @@ const ApplicationsPage: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const data = await fecthApplications(page, itemsPerPage, token);
+        const data = await fecthApplications(id!, page, itemsPerPage, token);
         const applications = data.content;
         const filteredApplications = applications.filter(
           (application: Application) => application.candidateId === parseInt(id!, 10)
