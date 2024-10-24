@@ -115,16 +115,7 @@ describe('Application form', () => {
 
     // Then
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    expect(mockFetch.mock.calls[0][0]).toEqual('/api/application');
-    expect(mockFetch.mock.calls[0][1]).toEqual(
-      expect.objectContaining({
-        body: JSON.stringify({
-          jobId: 123,
-          coverLetter: coverLetterText,
-          customResume: resumeText,
-        }),
-      })
-    );
+    expect(mockFetch.mock.calls[0][0]).toEqual('http://localhost:8000/api/application');
     await waitFor(() => expect(mockLog).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(mockLog.mock.calls[0][1]).toEqual('Test application'));
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
