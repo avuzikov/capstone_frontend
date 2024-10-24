@@ -82,7 +82,7 @@ const RegisterForm = () => {
     const body: UserRegistration = {
       email: data.email,
       password: data.password,
-      fullName: data.firstName + ' ' + data.lastName,
+      name: data.firstName + ' ' + data.lastName,
     };
 
     await fetchDispatch(body);

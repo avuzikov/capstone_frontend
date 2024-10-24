@@ -14,7 +14,7 @@ const ManagerCard = ({ link, manager }: ManagerCardProps) => {
     <Link to={link} className="w-full">
       <div className="card-bordered cursor-pointer flex items-center justify-between h-18">
         <div className="flex flex-col">
-          <h1 className="text-medium">{manager.fullName}</h1>
+          <h1 className="text-medium">{manager.name}</h1>
           <div className="flex gap-2 items-center text-small">
             <p className="text-gray-500">{manager.email}</p>
             {manager.phone && (

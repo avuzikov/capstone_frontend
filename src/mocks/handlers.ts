@@ -114,7 +114,7 @@ export const handlers = [
     const { email, password, name } = await request.json();
     const newUser: User = {
       id: users.length + 1,
-      fullName: name,
+      name: name,
       email,
       password,
       role: 'applicant',
@@ -158,7 +158,7 @@ export const handlers = [
     // return only the manager fullName, email, and department
     return HttpResponse.json({
       id: manager.id,
-      fullName: manager.fullName,
+      name: manager.name,
       email: manager.email,
       department: manager.department,
     });
@@ -172,7 +172,7 @@ export const handlers = [
     const { email, password, name } = await request.json();
     const newUser: User = {
       id: users.length + 1,
-      fullName: name,
+      name: name,
       email,
       password,
       role: 'hiring-manager',
@@ -503,7 +503,7 @@ export const handlers = [
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: users.find(u => u.id === app.userId)?.fullName,
+        applicantName: users.find(u => u.id === app.userId)?.name,
       })),
     });
   }),
@@ -530,7 +530,7 @@ export const handlers = [
 
     return HttpResponse.json({
       id: manager.id,
-      fullName: manager.fullName,
+      name: manager.name,
       department: manager.department,
       jobTitle: 'Hiring Manager', // Assuming all hiring managers have this title
       publicContactInfo: manager.email, // You might want to limit what information is public
@@ -575,7 +575,7 @@ export const handlers = [
       jobs: paginatedJobs.map(job => ({
         ...job,
         applicantCount: applications.filter(app => app.jobId === job.id).length,
-        managerName: users.find(u => u.id === job.userId)?.fullName,
+        managerName: users.find(u => u.id === job.userId)?.name,
       })),
     });
   }),
@@ -597,7 +597,7 @@ export const handlers = [
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: users.find(u => u.id === app.userId)?.fullName,
+        applicantName: users.find(u => u.id === app.userId)?.name,
         jobTitle: jobs.find(j => j.id === app.jobId)?.jobTitle,
       })),
     });

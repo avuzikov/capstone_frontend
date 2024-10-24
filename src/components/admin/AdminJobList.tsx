@@ -14,7 +14,7 @@ const AdminJobList = () => {
 
   const fetchJobs = useCallback(async () => {
     try {
-      const response = await fetch('/api/job', {
+      const response = await fetch('http://localhost:8000/api/job', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const AdminJobList = () => {
 
       console.log(data);
 
-      setJobs(data.jobs);
+      setJobs(data);
     } catch (err) {
       console.error(err);
     }

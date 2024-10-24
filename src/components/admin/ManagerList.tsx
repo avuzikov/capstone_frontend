@@ -19,7 +19,7 @@ const ManagerList: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/users', {
+      const response = await fetch('http://localhost:8180/users/admin/1', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import BackButton from '../shared/BackButton';
 import { useAuth } from '../../contexts/AuthContext';
 import { data } from '@remix-run/router';
+import { table } from 'console';
 
 const TableDisplay = () => {
   const navigate = useNavigate();
@@ -22,13 +23,13 @@ const TableDisplay = () => {
 
       switch (name) {
         case 'jobs':
-          url = '/api/job?page=1&items=1000';
+          url = 'http://localhost:8000/api/job';
           break;
         case 'users':
-          url = '/users';
+          url = 'http://localhost:8180/users/admin/1';
           break;
         case 'applications':
-          url = '/api/application?page=1&items=1000';
+          url = 'http://localhost:8000/api/application/';
           break;
         default:
           url = '/api/default';
@@ -45,14 +46,14 @@ const TableDisplay = () => {
 
       const data = await response.json();
 
-      console.log(data);
-
-      if (name === 'jobs') {
-        const jobs = data.jobs || [];
-        setTableData(jobs);
+      if (name === 'applications') {
+        setTableData(data);
       } else {
         setTableData(data);
       }
+
+      console.log(tableData);
+      
 
       const keys = (Array.isArray(data.jobs || data) ? data.jobs || data : []).reduce(
         (acc: string[], row: Record<string, any>) => {

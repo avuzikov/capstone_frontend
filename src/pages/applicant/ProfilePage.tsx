@@ -15,7 +15,7 @@ const ProfilePage = () => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(`http://localhost:8180/users/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -56,17 +56,30 @@ const ProfilePage = () => {
             <div className="card-bordered flex gap-4 flex-col">
               <div className="m-small">
                 {Object.entries(user).map(([key, value]) => {
-                  if (key === 'id') {
-                    return null;
+                  if ( key === 'name') {
+                    return (
+                      <div className="mb-3" key={key}>
+                        <p className="text-small pl-small">
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                        </p>
+                        <div className="card-bordered">{value}</div>
+                      </div>
+                    );
                   }
-                  return (
-                    <div className="mb-3" key={key}>
-                      <p className="text-small pl-small">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </p>
-                      <div className="card-bordered">{value}</div>
-                    </div>
-                  );
+                  return null;
+                })}
+                {Object.entries(user).map(([key, value]) => {
+                  if ( key !== 'name' && (key === 'email' || key === 'address' || key === 'phone' || key === 'resume')) {
+                    return (
+                      <div className="mb-3" key={key}>
+                        <p className="text-small pl-small">
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                        </p>
+                        <div className="card-bordered">{value}</div>
+                      </div>
+                    );
+                  }
+                  return null;
                 })}
               </div>
             </div>

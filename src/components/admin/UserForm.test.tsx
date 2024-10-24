@@ -79,7 +79,7 @@ describe('UserForm Component', () => {
         json: () =>
           Promise.resolve({
             id: 1,
-            fullName: 'John Doe',
+            name: 'John Doe',
             email: 'john@example.com',
             address: '123 Main St',
             phone: '123-456-7890',
@@ -123,7 +123,7 @@ describe('UserForm Component', () => {
           }),
           body: JSON.stringify({
             id: 0,
-            fullName: 'John Doe',
+            name: 'John Doe',
             password: '',
             email: 'john@example.com',
             address: '123 Main St',
