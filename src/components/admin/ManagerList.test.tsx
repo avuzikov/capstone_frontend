@@ -16,7 +16,7 @@ jest.mock('../../contexts/AuthContext', () => ({
 jest.mock('./ManagerCard.tsx', () => {
   return ({ manager, link }: { manager: User; link: string }) => (
     <div data-testid="manager-card">
-      <a href={link}>{manager.fullName}</a>
+      <a href={link}>{manager.name}</a>
     </div>
   );
 });
@@ -26,14 +26,14 @@ describe('ManagerList Component', () => {
   const mockManagers: User[] = [
     {
       id: 1,
-      fullName: 'Manager One',
+      name: 'Manager One',
       email: 'email@email.com',
       password: 'password',
       role: 'hiring-manager',
     },
     {
       id: 2,
-      fullName: 'Manager Twi',
+      name: 'Manager Twi',
       email: 'email2@email.com',
       password: 'password2',
       role: 'hiring-manager',
@@ -84,7 +84,7 @@ describe('ManagerList Component', () => {
       expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
       expect(screen.getAllByTestId('manager-card')).toHaveLength(mockManagers.length);
       mockManagers.forEach(manager => {
-        expect(screen.getByText(manager.fullName)).toBeInTheDocument();
+        expect(screen.getByText(manager.name)).toBeInTheDocument();
       });
     });
   });
