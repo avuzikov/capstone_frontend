@@ -46,7 +46,11 @@ const TableDisplay = () => {
 
       const data = await response.json();
 
+
       if (name === 'applications') {
+        data.forEach((application: any) => {
+          delete application.job;
+        });
         setTableData(data);
       } else {
         setTableData(data);

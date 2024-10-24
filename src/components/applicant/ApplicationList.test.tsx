@@ -4,6 +4,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ApplicationList from './ApplicationList';
 import Router, { BrowserRouter } from 'react-router-dom';
 
+import { JobDetailsType } from '../../types/Job';
+
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
 
@@ -13,11 +15,24 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+const JOB: JobDetailsType = {
+  listingTitle: 'Software Engineer',
+  dateListed: '2023-10-01',
+  listingStatus: 'open',
+  jobTitle: 'Frontend Developer',
+  department: 'Engineering',
+  experienceLevel: 'Mid-level',
+  jobDescription: 'Develop and maintain web applications.',
+  additionalInformation: 'Remote position',
+  id: 0,
+  userId: 0,
+};
+
 const APPLICATIONS = [
   {
     id: 1,
     userId: 1,
-    jobId: 1,
+    job: JOB,
     jobTitle: 'Senior Software Engineer',
     dateApplied: new Date('2023-05-05').toISOString(),
     applicationStatus: 'pending',
@@ -27,7 +42,7 @@ const APPLICATIONS = [
   {
     id: 2,
     userId: 4,
-    jobId: 2,
+    job: JOB,
     jobTitle: 'Marketing Specialist',
     dateApplied: new Date('2023-05-20').toISOString(),
     applicationStatus: 'reviewed',

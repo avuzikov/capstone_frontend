@@ -8,20 +8,9 @@ import { ApplicationDetailsType } from '../../types/Application';
 import { JobDetailsType } from '../../types/Job';
 import { format } from '../../utils/formatDate';
 import * as AuthContext from '../../contexts/AuthContext';
-import { getJobDetails } from '../../services/api';
-import { exact } from 'prop-types';
 
 jest.mock('../../contexts/AuthContext');
 jest.mock('../../hooks/useFetch');
-const APPLICATION_DETAILS: ApplicationDetailsType = {
-  id: 1,
-  userId: 1,
-  jobId: 1,
-  dateApplied: new Date('2023-05-05').toISOString(),
-  applicationStatus: 'pending',
-  coverLetter: 'I am excited to apply for this position...',
-  customResume: 'John Doe\nSoftware Engineer\n5 years of experience in web development...',
-};
 
 const JOB_DATA: JobDetailsType = {
   id: 1,
@@ -34,6 +23,18 @@ const JOB_DATA: JobDetailsType = {
   jobDescription: 'Test job',
   experienceLevel: 'Test',
   additionalInformation: 'Test',
+};
+
+const APPLICATION_DETAILS: ApplicationDetailsType = {
+  id: 1,
+  candidateId: 1,
+  job: JOB_DATA,
+  candidateEmail: 'test@test.com',
+  dateApplied: new Date('2023-05-05').toISOString(),
+  applicationStatus: 'pending',
+  coverLetter: 'I am excited to apply for this position...',
+  customResume: 'John Doe\nSoftware Engineer\n5 years of experience in web development...',
+  yearsOfExperience: 1,
 };
 
 describe('Application Details', () => {
