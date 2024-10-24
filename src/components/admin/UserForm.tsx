@@ -118,7 +118,7 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, setShowForm }) =
       }
 
       fetchUser();
-    
+      navigate(-1);
     } catch (error) {
       console.error('Failed to update user:', error);
     }
