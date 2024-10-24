@@ -62,7 +62,6 @@ const ManagerDashboardPage: React.FC = () => {
 
     try {
       const response = await fetch('http://localhost:8000/api/job', {
-      const response = await fetch('http://localhost:8000/api/job', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
