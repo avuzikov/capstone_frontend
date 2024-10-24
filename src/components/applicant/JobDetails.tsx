@@ -1,6 +1,7 @@
 // src\components\applicant\JobDetails.tsx
 
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { JobDetailsType } from '../../types/Job';
 import { format } from '../../utils/formatDate';
 
@@ -40,12 +41,19 @@ const JobDetails = ({ job }: { job: JobDetailsType }) => {
         <div className="flex-col space-y-4 my-4">
           <div className="flex-col gap-2">
             <p className="font-bold">Description:</p>
-            <p className="text-adp-navy-light whitespace-pre">{job.jobDescription}</p>
+            <div className="mt-2 prose max-w-none">
+              <ReactMarkdown className="text-adp-navy-light">{job.jobDescription}</ReactMarkdown>
+            </div>
           </div>
 
           <div className="flex-col gap-2">
             <p className="font-bold">Additional Information:</p>
-            <p className="text-adp-navy-light whitespace-pre">{job.additionalInformation}</p>
+
+            <div className="mt-2 prose max-w-none">
+              <ReactMarkdown className="text-adp-navy-light">
+                {job.additionalInformation}
+              </ReactMarkdown>
+            </div>
           </div>
         </div>
       </main>
