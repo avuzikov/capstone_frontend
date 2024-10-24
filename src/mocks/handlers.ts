@@ -384,9 +384,11 @@ export const handlers = [
     const newApplication: Application = {
       id: applications.length + 1,
       ...applicationData,
-      userId: user.id,
+      candidateId: user.id,
       dateApplied: new Date().toISOString(),
       applicationStatus: 'pending',
+      candidateEmail: '',
+      yearsOfExperience: 0
     };
     addApplication(newApplication);
     return HttpResponse.json(newApplication);
@@ -413,7 +415,12 @@ export const handlers = [
       const user = authenticateUser(request);
       const { id } = params;
       const application = applications.find(a => a.id === parseInt(id));
-      if (!user || user.role !== 'applicant' || !application || application.userId !== user.id) {
+      if (
+        !user ||
+        user.role !== 'applicant' ||
+        !application ||
+        application.candidateId !== user.id
+      ) {
         return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
       }
       const updatedData = await request.json();
@@ -463,7 +470,7 @@ export const handlers = [
     const user = authenticateUser(request);
     const { id } = params;
     const application = applications.find(a => a.id === parseInt(id));
-    if (!user || user.role !== 'applicant' || !application || application.userId !== user.id) {
+    if (!user || user.role !== 'applicant' || !application || application.candidateId !== user.id) {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
     deleteApplication(parseInt(id));
@@ -503,7 +510,7 @@ export const handlers = [
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: users.find(u => u.id === app.userId)?.name,
+        applicantName: users.find(u => u.id === app.candidateId)?.name,
       })),
     });
   }),
@@ -597,7 +604,7 @@ export const handlers = [
       items,
       applications: paginatedApplications.map(app => ({
         ...app,
-        applicantName: users.find(u => u.id === app.userId)?.name,
+        applicantName: users.find(u => u.id === app.candidateId)?.name,
         jobTitle: jobs.find(j => j.id === app.jobId)?.jobTitle,
       })),
     });
@@ -609,7 +616,7 @@ export const handlers = [
     if (!user || user.role !== 'applicant') {
       return HttpResponse.json({ message: 'Forbidden' }, { status: 403 });
     }
-    const userApplications = applications.filter(app => app.userId === user.id);
+    const userApplications = applications.filter(app => app.candidateId === user.id);
     return HttpResponse.json({
       totalApplications: userApplications.length,
       pendingApplications: userApplications.filter(app => app.applicationStatus === 'pending')

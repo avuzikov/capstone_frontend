@@ -1,6 +1,6 @@
 // src\components\manager\ApplicantStatusUpdate.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Application } from '../../types/types';
 import { useAuth } from '../../contexts/AuthContext';
@@ -26,20 +26,48 @@ const ApplicantStatusUpdate: React.FC<ApplicantStatusUpdateProps> = ({
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [application, setApplication] = useState<Application | null>(null);
+
+  const fetchApplication = async () => {
+    const response = await fetch(`http://localhost:8000/api/application/${applicationId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch application');
+    }
+
+    const data: Application = await response.json();
+
+    setApplication(data);
+  };
+
+  useEffect(() => {
+    fetchApplication();
+  }, []);
+
 
   const handleStatusChange = async (newStatus: ApplicationStatus) => {
     setIsUpdating(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/application/manager/${applicationId}`, {
+      const response = await fetch(`http://localhost:8000/api/application/manager/${applicationId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+          candidateId: application?.candidateId,
+          candidateEmail: application?.candidateEmail,
+          jobId: jobId,
+          coverLetter: application?.coverLetter,
+          customResume: application?.customResume,
           applicationStatus: newStatus,
+          yearsOfExperience: application?.yearsOfExperience,
         }),
       });
 
