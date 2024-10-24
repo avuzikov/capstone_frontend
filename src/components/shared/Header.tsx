@@ -49,7 +49,7 @@ const Header = () => {
       <NavLink to={role === 'admin' ? '/admin' : '/'}>
         <div className="flex items-center gap-3">
           <img src="/adp-white.svg" alt="Logo" className="img-small mb-small" />
-          <h1 className="hidden md:block text-large">Talent Site</h1>
+          <h1 className="hidden md:block text-large">Talent Central</h1>
         </div>
       </NavLink>
       <ul className="flex gap-3 items-center">
