@@ -1,16 +1,17 @@
 // src\pages\LoginPage.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from '../components/shared/Input';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, role } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,11 +19,15 @@ const LoginPage: React.FC = () => {
 
     try {
       const data = await login(email, password);
+    } catch (error) {
+      console.error('Login failed:', error);
+      setLoginError('Invalid email or password. Please try again.');
+    }
+  };
 
-      // Get role from the auth context since that's how it was working before
-      const role = data.role;
-
-      // Redirect based on user role
+  useEffect(() => {
+    if (role) {
+      //Redirect based on user role
       switch (role) {
         case 'admin':
           navigate('/admin');
@@ -36,11 +41,8 @@ const LoginPage: React.FC = () => {
         default:
           navigate('/jobs');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
-      setLoginError('Invalid email or password. Please try again.');
     }
-  };
+  }, [role]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-adp-gray">

@@ -22,7 +22,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
     if (!token) return;
 
     try {
-      const response = await fetch('/api/job/manager', {
+      const response = await fetch('/api/job?page=page&items=items', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,10 +103,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
                       {new Date(job.dateListed).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleManageJob(job.id)}
-                        className="text-adp-navy"
-                      >
+                      <button onClick={() => handleManageJob(job.id)} className="text-adp-navy">
                         Manage
                       </button>
                     </td>

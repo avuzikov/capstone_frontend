@@ -16,6 +16,7 @@ import {
   updateApplication,
   deleteApplication,
 } from './mockData';
+import { jwtDecode } from 'jwt-decode';
 
 // Define interfaces for request bodies
 interface LoginRequest {
@@ -61,7 +62,9 @@ const authenticateUser = (request: Request): User | null => {
   if (!token) {
     return null;
   }
-  const user = users.find(user => user.id === parseInt(token));
+  const user = users.find(
+    user => user.id === parseInt((jwtDecode(token) as { userId: string; role: string }).userId)
+  );
   return user || null;
 };
 
@@ -77,21 +80,31 @@ export const handlers = [
   http.post<never, LoginRequest>('/users/login', async ({ request }) => {
     const { email, password } = await request.json();
     const user = users.find(u => u.email === email && u.password === password);
+    let token: string;
     if (user) {
-      return HttpResponse.json(
-        {
-          message: 'Login successful',
-          token: user.id.toString(),
-          role: user.role,
-          id: user.id,
+      switch (user?.id) {
+        case 1:
+          token =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwicm9sZSI6ImFwcGxpY2FudCJ9.HA71Lz8PLwEaf8VEOwHAwX5L5sqxVQcKF-eZnEXsI40';
+          break;
+        case 2:
+          token =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyIiwicm9sZSI6ImhpcmluZy1tYW5hZ2VyIn0.-N_OpzT5chFKq8px8-FbelqHDbyzZBUhQDtN7W-kFTo';
+          break;
+        case 3:
+          token =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzIiwicm9sZSI6ImFkbWluIn0.jf4pFwho0xm_YnPV00gcSQmcJHPSysZb_xILafymyQY';
+          break;
+        default:
+          token =
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwicm9sZSI6ImFwcGxpY2FudCJ9.HA71Lz8PLwEaf8VEOwHAwX5L5sqxVQcKF-eZnEXsI40';
+      }
+      return HttpResponse.json(token, {
+        status: 200,
+        headers: {
+          Authorization: `Bearer ${user.id}`,
         },
-        {
-          status: 200,
-          headers: {
-            Authorization: `Bearer ${user.id}`,
-          },
-        }
-      );
+      });
     }
     return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 });
   }),
@@ -107,20 +120,14 @@ export const handlers = [
       role: 'applicant',
     };
     addUser(newUser);
-    return HttpResponse.json(
-      {
-        message: 'User registered successfully',
-        token: newUser.id.toString(),
-        role: newUser.role,
-        id: newUser.id,
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwicm9sZSI6ImFwcGxpY2FudCJ9.HA71Lz8PLwEaf8VEOwHAwX5L5sqxVQcKF-eZnEXsI40';
+    return HttpResponse.json(JSON.stringify(token), {
+      status: 200,
+      headers: {
+        Authorization: `Bearer ${newUser.id}`,
       },
-      {
-        status: 200,
-        headers: {
-          Authorization: `Bearer ${newUser.id}`,
-        },
-      }
-    );
+    });
   }),
 
   http.get('/users', ({ request }) => {

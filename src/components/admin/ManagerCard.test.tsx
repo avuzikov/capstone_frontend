@@ -20,14 +20,14 @@ describe('ManagerCard', () => {
   it("renders the manager's full name, email, phone, and department", () => {
     const { getByText } = render(
       <Router>
-        <ManagerCard link="/manager/1" manager={mockManager} />
+        <ManagerCard link="/admin/manager/1" manager={mockManager} />
       </Router>
     );
 
-    expect(getByText('John Doe')).toBeInTheDocument();
-    expect(getByText('john.doe@example.com')).toBeInTheDocument();
-    expect(getByText('123-456-7890')).toBeInTheDocument();
-    expect(getByText('Engineering')).toBeInTheDocument();
+    expect(getByText((content, element) => content.includes('John Doe'))).toBeInTheDocument();
+    expect(getByText((content, element) => content.includes('john.doe@example.com'))).toBeInTheDocument();
+    expect(getByText((content, element) => content.includes('123-456-7890'))).toBeInTheDocument();
+    expect(getByText((content, element) => content.includes('Engineering'))).toBeInTheDocument();
   });
 
   it('renders the correct link', () => {

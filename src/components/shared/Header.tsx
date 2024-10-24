@@ -34,9 +34,7 @@ const Header = () => {
           { to: '/manager/console', text: 'Console' },
         ];
       case 'admin':
-        return [
-          { to: '/admin', text: 'Dashboard' },
-        ];
+        return [{ to: '/admin', text: 'Dashboard' }];
       default:
         return [];
     }

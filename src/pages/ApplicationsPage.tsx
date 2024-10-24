@@ -50,16 +50,16 @@ const ApplicationsPage: React.FC = () => {
         const filteredApplications2 = await addJobTitlesToApplications(filteredApplications);
         const nApplications = filteredApplications.length;
 
-        const aux = await fecthApplications(page + 1, itemsPerPage, token); 
+        const aux = await fecthApplications(page + 1, itemsPerPage, token);
         const auxFilter = aux.filter(
           (application: Application) => application.userId === parseInt(id!, 10)
-        );       
+        );
         const nAux = auxFilter.length;
-        console.log("nApps aux: " + nAux)
-        if(nAux > 0){
-          setNoMoreApplications(false)
-        }else{
-          setNoMoreApplications(true)
+        console.log('nApps aux: ' + nAux);
+        if (nAux > 0) {
+          setNoMoreApplications(false);
+        } else {
+          setNoMoreApplications(true);
         }
 
         console.log(nApplications);
