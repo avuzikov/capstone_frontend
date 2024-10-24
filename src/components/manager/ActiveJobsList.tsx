@@ -22,7 +22,7 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
     if (!token) return;
 
     try {
-      const response = await fetch('/api/job/manager', {
+      const response = await fetch('/api/job?page=page&items=items', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
