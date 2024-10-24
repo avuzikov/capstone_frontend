@@ -8,7 +8,7 @@ import { User } from '../../types/types';
 
 const mockManager: User = {
   id: 1,
-  fullName: 'John Doe',
+  name: 'John Doe',
   email: 'john.doe@example.com',
   password: 'password',
   role: 'hiring-manager',

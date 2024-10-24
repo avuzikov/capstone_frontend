@@ -5,7 +5,7 @@ import { User, Job, Application } from '../types/types';
 export let users: User[] = [
   {
     id: 1,
-    fullName: 'John Doe',
+    name: 'John Doe',
     email: 'john@example.com',
     password: 'password123',
     role: 'applicant',
@@ -14,7 +14,7 @@ export let users: User[] = [
   },
   {
     id: 2,
-    fullName: 'Jane Smith',
+    name: 'Jane Smith',
     email: 'jane@example.com',
     password: 'manager456',
     role: 'hiring-manager',
@@ -22,14 +22,14 @@ export let users: User[] = [
   },
   {
     id: 3,
-    fullName: 'Admin User',
+    name: 'Admin User',
     email: 'admin@example.com',
     password: 'admin789',
     role: 'admin',
   },
   {
     id: 4,
-    fullName: 'Alice Johnson',
+    name: 'Alice Johnson',
     email: 'alice@example.com',
     password: 'alice123',
     role: 'applicant',
@@ -38,7 +38,7 @@ export let users: User[] = [
   },
   {
     id: 5,
-    fullName: 'Bob Williams',
+    name: 'Bob Williams',
     email: 'bob@example.com',
     password: 'bob456',
     role: 'hiring-manager',

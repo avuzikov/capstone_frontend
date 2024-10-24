@@ -25,8 +25,8 @@ describe('JobTransferCard', () => {
 
   test('renders correctly', async () => {
     const mockManagers = [
-      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+      { id: 2, name: 'Manager One', role: 'hiring-manager' },
+      { id: 3, name: 'Manager Two', role: 'hiring-manager' },
     ];
 
     mockFetch.mockResolvedValueOnce({
@@ -46,8 +46,8 @@ describe('JobTransferCard', () => {
 
   test('fetches and displays managers', async () => {
     const mockManagers = [
-      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+      { id: 2, name: 'Manager One', role: 'hiring-manager' },
+      { id: 3, name: 'Manager Two', role: 'hiring-manager' },
     ];
 
     mockFetch.mockResolvedValueOnce({
@@ -96,8 +96,8 @@ describe('JobTransferCard', () => {
     ];
 
     const mockManagers = [
-      { id: 2, fullName: 'Manager One', role: 'hiring-manager' },
-      { id: 3, fullName: 'Manager Two', role: 'hiring-manager' },
+      { id: 2, name: 'Manager One', role: 'hiring-manager' },
+      { id: 3, name: 'Manager Two', role: 'hiring-manager' },
     ];
 
     mockFetch.mockResolvedValueOnce({

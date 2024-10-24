@@ -12,7 +12,7 @@ jest.mock('../../contexts/AuthContext', () => ({
 
 jest.mock('./UserCard.tsx', () => ({ user, link }: { user: any; link: any }) => (
   <div data-testid="user-card">
-    <div>{user.fullName}</div>
+    <div>{user.name}</div>
     <div>{link}</div>
   </div>
 ));
@@ -50,8 +50,8 @@ describe('UserList Component', () => {
 
   test.skip('renders user cards when fetch succeeds', async () => {
     const mockUsers = [
-      { id: 1, fullName: 'John Doe', role: 'applicant' },
-      { id: 2, fullName: 'Jane Smith', role: 'applicant' },
+      { id: 1, name: 'John Doe', role: 'applicant' },
+      { id: 2, name: 'Jane Smith', role: 'applicant' },
     ];
 
     window.fetch = jest.fn().mockResolvedValueOnce({

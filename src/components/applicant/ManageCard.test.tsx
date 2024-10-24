@@ -42,7 +42,7 @@ describe('ManagerCard', () => {
 
   it('renders manager details when data is fetched successfully', () => {
     const mockData = {
-      fullName: 'John Doe',
+      name: 'John Doe',
       department: 'Engineering',
       publicContactInfo: 'john.doe@example.com',
     };
@@ -55,6 +55,7 @@ describe('ManagerCard', () => {
 
     render(<ManagerCard id="1" />);
     expect(screen.getByText('Hiring Manager Details')).toBeInTheDocument();
+    expect(screen.getByText(mockData.name)).toBeInTheDocument();
     expect(screen.getByText(mockData.department)).toBeInTheDocument();
   });
 });

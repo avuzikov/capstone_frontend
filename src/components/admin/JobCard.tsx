@@ -13,7 +13,7 @@ const JobCard = ({ job }: { job: Job }) => {
 
   const fetchManagers = useCallback(async () => {
     try {
-      const response = await fetch('/users', {
+      const response = await fetch('http://localhost:8180/users/admin/1', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ const JobCard = ({ job }: { job: Job }) => {
 
       const managers = data.filter(user => user.role === 'hiring-manager');
 
-      managers.sort((a, b) => a.fullName.localeCompare(b.fullName));
+      managers.sort((a, b) => a.name.localeCompare(b.name));
 
       setManagers(managers);
 
@@ -55,7 +55,7 @@ const JobCard = ({ job }: { job: Job }) => {
 
   const transferJob = async () => {
     try {
-      const response = await fetch('/api/job/transfer', {
+      const response = await fetch('http://localhost:8000/api/job/transfer', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -93,18 +93,17 @@ const JobCard = ({ job }: { job: Job }) => {
       </Link>
       <div className="flex justify-between items-center mt-2">
         <div className="flex gap-2 items-center">
-          <p className="text-small">Manager:</p>
-          <select
+          {/* <select
             className="input-filled"
             value={selectedManagerId}
             onChange={e => handleChange(e)}
           >
             {managers.map(manager => (
               <option className="text-small" key={manager.id} value={manager.id}>
-                {manager.fullName}
+                {manager.name}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
       </div>
     </div>
