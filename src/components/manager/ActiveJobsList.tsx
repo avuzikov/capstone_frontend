@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 import LoadingSpinner from '../shared/LoadingSpinner';
+import { c } from '@mswjs/interceptors/lib/node/Interceptor-a31b1217';
 
 interface ActiveJobsListProps {
   handleShouldUpdateJobs: () => void;
 }
 
 const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs }) => {
-  const { token } = useAuth();
+  const { token, id } = useAuth();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,18 +23,17 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
     if (!token) return;
 
     try {
-      const response = await fetch('/api/job?page=page&items=items', {
+      const response = await fetch('http://localhost:8000/api/job/page?page=0&items=10000', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch jobs');
-      }
-
       const data = await response.json();
-      setJobs(data.jobs || []);
+
+      const filteredJobs = data.content.filter((job: Job) => job.userId === Number(id));
+
+      setJobs(filteredJobs);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
     } finally {

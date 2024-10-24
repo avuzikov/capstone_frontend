@@ -39,7 +39,7 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
 
     try {
       const response = await fetch(
-        `/api/application/job/${jobId}?page=${currentPage}&items=${itemsPerPage}`,
+        `http://localhost:8000/api/job/${jobId}/applications`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -51,8 +51,11 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
         throw new Error('Failed to fetch applications');
       }
 
-      const data: PaginatedApplicationResponse = await response.json();
-      setApplications(data.applications);
+      const data = await response.json();
+      console.log(data);
+
+      // const data: PaginatedApplicationResponse = await response.json();
+      setApplications(data);
       setTotalPages(Math.ceil(data.total / itemsPerPage));
     } catch (err) {
       setError(
@@ -69,7 +72,7 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
 
   const handleStatusChange = async (applicantId: number, newStatus: ApplicationStatus) => {
     try {
-      const response = await fetch(`/api/application/manager/${applicantId}`, {
+      const response = await fetch(`http://localhost:8000/api/application/manager/${applicantId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +121,7 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
+              Candidate ID
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Date Applied
@@ -134,7 +137,7 @@ const ApplicantList: React.FC<ApplicantListProps> = ({ jobId }) => {
         <tbody className="bg-white divide-y divide-gray-200">
           {applications.map(application => (
             <tr key={application.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{application.applicantName}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{application.candidateId}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {new Date(application.dateApplied).toLocaleDateString()}
               </td>

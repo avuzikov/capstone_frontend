@@ -30,10 +30,12 @@ export interface Job {
 
 export interface Application {
   id: number;
-  userId: number;
+  candidateId: number;
   jobId: number;
+  candidateEmail: string;
   dateApplied: string;
   coverLetter: string;
   customResume: string;
+  yearsOfExperience: number;
   applicationStatus: 'pending' | 'reviewed' | 'rejected' | 'accepted';
 }

@@ -10,7 +10,8 @@ import { Job, Application } from '../../types/types';
 
 const JobManagementPage: React.FC = () => {
   const { jobId } = useParams<{ jobId: string }>();
-  const { token } = useAuth();
+  const { token, id } = useAuth();
+
   const navigate = useNavigate();
 
   const [job, setJob] = useState<Job | null>(null);
@@ -27,7 +28,7 @@ const JobManagementPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch(`/api/job/${jobId}`, {
+      const response = await fetch(`http://localhost:8000/api/job/${jobId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,7 +66,7 @@ const JobManagementPage: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/job/${jobId}`, {
+      const response = await fetch(`http://localhost:8000/api/job/${jobId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -74,8 +75,11 @@ const JobManagementPage: React.FC = () => {
         body: JSON.stringify({
           ...updatedJobData,
           id: jobId,
+          userId: id,
         }),
       });
+
+      console.log(response);
 
       if (!response.ok) {
         throw new Error('Failed to update job');
