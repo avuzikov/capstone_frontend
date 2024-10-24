@@ -16,7 +16,7 @@ interface ManagerStats {
 }
 
 const ManagerDashboardPage: React.FC = () => {
-  const { token } = useAuth();
+  const { token, id } = useAuth();
   const [showJobForm, setShowJobForm] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +55,11 @@ const ManagerDashboardPage: React.FC = () => {
   }, [token, shouldRefresh, showJobForm]);
 
   const handleCreateJob = async (jobData: Partial<Job>) => {
-    console.log(JSON.stringify(jobData))
+
+    // add id to jobData
+    jobData.userId = parseInt(id ?? '');
+
+
     try {
       const response = await fetch('http://localhost:8000/api/job', {
         method: 'POST',
@@ -69,6 +73,8 @@ const ManagerDashboardPage: React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to create job');
       }
+
+      console.log(jobData);
 
       const newJob = await response.json();
       setShowJobForm(false);

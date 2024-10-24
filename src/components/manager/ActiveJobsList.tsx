@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Job } from '../../types/types';
 import LoadingSpinner from '../shared/LoadingSpinner';
+import { c } from '@mswjs/interceptors/lib/node/Interceptor-a31b1217';
 
 interface ActiveJobsListProps {
   handleShouldUpdateJobs: () => void;
 }
 
 const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs }) => {
-  const { token } = useAuth();
+  const { token, id } = useAuth();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,12 +29,11 @@ const ActiveJobsList: React.FC<ActiveJobsListProps> = ({ handleShouldUpdateJobs 
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch jobs');
-      }
-
       const data = await response.json();
-      setJobs(data.jobs || []);
+
+      const filteredJobs = data.content.filter((job: Job) => job.userId === Number(id));
+
+      setJobs(filteredJobs);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
     } finally {
