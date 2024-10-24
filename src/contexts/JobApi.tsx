@@ -10,10 +10,6 @@ export const fetchJobs = async (page: number, items: number, query = '', token: 
 
   const response = await fetch(url, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (!response.ok) {
@@ -25,19 +21,21 @@ export const fetchJobs = async (page: number, items: number, query = '', token: 
 };
 
 export const fecthApplications = async (page: number, items: number, token: string | null) => {
-  const response = await fetch(`/api/application?page=${page}&items=${items}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${DATA_BASE_URL}/api/application/page?page=${page}&items=${items}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to fetch applications: Unauthorized');
   }
 
   const data = await response.json();
-  console.log(data);
   return data;
 };
