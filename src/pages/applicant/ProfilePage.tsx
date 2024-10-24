@@ -37,15 +37,14 @@ const ProfilePage = () => {
     }
   }, [id, token]);
 
-  const handleShowForm = () => {
-    setShowForm(!showForm);
-  };
 
   useEffect(() => {
     if (token) {
       fetchUser();
     }
-  }, [token, fetchUser, showForm]);
+  }, [token, showForm]);
+
+  
 
   return (
     <div className="w-full flex items-center  flex-col justify-center">
@@ -95,7 +94,7 @@ const ProfilePage = () => {
           <UserForm
             isEditing={true}
             userId={user?.id?.toString()}
-            handleShowForm={handleShowForm}
+            setShowForm={setShowForm}
           />
         )}
       </div>
