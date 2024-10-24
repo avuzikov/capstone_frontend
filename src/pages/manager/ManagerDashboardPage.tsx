@@ -13,6 +13,8 @@ interface ManagerStats {
   reviewedApplications: number;
   acceptedApplications: number;
   rejectedApplications: number;
+  pendingReviews: number;
+  openPositions: number;
 }
 
 const ManagerDashboardPage: React.FC = () => {
@@ -25,7 +27,7 @@ const ManagerDashboardPage: React.FC = () => {
 
   const fetchManagerStats = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/stats/manager', {
+      const response = await fetch(`http://localhost:8000/api/job/manager/${id}/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -55,10 +57,7 @@ const ManagerDashboardPage: React.FC = () => {
   }, [token, shouldRefresh, showJobForm]);
 
   const handleCreateJob = async (jobData: Partial<Job>) => {
-
-    // add id to jobData
     jobData.userId = parseInt(id ?? '');
-
 
     try {
       const response = await fetch('http://localhost:8000/api/job', {
@@ -73,8 +72,6 @@ const ManagerDashboardPage: React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to create job');
       }
-
-      console.log(jobData);
 
       const newJob = await response.json();
       setShowJobForm(false);
@@ -103,7 +100,6 @@ const ManagerDashboardPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      {/* Header with Create Button */}
       <div className="mb-8 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative card-bordered">
           <div className="flex justify-between items-center">
@@ -117,7 +113,6 @@ const ManagerDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {error && (
           <div className="mb-6 bg-red-50 border-l-4 border-red-400 p-4">
@@ -179,10 +174,10 @@ const ManagerDashboardPage: React.FC = () => {
                   items={[
                     {
                       label: 'Pending Reviews',
-                      value: stats.pendingApplications,
+                      value: stats.pendingReviews,
                       color: 'text-yellow-600',
                     },
-                    { label: 'Open Positions', value: stats.openJobs, color: 'text-blue-600' },
+                    { label: 'Open Positions', value: stats.openPositions, color: 'text-blue-600' },
                   ]}
                 />
               </div>
