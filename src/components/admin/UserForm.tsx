@@ -11,14 +11,14 @@ import { useAuth } from '../../contexts/AuthContext';
 interface UserFormProps {
   isEditing: boolean;
   userId?: string;
-  handleShowForm?: () => void;
+  setShowForm?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface RegistrationData extends User {
   password: string;
 }
 
-const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }) => {
+const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, setShowForm }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<RegistrationData>({
@@ -207,8 +207,9 @@ const UserForm: React.FC<UserFormProps> = ({ isEditing, userId, handleShowForm }
       }
 
 
-      if (handleShowForm) {
-        handleShowForm();
+      if (setShowForm) {
+        setShowForm(false);
+        window.location.reload();
       }
     }
   };
