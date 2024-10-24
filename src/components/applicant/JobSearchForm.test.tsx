@@ -5,7 +5,8 @@ import JobSearchForm from './JobSearchForm';
 describe('JobSearchForm', () => {
   it('calls setSearchQuery with the correct value on form submission', () => {
     const setSearchQuery = jest.fn();
-    render(<JobSearchForm setSearchQuery={setSearchQuery} />);
+    const setPage = jest.fn();
+    render(<JobSearchForm setSearchQuery={setSearchQuery} setPage={setPage} />);
 
     const input = screen.getByPlaceholderText('Search...');
     fireEvent.change(input, { target: { value: 'Engineer' } });
@@ -18,7 +19,8 @@ describe('JobSearchForm', () => {
 
   it('calls setSearchQuery with an empty string when input is cleared', () => {
     const setSearchQuery = jest.fn();
-    render(<JobSearchForm setSearchQuery={setSearchQuery} />);
+    const setPage = jest.fn();
+    render(<JobSearchForm setSearchQuery={setSearchQuery} setPage={setPage} />);
 
     const input = screen.getByPlaceholderText('Search...');
     fireEvent.change(input, { target: { value: 'Engineer' } });
